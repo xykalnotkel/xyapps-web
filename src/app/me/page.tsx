@@ -79,7 +79,7 @@ export default function MePage() {
           type="button"
           className="icon-btn"
           aria-label="Ubah profil"
-          title="Ubah profil masih mock"
+          title="Ubah profil"
         >
           <Sym name="edit" size={17} />
         </button>
@@ -140,7 +140,7 @@ export default function MePage() {
         <div className="set-row">
           <span className="grow">
             <strong>Perbarui otomatis</strong>
-            <em>Pasang update tanpa konfirmasi (mock)</em>
+            <em>Pasang update tanpa konfirmasi</em>
           </span>
           <Toggle
             on={settings.autoUpdate}
@@ -151,7 +151,7 @@ export default function MePage() {
         <div className="set-row">
           <span className="grow">
             <strong>Simulasi perangkat 32-bit</strong>
-            <em>Uji alur inkompatibel: tombol unduh hilang di app khusus 64-bit</em>
+            <em>Melihat toko seperti perangkat lama</em>
           </span>
           <Toggle
             on={settings.sim32}
@@ -211,8 +211,7 @@ export default function MePage() {
       </div>
 
       <p className="meta-line">
-        XyApps v0.1.0 · mock. Console dipisah — console.xystudio.my.id setelah DNS
-        aktif.
+        XyApps v0.1.0 · XyStudio
       </p>
 
       <LoadingButton variant="ghost" onClick={logout}>

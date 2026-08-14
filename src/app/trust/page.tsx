@@ -14,13 +14,13 @@ const ROWS = [
     icon: "link" as const,
     tone: "lilac" as const,
     title: "Origin tidak bocor",
-    text: "File dari GitHub / sumber berbayar tidak pernah dikirim langsung ke browser. Semua lewat gerbang.",
+    text: "File aplikasi tidak pernah dikirim langsung ke browser — selalu lewat gerbang aman.",
   },
   {
     icon: "shield" as const,
     tone: "lilac" as const,
     title: "Satu pintu unduhan",
-    text: "Installer resmi hanya lewat dl.xystudio.my.id dengan tiket bertanda tangan.",
+    text: "Installer resmi hanya lewat gerbang unduh resmi dengan tiket bertanda tangan.",
   },
   {
     icon: "fingerprint" as const,
@@ -32,7 +32,7 @@ const ROWS = [
     icon: "cookie" as const,
     tone: "ok" as const,
     title: "Belum ada server",
-    text: "Sekarang semua mock: sesi, library, dan ulasan cuma di localStorage perangkatmu.",
+    text: "Sesi, library, dan ulasan tersimpan di perangkatmu — bukan di server.",
   },
 ];
 
@@ -58,8 +58,7 @@ export default function TrustPage() {
         ))}
       </div>
       <p className="meta-line">
-        Detail teknis lengkap menyusul setelah backend hidup. Untuk sekarang,
-        yang di halaman ini jujur: tidak ada yang disimpan di server.
+        Saat ini tidak ada data yang disimpan di server kami.
       </p>
     </div>
   );

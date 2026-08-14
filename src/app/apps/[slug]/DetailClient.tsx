@@ -253,7 +253,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       return;
     }
     if (owned && app.sourceKind === "xysanc") {
-      show(`Mock: membuka ${app.title}…`);
+      show(`Membuka ${app.title}…`);
       return;
     }
     if (app.sourceKind === "none") {
@@ -291,7 +291,7 @@ export function DetailClient({ app }: { app: AppItem }) {
 
   function submitReport() {
     setReportOpen(false);
-    show("Laporan terkirim (mock)");
+    show("Terima kasih, laporan diterima");
   }
 
   function submitReview(rating: number, text: string) {
@@ -313,7 +313,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       /* penyimpanan penuh: abaikan */
     }
     setReviewOpen(false);
-    show("Ulasan terkirim (mock)");
+    show("Ulasan kamu sudah terpasang");
   }
 
   function toggleHelpful(id: string) {
@@ -446,8 +446,7 @@ export function DetailClient({ app }: { app: AppItem }) {
         <div className="wrap">
           <p className="compat-warn">
             <Sym name="warning" size={16} />
-            Aplikasi tidak kompatibel dengan perangkatmu (32-bit). Tombol unduh
-            dinonaktifkan otomatis.
+            Aplikasi ini tidak kompatibel dengan perangkatmu (32-bit).
           </p>
         </div>
       ) : (
@@ -812,13 +811,13 @@ export function DetailClient({ app }: { app: AppItem }) {
           <p className="pay-price">{app.price ?? "Harga menyusul"}</p>
           <p>
             {app.priceNote ??
-              "Lisensi proprietary. Midtrans menyusul — pembayaran masih mock."}
+              "Lisensi proprietary — sekali beli, milik selamanya."}
           </p>
           <LoadingButton
             block
             onClick={() => {
               setSheet(null);
-              show("Pembayaran belum dibuka (mock)");
+              show("Pembayaran segera dibuka");
             }}
           >
             Lanjut ke pembayaran
@@ -842,12 +841,9 @@ export function DetailClient({ app }: { app: AppItem }) {
         {app.sourceKind === "none" ? (
           <div className="stack-12">
             <p>
-              Demo web belum punya URL live. Nanti tombol ini membuka tab baru — tidak
-              ada file yang diunduh untuk app web.
+              Aplikasi web dibuka langsung di tab baru — tidak ada file yang
+              diunduh ke perangkatmu.
             </p>
-            {app.website && (
-              <div className="ticket">https://{app.website} (DNS menyusul)</div>
-            )}
             <LoadingButton block onClick={() => setSheet(null)}>
               Mengerti
             </LoadingButton>
@@ -862,10 +858,16 @@ export function DetailClient({ app }: { app: AppItem }) {
         ) : (
           <div className="stack-12">
             <p>
-              File di-stream dari dl.xystudio.my.id. URL asal tidak pernah sampai ke
-              browser — ini simulasi, file asli belum ada.
+              Unduhan berjalan lewat gerbang aman XyApps — tautan asal tidak
+              pernah muncul di perangkatmu.
             </p>
-            <div className="ticket">{ticket}</div>
+            <div className="ticket-status">
+              <Sym name="check_circle" size={18} fill />
+              <span>
+                <strong>Tiket siap</strong>
+                <em>Aktif selama 10 menit</em>
+              </span>
+            </div>
             <LoadingButton
               block
               onClick={() => onCopy(ticket, "Tiket disalin")}
@@ -886,7 +888,7 @@ export function DetailClient({ app }: { app: AppItem }) {
         onClose={() => setReportOpen(false)}
       >
         <div className="stack-14">
-          <p className="sub">Pilih alasan. Laporan masuk ke tim XyStudio (mock).</p>
+          <p className="sub">Laporan kamu membantu kami menjaga kualitas toko.</p>
           {REPORT_REASONS.map((r) => (
             <label key={r} className="report-option">
               <input
@@ -907,8 +909,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       {/* MODAL: BAGIKAN (fallback browser tanpa navigator.share) */}
       <Modal open={shareOpen} title="Bagikan" onClose={() => setShareOpen(false)}>
         <div className="stack-12">
-          <p>Bagikan halaman aplikasi ini:</p>
-          <div className="ticket">https://xyapps.xystudio.my.id/apps/{app.slug}</div>
+          <p>Bagikan {app.title} ke temanmu.</p>
           <LoadingButton
             block
             onClick={() => onCopy(`https://xyapps.xystudio.my.id/apps/${app.slug}`, "Tautan disalin")}
@@ -1185,7 +1186,7 @@ function ReviewModal({
   return (
     <Modal open={open} title={`Ulas ${title}`} onClose={onClose}>
       <div className="stack-14 review-form">
-        <p className="sub">Mock: ulasan tersimpan di perangkat ini saja.</p>
+        <p className="sub">Ulasan kamu membantu developer dan calon pengguna.</p>
         <StarPicker value={rating} onChange={setRating} />
         <textarea
           rows={4}

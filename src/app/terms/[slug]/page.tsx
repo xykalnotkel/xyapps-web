@@ -37,12 +37,11 @@ export default async function TermsPage({
       <p className="kicker">Diterbitkan oleh {app.developer}</p>
       <h1 className="page-title">Ketentuan layanan</h1>
       <p className="sub">
-        Berlaku untuk {app.title} ({app.version}). Mock — template final
-        disahkan setelah legal review.
+        Berlaku untuk {app.title} ({app.version}).
       </p>
       <div className="panel stack-12">
         <p>
-          Installer resmi hanya dibagikan lewat gerbang dl.xystudio.my.id
+          Installer resmi hanya dibagikan lewat gerbang unduh resmi
           dengan tiket bertanda tangan. Dilarang mendistribusikan ulang
           installer dari sumber lain.
         </p>

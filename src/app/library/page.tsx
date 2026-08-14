@@ -49,7 +49,7 @@ export default function LibraryPage() {
       <div>
         <h1 className="page-title">Library</h1>
         <p className="sub">
-          Terpasang dan wishlist di perangkat ini (mock localStorage).
+          Terpasang dan wishlist di perangkat ini.
         </p>
       </div>
 

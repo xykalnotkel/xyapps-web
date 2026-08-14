@@ -57,7 +57,7 @@ export default function AgeRatingPage() {
       <h1 className="page-title">Rating usia</h1>
       <p className="sub">
         Setiap app di XyApps wajib punya rating usia sebelum tayang, mirip
-        sistem IARC. Mock — klasifikasi final menyusul saat ingest hidup.
+        sistem IARC.
       </p>
 
       <div className="stack-10">
@@ -100,8 +100,8 @@ export default function AgeRatingPage() {
       </div>
 
       <p className="meta-line">
-        Dev wajib menyatakan rating dengan jujur. Rating bohong = penahanan
-        rilis (status pending_review), sesuai aturan platform.
+        Rating diisi jujur oleh developer. Rating bohong = rilis ditahan,
+        sesuai aturan platform.
       </p>
     </div>
   );

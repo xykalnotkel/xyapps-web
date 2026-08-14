@@ -46,7 +46,7 @@ export function AppBanner() {
         <span className="app-banner-text">
           <strong>Lanjut ke aplikasi</strong>
           {opened ? (
-            <em>Aplikasi XyApps belum dirilis — mock.</em>
+            <em>Aplikasi XyApps segera hadir.</em>
           ) : (
             <em>Unduh aplikasi XyApps untuk pengalaman penuh.</em>
           )}

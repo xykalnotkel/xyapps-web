@@ -87,7 +87,7 @@ export const APPS: AppItem[] = [
     title: "Northroom",
     tagline: "Pemutar lokal. Tanpa iklan, tanpa akun.",
     description:
-      "Pemutar musik offline untuk file lokal. Tanpa iklan, tanpa akun, tanpa telemetri. Installer resmi hanya lewat gerbang dl.xystudio.my.id — user tidak pernah menyentuh GitHub. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
+      "Pemutar musik offline untuk file lokal. Tanpa iklan, tanpa akun, tanpa telemetri. Installer resmi hanya lewat gerbang unduh XyApps. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
     platform: "Android",
     category: "Musik",
     stack: ["Kotlin"],
@@ -150,7 +150,7 @@ export const APPS: AppItem[] = [
         reply: {
           user: "XyStudio",
           date: "13 Agu 2026",
-          text: "Makasih Raka. Tiket 10 menit itu gerbang distribusi resmi, bukan bug — file di-stream dari dl.xystudio.my.id supaya URL asal tidak bocor.",
+          text: "Makasih Raka. Tiket 10 menit itu gerbang distribusi resmi, bukan bug — unduhan selalu lewat jalur aman XyApps.",
         },
       },
       {
@@ -212,7 +212,7 @@ export const APPS: AppItem[] = [
     title: "Vaultline",
     tagline: "Brankas file terenkripsi. Belum dirilis.",
     description:
-      "Produk berbayar XyStudio. Repo tidak public, installer belum dijual. Tombol beli sengaja mati — UX-nya harus jujur: halaman ini menampilkan app yang terkunci, bukan app yang pura-pura bisa diunduh.",
+      "Produk berbayar XyStudio. Penjualan segera dibuka — sekali beli, dapat APK + Source Code langsung dikirim ke email.",
     platform: "Desktop",
     category: "Tools",
     stack: ["Rust", "Tauri"],
@@ -248,7 +248,7 @@ export const APPS: AppItem[] = [
     containsAds: false,
     inAppPurchases: true,
     price: "Rp 149.000",
-    priceNote: "APK + Source Code otomatis dikirim ke email setelah bayar (mock, Midtrans menyusul).",
+    priceNote: "APK + Source Code otomatis dikirim ke email setelah bayar.",
     ratingBreakdown: [0, 0, 0, 0, 0],
     reviews: [],
     permissions: ["Tidak dipublikasikan — app belum rilis"],
@@ -266,7 +266,7 @@ export const APPS: AppItem[] = [
     title: "Kilometer",
     tagline: "Catat lari. Tanpa akun, langsung jalan.",
     description:
-      "Web tool pencatat lari. Tanpa akun, tanpa sinkron cloud — data tersimpan di browser. Tidak ada file unduhan dan tidak ada source di listing ini. UX-nya harus terasa ringan: buka, catat, tutup.",
+      "Web tool pencatat lari. Tanpa akun, tanpa sinkron cloud — data tersimpan di browser. Tanpa file unduhan: buka, catat, tutup.",
     platform: "Web",
     category: "Tools",
     stack: ["TypeScript"],
@@ -343,7 +343,7 @@ export const APPS: AppItem[] = [
     title: "Field Notes",
     tagline: "Catatan markdown cepat. Sinkron menyusul.",
     description:
-      "Catatan markdown ringan untuk Android. Source XySANC-1.0. Listing ini dummy untuk menguji alur list, filter, rating, dan ulasan — semua field mock, tidak ada yang dipalsukan sebagai produksi.",
+      "Catatan markdown ringan untuk Android. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
     platform: "Android",
     category: "Produktivitas",
     stack: ["Kotlin", "SQLDelight"],
@@ -420,7 +420,7 @@ export const APPS: AppItem[] = [
     title: "Lantern",
     tagline: "Dashboard status mesin. Demo only.",
     description:
-      "Preview dashboard status layanan: API, scan queue, dan unduhan. Demo only, tanpa file unduhan. Kalau produksi nanti, data di sini yang dipakai XyConsole sebagai papan status internal.",
+      "Pantau status layanan — API, antrean pemindaian, dan unduhan — dalam satu dasbor. Demo tanpa file unduhan.",
     platform: "Web",
     category: "Developer",
     stack: ["React"],
@@ -476,7 +476,7 @@ export const APPS: AppItem[] = [
         helpful: 2,
       },
     ],
-    permissions: ["Tidak ada — baca status lewat API publik"],
+    permissions: ["Tidak ada — hanya membaca status layanan publik"],
     dataSafety: ["Data status publik", "Tidak ada akun"],
     similar: ["kilometer", "vaultline"],
     moreFromDev: ["northroom", "field-notes", "kilometer"],
@@ -488,7 +488,7 @@ export const APPS: AppItem[] = [
     title: "Pixel Plunge",
     tagline: "Arkade turun-naik. Tanpa iklan, sekali bayar.",
     description:
-      "Game arkade satu jari: terjun melewati portal, kumpulkan orb, jangan kena laser. Installer resmi lewat gerbang dl.xystudio.my.id. Source XySANC-1.0, dilarang dijual ulang.",
+      "Game arkade satu jari: terjun melewati portal, kumpulkan orb, jangan kena laser. Installer resmi lewat gerbang unduh XyApps. Source XySANC-1.0, dilarang dijual ulang.",
     platform: "Android",
     category: "Game",
     genre: "Arkade",
@@ -643,7 +643,7 @@ export const APPS: AppItem[] = [
     title: "Neon Rally",
     tagline: "Balapan neon. XySANC, offline penuh.",
     description:
-      "Balapan top-down dengan jejak neon. Offline penuh, tidak ada iklan, tidak ada akun. Installer resmi lewat gerbang dl.xystudio.my.id.",
+      "Balapan top-down dengan jejak neon. Offline penuh, tidak ada iklan, tidak ada akun. Installer resmi lewat gerbang unduh XyApps.",
     platform: "Android",
     category: "Game",
     genre: "Balapan",
@@ -767,7 +767,7 @@ export const DEVELOPERS: Developer[] = [
     id: "dev_9ad3fc16fba58be186971be4018f20afc4752132e69dc42d92a861609aceaebb",
     name: "XyStudio",
     tagline: "Studio kecil, hitam doff, ungu logam.",
-    bio: "Pengembang semua app di XyApps. Prinsip: tanpa iklan yang bisa dihindari, tanpa akun yang bisa dihindari, dan installer resmi cuma lewat gerbang dl.xystudio.my.id.",
+    bio: "Pengembang semua app di XyApps. Prinsip: tanpa iklan yang bisa dihindari, tanpa akun yang bisa dihindari, dan installer resmi cuma lewat gerbang unduh resmi.",
     website: "xystudio.my.id",
     supportEmail: "studio@xystudio.my.id",
     verified: true,

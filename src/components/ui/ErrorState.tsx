@@ -65,7 +65,7 @@ export function ErrorState({
           </Link>
         </div>
         <p className="meta-line">
-          Status {code} · XyApps masih mock — laporan error masuk ke tim XyStudio.
+          Kalau masalah ini terus muncul, hubungi studio@xystudio.my.id.
         </p>
       </div>
     </div>

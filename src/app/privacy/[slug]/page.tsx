@@ -37,8 +37,7 @@ export default async function PrivacyPage({
       <p className="kicker">Diterbitkan oleh {app.developer}</p>
       <h1 className="page-title">Kebijakan privasi</h1>
       <p className="sub">
-        Berlaku untuk {app.title} ({app.version}). Mock — template final
-        disahkan setelah legal review.
+        Berlaku untuk {app.title} ({app.version}).
       </p>
       <div className="panel stack-12">
         <div className="safety-list" style={{ borderTop: 0 }}>

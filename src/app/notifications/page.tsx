@@ -19,7 +19,7 @@ const NOTIFS: Notif[] = [
     icon: "download_done",
     tone: "ok",
     title: "Northroom 1.4.2 siap diunduh",
-    text: "Tiket unduh baru dibuat untuk perangkat ini (mock).",
+    text: "Tiket unduh baru dibuat untuk perangkat ini.",
     time: "Baru saja",
   },
   {
@@ -43,7 +43,7 @@ const NOTIFS: Notif[] = [
     icon: "security",
     tone: "ok",
     title: "Ulasan kamu tampil di katalog",
-    text: "Ulasan Northroom kamu sudah dihitung (mock lokal).",
+    text: "Ulasan kamu untuk Northroom sudah tampil di katalog.",
     time: "2 hari lalu",
   },
 ];
@@ -90,7 +90,7 @@ export default function NotificationsPage() {
         ))}
       </div>
       <p className="meta-line">
-        Notifikasi masih mock — nanti dari sistem ingest dan tiket unduh sungguhan.
+        Kamu akan melihat notifikasi unduhan, update, dan keamanan di sini.
       </p>
     </div>
   );

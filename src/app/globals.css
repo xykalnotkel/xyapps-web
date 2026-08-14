@@ -3390,3 +3390,31 @@ button:active {
 }
 
 /* .dev-logo dasar dipertahankan dari versi lama */
+
+/* TIKET STATUS — tampilan ramah, tanpa URL mentah */
+.ticket-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-top-color: var(--hairline-hi);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.ticket-status .msym {
+  color: var(--ok);
+}
+
+.ticket-status strong {
+  display: block;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.ticket-status em {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--mute);
+}

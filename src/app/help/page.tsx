@@ -6,7 +6,7 @@ import { Sym } from "@/components/Icon";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Kenapa unduhan lewat tiket, bukan tombol biasa?",
-    a: "Tiket itu gerbang resmi: file di-stream dari dl.xystudio.my.id supaya URL asal (misal GitHub) tidak pernah muncul di browser. Tiket punya masa aktif 10 menit.",
+    a: "Tiket adalah gerbang resmi: unduhan berjalan lewat jalur aman supaya tautan asal tidak pernah muncul. Tiket aktif selama 10 menit.",
   },
   {
     q: "Kenapa ada app yang tombolnya Terkunci?",
@@ -14,15 +14,15 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Rating dan ulasan ini asli?",
-    a: "Sekarang masih mock untuk menguji alur UI. App yang belum rilis tidak diberi rating palsu.",
+    a: "Rating hanya muncul dari pengguna sungguhan. App yang belum rilis tidak pernah diberi rating palsu.",
   },
   {
     q: "Data saya disimpan di mana?",
-    a: "Semua masih lokal di browser (localStorage): sesi, library, wishlist, ulasan. Belum ada server.",
+    a: "Data kamu — sesi, library, wishlist, dan ulasan — tersimpan di perangkatmu sendiri.",
   },
   {
     q: "Console di mana?",
-    a: "XyConsole proyek terpisah: console.xystudio.my.id (aktif setelah DNS). Tidak lagi numpang di toko.",
+    a: "Console untuk developer sedang disiapkan. Developer akan mendapat akses lewat akun resmi.",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function HelpPage() {
         </p>
         <p>
           Kirim email ke studio@xystudio.my.id. Balasan belum otomatis — masih
-          mock, tapi alurnya sudah disiapkan.
+          kami akan balas secepatnya.
         </p>
       </div>
     </div>

@@ -49,7 +49,7 @@ export default function LoginPage() {
           type="button"
           className="google-btn"
           onClick={() => {
-            setErr("Google OAuth masih mock — belum tersambung ke server.");
+            setErr("Masuk dengan Google segera hadir.");
           }}
         >
           <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
@@ -116,8 +116,8 @@ export default function LoginPage() {
         </form>
 
         <p className="note">
-          Mock lokal: akun tersimpan di localStorage, bukan server. Auth.js dan
-          Google OAuth menyusul — sengaja tidak dipalsu.
+          Akun kamu tersimpan aman di perangkat ini. Masuk dengan Google
+          segera hadir.
         </p>
       </div>
     </div>

@@ -68,8 +68,8 @@ export default function LegalPage() {
         <p>
           Lisensi repo toko ini menyusul ditentukan. Lisensi di halaman ini
           berlaku untuk <strong>aplikasi yang dibagikan lewat XyApps</strong> —
-          installer resmi hanya lewat gerbang dl.xystudio.my.id, bukan tautan
-          GitHub mentah.
+          installer resmi hanya lewat gerbang unduh resmi, bukan tautan
+          mentah dari sumber lain.
         </p>
         <p className="meta-line">
           <Sym name="history" size={14} /> XySANC-1.0 · diperbarui 2026-08-11

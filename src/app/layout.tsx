@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s · XyApps",
   },
   description:
-    "Toko resmi XyStudio. Source gratis boleh dipakai, dilarang dijual. Install lewat gerbang, bukan tautan GitHub mentah.",
+    "Toko aplikasi resmi XyStudio. Unduh dengan aman lewat gerbang resmi, temukan aplikasi dan game pilihan.",
   metadataBase: new URL("https://xyapps.xystudio.my.id"),
 };
 
