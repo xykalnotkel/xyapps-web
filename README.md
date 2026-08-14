@@ -96,6 +96,11 @@ Jangan rewrite semua path ke `index.html`. Itu mematikan App Router.
 
 Auth.js, Postgres, tiket unduh sungguhan, XyScan, Midtrans.
 
+Progres unduh saat ini masih simulasi (interval mock). Kontrak saat backend
+`dl.xyapps.my.id` hidup: persentase wajib dihitung dari byte yang diterima
+dari stream asli (diterima / Content-Length), bukan ditambah-tambah — lihat
+komentar di `src/app/apps/[slug]/DetailClient.tsx` fungsi `startDownload`.
+
 ## Lisensi repo vs lisensi app
 
 Kode toko ini (folder repo) menyusul ditentukan.

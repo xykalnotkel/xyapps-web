@@ -202,6 +202,16 @@ export function DetailClient({ app }: { app: AppItem }) {
     setSheet(null);
     setPhase("downloading");
     setPct(0);
+    /* KONTRAK PROGRES ASLI (belum ada file sungguhan):
+       - Saat backend dl.xyapps.my.id hidup, interval mock di bawah DIGANTI
+         progres sungguhan dari stream:
+           fetch(ticket) -> ReadableStream reader loop, atau XHR
+           onprogress, lalu pct = diterima / Content-Length * 100.
+       - Sumber angka cuma satu: byte yang benar-benar diterima. Jangan
+         pernah menambah pct yang tidak berasal dari transfer asli.
+       - Unduhan gagal di tengah (network drop, 4xx/5xx dari gerbang)
+         wajib balik ke phase idle + toast error, tidak boleh stuck di
+         downloading. Semua pembersihan timer lewat clearTimers(). */
     interval.current = window.setInterval(() => {
       setPct((p) => {
         const next = p + Math.ceil(Math.random() * 5) + 1;
