@@ -4,12 +4,11 @@ import Link from "next/link";
 import { AppRow } from "@/components/AppRow";
 import { CategoryRail } from "@/components/CategoryRail";
 import { FeaturedCard } from "@/components/FeaturedCard";
-import { HeroBanner } from "@/components/HeroBanner";
 import { HomeSkeleton } from "@/components/ui/Skeleton";
 import { APPS } from "@/lib/data";
 import { useMockLoad } from "@/hooks/useMockLoad";
 
-const chips = ["Untukmu", "Android", "Web", "Desktop", "XySANC", "Tools", "Musik"];
+const chips = ["Untukmu", "Android", "Web", "Desktop", "XySANC", "Game", "Musik"];
 
 export default function HomePage() {
   const ready = useMockLoad(640);
@@ -32,7 +31,7 @@ export default function HomePage() {
           {chips.map((c, i) => (
             <Link
               key={c}
-              href={c === "Untukmu" ? "/" : `/apps?f=${encodeURIComponent(c)}`}
+              href={c === "Untukmu" ? "/" : c === "Game" ? "/games" : `/apps?f=${encodeURIComponent(c)}`}
               className={`chip ${i === 0 ? "on" : ""}`}
             >
               {c}
@@ -40,10 +39,6 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-
-      <section className="wrap banner-sec">
-        <HeroBanner />
-      </section>
 
       <section>
         <div className="wrap rail-head">

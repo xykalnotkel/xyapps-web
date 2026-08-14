@@ -3,12 +3,20 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useMounted, useSession } from "@/components/Session";
+import { useTheme, type Theme } from "@/components/Theme";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { Sym } from "@/components/Icon";
 import { readLibrary, readWishlist } from "@/lib/library";
 
+const THEME_OPTIONS: { id: Theme; label: string; icon: "contrast" | "light_mode" | "dark_mode" }[] = [
+  { id: "system", label: "Sistem", icon: "contrast" },
+  { id: "light", label: "Terang", icon: "light_mode" },
+  { id: "dark", label: "Gelap", icon: "dark_mode" },
+];
+
 export default function MePage() {
   const { user, logout } = useSession();
+  const { theme, setTheme } = useTheme();
   const mounted = useMounted();
   const [counts, setCounts] = useState({ installed: 0, wish: 0 });
 
@@ -76,6 +84,29 @@ export default function MePage() {
           <span className="grow">Lisensi XySANC-1.0</span>
           <Sym name="chevron_right" size={17} />
         </Link>
+      </div>
+
+      <div className="panel stack-12">
+        <h3>Preferensi</h3>
+        <p className="sub">Tema</p>
+        <div className="theme-ctrl" role="radiogroup" aria-label="Pilih tema">
+          {THEME_OPTIONS.map((o) => (
+            <button
+              key={o.id}
+              type="button"
+              role="radio"
+              aria-checked={theme === o.id}
+              className={theme === o.id ? "on" : ""}
+              onClick={() => setTheme(o.id)}
+            >
+              <Sym name={o.icon} size={17} />
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <p className="meta-line">
+          Default mengikuti sistem. Pilihan tersimpan di perangkat ini.
+        </p>
       </div>
 
       <p className="meta-line">

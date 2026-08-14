@@ -165,15 +165,20 @@ export function DetailClient({ app }: { app: AppItem }) {
     setPreview((p) => (p === null ? 0 : (p - 1 + shotCount) % shotCount));
   }, [shotCount]);
 
-  // Navigasi keyboard di viewer cuplikan.
+  // Navigasi keyboard + kunci scroll di viewer cuplikan.
   useEffect(() => {
     if (preview === null) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") nextShot();
       if (e.key === "ArrowLeft") prevShot();
+      if (e.key === "Escape") setPreview(null);
     };
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
   }, [preview, nextShot, prevShot]);
 
   // Sinkron state dari localStorage setelah hidrasi, bukan saat render awal.
@@ -364,27 +369,36 @@ export function DetailClient({ app }: { app: AppItem }) {
         <div className="hero-main">
           <h1>{app.title}</h1>
           <p className="dev">{app.developer}</p>
-          <div className="hero-meta">
-            {rated ? (
-              <span className="hero-rating">
-                <Stars value={app.rating} size={13} />
-                <b>{app.rating.toFixed(1)}</b>
-                <span className="sep">·</span>
-                {fmtCount(app.ratingCount)} ulasan
-              </span>
-            ) : (
-              <span className="hero-rating">Belum dinilai</span>
-            )}
-            <span className="sep">·</span>
-            <span>{app.installs}</span>
-            <span className="sep">·</span>
-            <span>{app.size}</span>
-          </div>
+          <p className="updated-line">Diperbarui {app.updated}</p>
           <div className="hero-chips">
-            <span className="age-chip">Rating {app.age}</span>
             <span className={`badge ${badge.tone}`}>{badge.text}</span>
+            <span className={`badge plat`}>{app.platform}</span>
             {app.containsAds && <span className="ad-note">Mengandung iklan</span>}
           </div>
+        </div>
+      </div>
+
+      {/* STAT DENGAN ICON — ala Play Store */}
+      <div className="wrap stats-grid">
+        <div className="stat">
+          <Sym name="star" size={18} fill={rated} className={rated ? "stat-ic on" : "stat-ic"} />
+          <strong>{rated ? app.rating.toFixed(1) : "—"}</strong>
+          <span>{rated ? `${fmtCount(app.ratingCount)} ulasan` : "Belum dinilai"}</span>
+        </div>
+        <div className="stat">
+          <Sym name="download" size={18} className="stat-ic" />
+          <strong>{app.installs}</strong>
+          <span>Unduhan</span>
+        </div>
+        <div className="stat">
+          <span className="age-box">{app.age}</span>
+          <strong>Rating umur</strong>
+          <span>Cocok untuk</span>
+        </div>
+        <div className="stat">
+          <Sym name="storage" size={18} className="stat-ic" />
+          <strong>{app.size}</strong>
+          <span>Ukuran</span>
         </div>
       </div>
 
@@ -445,6 +459,82 @@ export function DetailClient({ app }: { app: AppItem }) {
         ))}
       </div>
 
+      {/* TENTANG */}
+      <section className="wrap detail-sec">
+        <h2>Tentang aplikasi ini</h2>
+        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
+        {app.description.length > 140 && (
+          <button
+            type="button"
+            className="text-btn"
+            onClick={() => setAboutOpen((v) => !v)}
+            aria-expanded={aboutOpen}
+          >
+            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
+            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
+          </button>
+        )}
+        <div className="about-rows">
+          <Row k="Versi" v={app.version} />
+          <Row k="Diperbarui" v={app.updated} />
+          <Row k="Ukuran" v={app.size} />
+          <Row k="Diunduh" v={app.installs} />
+          <Row k="Dirilis" v={app.released} />
+          <Row k="Pengembang" v={app.developer} />
+          <Row k="Platform" v={app.platform} />
+          <a
+            className="about-row about-btn"
+            href={`mailto:${app.supportEmail}`}
+          >
+            <span>Email pengembang</span>
+            <span className="about-val">{app.supportEmail}</span>
+          </a>
+          {app.website && (
+            <a
+              className="about-row about-btn"
+              href={`https://${app.website}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Situs web</span>
+              <span className="about-val">{app.website}</span>
+            </a>
+          )}
+        </div>
+        <button
+          type="button"
+          className="text-btn"
+          onClick={() => setPermsOpen((v) => !v)}
+          aria-expanded={permsOpen}
+        >
+          Izin aplikasi
+          <Sym name={permsOpen ? "expand_less" : "expand_more"} size={16} />
+        </button>
+        {permsOpen && (
+          <ul className="perm-list inline">
+            {app.permissions.map((p) => (
+              <li key={p}>
+                <Sym name="check_circle" size={17} fill />
+                {p}
+              </li>
+            ))}
+          </ul>
+        )}
+        <ul className="feat">
+          {app.features.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          className="report-btn"
+          onClick={() => setReportOpen(true)}
+        >
+          <Sym name="flag" size={15} /> Laporkan aplikasi
+        </button>
+      </section>
+
+      
       {/* YANG BARU */}
       <section className="wrap detail-sec">
         <h2>Yang baru</h2>
@@ -619,132 +709,12 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </section>
 
-      {/* TENTANG */}
-      <section className="wrap detail-sec">
-        <h2>Tentang aplikasi ini</h2>
-        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
-        {app.description.length > 140 && (
-          <button
-            type="button"
-            className="text-btn"
-            onClick={() => setAboutOpen((v) => !v)}
-            aria-expanded={aboutOpen}
-          >
-            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
-            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
-          </button>
-        )}
-        <div className="about-rows">
-          <Row k="Versi" v={app.version} />
-          <Row k="Diperbarui" v={app.updated} />
-          <Row k="Ukuran" v={app.size} />
-          <Row k="Diunduh" v={app.installs} />
-          <Row k="Dirilis" v={app.released} />
-          <Row k="Pengembang" v={app.developer} />
-          <Row k="Platform" v={app.platform} />
-          <a
-            className="about-row about-btn"
-            href={`mailto:${app.supportEmail}`}
-          >
-            <span>Email pengembang</span>
-            <span className="about-val">{app.supportEmail}</span>
-          </a>
-          {app.website && (
-            <a
-              className="about-row about-btn"
-              href={`https://${app.website}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>Situs web</span>
-              <span className="about-val">{app.website}</span>
-            </a>
-          )}
-        </div>
-        <button
-          type="button"
-          className="text-btn"
-          onClick={() => setPermsOpen((v) => !v)}
-          aria-expanded={permsOpen}
-        >
-          Izin aplikasi
-          <Sym name={permsOpen ? "expand_less" : "expand_more"} size={16} />
-        </button>
-        {permsOpen && (
-          <ul className="perm-list inline">
-            {app.permissions.map((p) => (
-              <li key={p}>
-                <Sym name="check_circle" size={17} fill />
-                {p}
-              </li>
-            ))}
-          </ul>
-        )}
-        <ul className="feat">
-          {app.features.map((x) => (
-            <li key={x}>{x}</li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          className="report-btn"
-          onClick={() => setReportOpen(true)}
-        >
-          <Sym name="flag" size={15} /> Laporkan aplikasi
-        </button>
-      </section>
-
       {/* MIRIP / LAINNYA DARI PENGEMBANG */}
       <RailSection
         title="Aplikasi lain oleh pengembang ini"
         slugs={app.moreFromDev}
       />
       <RailSection title="Mirip dengan ini" slugs={app.similar} />
-
-      {/* STICKY CTA */}
-      <div className="sticky-cta">
-        <div className="wrap">
-          <div className="sticky-inner">
-            <div className="sticky-info">
-              {busy ? (
-                <Ring pct={pct} size={40}>
-                  <AppGlyph
-                    initials={app.initials}
-                    accent={app.accent}
-                    src={app.icon}
-                    size={40}
-                  />
-                </Ring>
-              ) : (
-                <AppGlyph
-                  initials={app.initials}
-                  accent={app.accent}
-                  src={app.icon}
-                  size={40}
-                />
-              )}
-              <div className="sticky-text">
-                <strong>{owned ? "Di perangkat ini" : app.title}</strong>
-                <span>
-                  {app.sourceKind === "paid"
-                    ? "Source berbayar · belum dibuka"
-                    : app.sourceKind === "none"
-                      ? "Demo web"
-                      : "XySANC-1.0 · gerbang resmi"}
-                </span>
-              </div>
-            </div>
-            <LoadingButton
-              onClick={startAction}
-              disabled={app.sourceKind === "paid" || busy}
-              loading={busy}
-              className="cta-main"
-            >
-              {ctaContent()}
-            </LoadingButton>
-          </div>
-        </div>
-      </div>
 
       {/* SHEET: GERBANG UNDUH */}
       <BottomSheet
@@ -835,16 +805,26 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </Modal>
 
-      {/* MODAL: PREVIEW CUPLIKAN */}
-      <Modal
-        open={preview !== null}
-        title={preview !== null ? app.screenshots[preview].label : "Cuplikan"}
-        onClose={() => setPreview(null)}
-        wide
-      >
-        {preview !== null && (
+      {/* VIEWER CUPLIKAN — fullscreen polos tanpa card */}
+      {preview !== null && (
+        <div
+          className="viewer-fs"
+          role="dialog"
+          aria-modal="true"
+          aria-label={app.screenshots[preview].label}
+          onClick={() => setPreview(null)}
+        >
+          <button
+            type="button"
+            className="viewer-close"
+            aria-label="Tutup"
+            onClick={() => setPreview(null)}
+          >
+            <Sym name="close" size={22} />
+          </button>
           <div
-            className="viewer"
+            className="viewer-stage"
+            onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => {
               touchX.current = e.touches[0].clientX;
             }}
@@ -865,29 +845,45 @@ export function DetailClient({ app }: { app: AppItem }) {
               accent2={preview % 2 ? app.accent : app.accent2}
               delay={80}
               className={
-                app.screenshots[preview].landscape ? "preview-img land" : "preview-img"
+                app.screenshots[preview].landscape ? "viewer-img land" : "viewer-img"
               }
-              rounded="xl"
+              rounded="md"
               fit="contain"
             />
           </div>
-        )}
-        {preview !== null && shotCount > 1 && (
-          <div className="viewer-bar">
-            <button type="button" className="icon-btn" onClick={prevShot} aria-label="Sebelumnya">
-              <Sym name="chevron_left" size={18} />
-            </button>
-            <span>
-              {preview + 1} / {shotCount}
-            </span>
-            <button type="button" className="icon-btn" onClick={nextShot} aria-label="Berikutnya">
-              <Sym name="chevron_right" size={18} />
-            </button>
-          </div>
-        )}
-      </Modal>
+          {shotCount > 1 && (
+            <>
+              <button
+                type="button"
+                className="viewer-nav left"
+                aria-label="Sebelumnya"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevShot();
+                }}
+              >
+                <Sym name="chevron_left" size={26} />
+              </button>
+              <button
+                type="button"
+                className="viewer-nav right"
+                aria-label="Berikutnya"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextShot();
+                }}
+              >
+                <Sym name="chevron_right" size={26} />
+              </button>
+              <span className="viewer-count">
+                {preview + 1} / {shotCount}
+              </span>
+            </>
+          )}
+        </div>
+      )}
 
-      {/* MODAL: TULIS ULASAN */}
+{/* MODAL: TULIS ULASAN */}
       <ReviewModal
         open={reviewOpen}
         onClose={() => setReviewOpen(false)}

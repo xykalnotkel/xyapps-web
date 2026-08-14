@@ -160,6 +160,12 @@ export const SYM = {
   "speed": "\uE9E4",
   "social_leaderboard": "\uF6A0",
   "all_inclusive": "\uEB3D",
+  "light_mode": "\uE518",
+  "dark_mode": "\uE51C",
+  "contrast": "\uEB37",
+  "videogame_asset": "\uE338",
+  "sports_esports": "\uE6EC",
+  "palette": "\uE3B7",
 } as const;
 
 export type SymName = keyof typeof SYM;

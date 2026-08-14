@@ -9,7 +9,7 @@ import { Sym } from "@/components/Icon";
 import { addRecent, clearRecent, readRecent } from "@/lib/recent";
 import { APPS } from "@/lib/data";
 
-const FILTERS = [
+const APP_FILTERS = [
   "Semua",
   "Android",
   "Web",
@@ -23,11 +23,14 @@ const FILTERS = [
   "Developer",
 ] as const;
 
+const GAME_FILTERS = ["Semua", "Arkade", "Balapan", "Strategi", "Puzzle"] as const;
+
 const POPULAR = ["northroom", "Musik", "Kotlin", "Tools", "Rust", "Tauri"];
 
 type Sort = "pop" | "new";
+type Mode = "apps" | "games";
 
-export function CatalogClient() {
+export function CatalogClient({ mode }: { mode: Mode }) {
   const router = useRouter();
   const params = useSearchParams();
   const preset = params.get("f");
@@ -38,7 +41,7 @@ export function CatalogClient() {
   const [recent, setRecent] = useState<string[]>([]);
   const ready = useMockLoad(520);
 
-  // Kolom cari cuma ada di topbar. Katalog ikut query URL lewat
+  // Kolom cari cuma ada di halaman /search. Katalog ikut query URL lewat
   // pola "adjust state during render" (resmi React untuk derived state).
   const [prevQ, setPrevQ] = useState(presetQ);
   if (prevQ !== presetQ) {
@@ -52,10 +55,17 @@ export function CatalogClient() {
     return () => window.clearTimeout(id);
   }, []);
 
+  const filters = mode === "games" ? GAME_FILTERS : APP_FILTERS;
+
   const list = useMemo(() => {
-    const filtered = APPS.filter((a) => {
-      const text = `${a.title} ${a.tagline} ${a.category} ${a.stack.join(" ")}`.toLowerCase();
+    const base = APPS.filter((a) => (mode === "games" ? a.category === "Game" : a.category !== "Game"));
+    const filtered = base.filter((a) => {
+      const text = `${a.title} ${a.tagline} ${a.category} ${a.genre ?? ""} ${a.stack.join(" ")}`.toLowerCase();
       if (q && !text.includes(q.toLowerCase())) return false;
+      if (mode === "games") {
+        if (f === "Semua") return true;
+        return a.genre === f;
+      }
       if (f === "Android" || f === "Web" || f === "Desktop") return a.platform === f;
       if (f === "XySANC") return a.sourceKind === "xysanc";
       if (f === "Berbayar") return a.sourceKind === "paid";
@@ -69,11 +79,11 @@ export function CatalogClient() {
         ? b.sortDate.localeCompare(a.sortDate)
         : b.ratingCount - a.ratingCount,
     );
-  }, [q, f, sort]);
+  }, [q, f, sort, mode]);
 
   return (
     <>
-      {!q && (
+      {!q && mode === "apps" && (
         <div className="suggest-block">
           <p className="suggest-title">
             <Sym name="trending_up" size={15} /> Populer dicari
@@ -125,7 +135,7 @@ export function CatalogClient() {
         </div>
       )}
       <div className="chip-row">
-        {FILTERS.map((name) => (
+        {filters.map((name) => (
           <button
             key={name}
             className={`chip ${f === name ? "on" : ""}`}
@@ -159,7 +169,7 @@ export function CatalogClient() {
             onClick={() => {
               setQ("");
               setF("Semua");
-              router.replace("/apps");
+              router.replace(mode === "games" ? "/games" : "/apps");
             }}
           >
             Reset pencarian

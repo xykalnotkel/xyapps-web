@@ -18,7 +18,7 @@ export function AppRow({ app }: { app: AppItem }) {
         <span className="app-row-text">
           <strong>{app.title}</strong>
           <em>
-            {app.developer} · {app.category}
+            {app.developer} · {app.genre ?? app.category}
           </em>
           <span className="app-row-meta">
             {rated ? (

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { BottomNav, TopBar } from "@/components/Nav";
 import { SessionProvider } from "@/components/Session";
+import { ThemeProvider } from "@/components/Theme";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -28,12 +29,22 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="id" className={`${outfit.variable} ${geistMono.variable}`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('xyapps.theme')||'system';var d=t==='system'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):t;document.documentElement.setAttribute('data-theme',d);}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();",
+          }}
+        />
+      </head>
       <body>
-        <SessionProvider>
-          <TopBar />
-          <div className="page-pad">{children}</div>
-          <BottomNav />
-        </SessionProvider>
+        <ThemeProvider>
+          <SessionProvider>
+            <TopBar />
+            <div className="page-pad">{children}</div>
+            <BottomNav />
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
