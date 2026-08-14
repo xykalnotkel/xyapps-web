@@ -719,3 +719,96 @@ export function fmtCount(n: number) {
 export function toPublicApp(app: AppItem) {
   return { ...app };
 }
+
+/* ============================================================
+   PROFIL — developer dan user dengan id hash (bukan nama polos)
+   ============================================================ */
+
+export type Developer = {
+  id: string;
+  name: string;
+  tagline: string;
+  bio: string;
+  website?: string;
+  supportEmail: string;
+  verified: boolean;
+  joined: string;
+};
+
+export const DEVELOPERS: Developer[] = [
+  {
+    id: "dev_xystudio_8f3a2c1d9e7b4a6f",
+    name: "XyStudio",
+    tagline: "Studio kecil, hitam doff, ungu logam.",
+    bio: "Pengembang semua app di XyApps. Prinsip: tanpa iklan yang bisa dihindari, tanpa akun yang bisa dihindari, dan installer resmi cuma lewat gerbang dl.xyapps.my.id.",
+    website: "xystudio.my.id",
+    supportEmail: "studio@xystudio.my.id",
+    verified: true,
+    joined: "Jan 2026",
+  },
+];
+
+export function getDeveloper(id: string) {
+  return DEVELOPERS.find((d) => d.id === id);
+}
+
+export function getDeveloperOfApp(_app: AppItem) {
+  void _app;
+  // Semua app saat ini milik XyStudio. Kalau nanti ada developer lain,
+  // pemetaan dipindah ke field devId per app.
+  return DEVELOPERS[0];
+}
+
+export type UserProfile = {
+  id: string;
+  name: string;
+  hue: number;
+  joined: string;
+  reviews: number;
+  helpful: number;
+  apps: { slug: string; rating: number }[];
+};
+
+function hashId(name: string) {
+  let h = 0;
+  for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return "u_" + h.toString(36) + (h % 997).toString(36);
+}
+
+export function userIdFor(name: string) {
+  return hashId(name);
+}
+
+/** Profil user dibangun dari data ulasan: id hash deterministik. */
+export const USERS: UserProfile[] = (() => {
+  const map = new Map<string, UserProfile>();
+  for (const app of APPS) {
+    for (const r of app.reviews) {
+      const key = r.user;
+      const id = hashId(r.user);
+      let u = map.get(key);
+      if (!u) {
+        u = {
+          id,
+          name: r.user,
+          hue: r.hue,
+          joined: "2026",
+          reviews: 0,
+          helpful: 0,
+          apps: [],
+        };
+        map.set(key, u);
+      }
+      u.reviews += 1;
+      u.helpful += r.helpful;
+      if (!u.apps.some((a) => a.slug === app.slug)) {
+        u.apps.push({ slug: app.slug, rating: r.rating });
+      }
+    }
+  }
+  return [...map.values()].sort((a, b) => b.helpful - a.helpful);
+})();
+
+export function getUserProfile(id: string) {
+  return USERS.find((u) => u.id === id);
+}

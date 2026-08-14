@@ -62,6 +62,8 @@ npm run start
 | `/login` | Masuk: branding, tombol Google mock, validasi form bericon, error state |
 | `/me` | Profil lengkap: stats, Pengaturan (toggle notifikasi/update otomatis), Preferensi tema, link trust/legal/bantuan, keluar |
 | `/help` | Bantuan: FAQ bisa dibuka-tutup |
+| `/profile/u/[id]` | Profil user publik dengan id hash (dibangun dari data ulasan) |
+| `/profile/dev/[id]` dan `/profile/dev/u/[id]` | Profil developer: banner, verifikasi, stats, daftar app |
 | `/e/403` `/e/404` `/e/500` `/e/503` | Demo halaman error bericon (asli: `not-found.tsx` untuk 404, `error.tsx` untuk 500, `global-error.tsx` untuk root) |
 | `/console` | Halaman "pindah rumah" — XyConsole proyek terpisah |
 | `/api/apps` | JSON katalog, field publik saja |
@@ -80,6 +82,9 @@ npm run start
 - Tema gelap/terang konsisten, default mengikuti sistem, bisa diatur di Preferensi (Profil). Dipasang sebelum paint, tanpa kilatan
 - Halaman error lengkap dengan icon: 403 akses ditolak, 404 tidak ditemukan, 500 kesalahan server, 503 pemeliharaan — plus error boundary global
 - Lisensi dan Trust ditampilkan sebagai kartu bericon, bukan dinding teks
+- Link penting memakai hash/slug: nama developer di detail app mengarah ke `/profile/dev/[id]`, nama penulis ulasan ke `/profile/u/[id]` — bukan query param
+- Tanpa kotak fokus biru bawaan browser saat diklik; aksesibilitas keyboard tetap lewat `:focus-visible`
+- Switch pengaturan beranimasi (spring) dan bebas efek tekan global
 - Responsive: padding fluid, clamp untuk cuplikan, layout khusus layar kecil (<380px) dan desktop (>860px: nav pill melayang, ulasan 2 kolom)
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat, transisi tekan pada tombol
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang

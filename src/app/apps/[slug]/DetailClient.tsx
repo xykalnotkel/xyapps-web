@@ -20,7 +20,9 @@ import {
   ctaLabel,
   fmtCount,
   getApp,
+  getDeveloperOfApp,
   sourceLabel,
+  userIdFor,
   type AppItem,
   type ReviewItem,
 } from "@/lib/data";
@@ -72,6 +74,7 @@ function loadHelpful(): Set<string> {
 
 export function DetailClient({ app }: { app: AppItem }) {
   const badge = sourceLabel(app.sourceKind);
+  const dev = getDeveloperOfApp(app);
   const { user } = useSession();
   const { msg: toast, show } = useToast();
 
@@ -368,7 +371,12 @@ export function DetailClient({ app }: { app: AppItem }) {
         )}
         <div className="hero-main">
           <h1>{app.title}</h1>
-          <p className="dev">{app.developer}</p>
+          <Link href={`/profile/dev/${dev.id}`} className="dev">
+            {app.developer}
+            {dev.verified && (
+              <Sym name="verified" size={14} fill className="dev-check" />
+            )}
+          </Link>
           <p className="updated-line">Diperbarui {app.updated}</p>
           <div className="hero-chips">
             <span className={`badge ${badge.tone}`}>{badge.text}</span>
@@ -480,7 +488,13 @@ export function DetailClient({ app }: { app: AppItem }) {
           <Row k="Ukuran" v={app.size} />
           <Row k="Diunduh" v={app.installs} />
           <Row k="Dirilis" v={app.released} />
-          <Row k="Pengembang" v={app.developer} />
+          <Link
+            className="about-row about-btn"
+            href={`/profile/dev/${dev.id}`}
+          >
+            <span>Pengembang</span>
+            <span className="about-val">{app.developer}</span>
+          </Link>
           <Row k="Platform" v={app.platform} />
           <a
             className="about-row about-btn"
@@ -956,7 +970,13 @@ function ReviewCard({
           {r.user.slice(0, 1).toUpperCase()}
         </span>
         <div className="grow">
-          <strong>{r.user}</strong>
+          {mine ? (
+            <strong>{r.user}</strong>
+          ) : (
+            <Link className="review-user" href={`/profile/u/${userIdFor(r.user)}`}>
+              {r.user}
+            </Link>
+          )}
           <Stars value={r.rating} size={11} />
         </div>
         <span className="review-date">{r.date}</span>
