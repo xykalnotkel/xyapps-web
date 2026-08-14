@@ -9,6 +9,7 @@ import { AppGlyph, SmartImage } from "@/components/ui/SmartImage";
 import { StarPicker, Stars } from "@/components/ui/Stars";
 import { ToastView, useToast } from "@/components/ui/Toast";
 import { Sym } from "@/components/Icon";
+import { AgeBadge } from "@/components/AgeBadge";
 import type { SymName } from "@/lib/symbols";
 import { useSession } from "@/components/Session";
 import {
@@ -391,6 +392,7 @@ export function DetailClient({ app }: { app: AppItem }) {
           </Link>
           <p className="updated-line">Diperbarui {app.updated}</p>
           <div className="hero-chips">
+            <AgeBadge age={app.age} />
             <span className={`badge ${badge.tone}`}>{badge.text}</span>
             <span className={`badge plat`}>{app.platform}</span>
             {app.containsAds && <span className="ad-note">Mengandung iklan</span>}
@@ -416,7 +418,7 @@ export function DetailClient({ app }: { app: AppItem }) {
           <em>Ukuran</em>
         </div>
         <div className="stat">
-          <span className="age-box">{app.age}</span>
+          <AgeBadge age={app.age} size="lg" />
           <em>Rating umur</em>
         </div>
         <div className="stat">
@@ -425,6 +427,16 @@ export function DetailClient({ app }: { app: AppItem }) {
           <em>Unduhan</em>
         </div>
       </div>
+
+      {app.platform === "Android" && !app.compat.includes("armeabi-v7a") && (
+        <div className="wrap">
+          <p className="compat-warn">
+            <Sym name="warning" size={16} />
+            Perangkat 32-bit tidak didukung — aplikasi ini khusus arsitektur
+            yang tertera di atas.
+          </p>
+        </div>
+      )}
 
       {/* AKSI — satu tombol penuh, heart ada di baris judul, share di nav atas */}
       <div className="wrap action-row">
@@ -499,6 +511,14 @@ export function DetailClient({ app }: { app: AppItem }) {
             <span className="about-val">{app.developer}</span>
           </Link>
           <Row k="Platform" v={app.platform} icon="devices" />
+          <Link className="about-row about-btn" href="/age-rating">
+            <span className="about-k">
+              <Sym name="shield" size={15} />
+              Rating usia
+            </span>
+            <span className="about-val">{app.age} · lihat detail</span>
+          </Link>
+          <Row k="Arsitektur" v={app.compat.join(", ")} icon="memory" />
           <a
             className="about-row about-btn"
             href={`mailto:${app.supportEmail}`}

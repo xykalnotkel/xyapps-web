@@ -45,6 +45,8 @@ export type AppItem = {
   accent: string;
   accent2: string;
   age: string;
+  /** Arsitektur/perangkat yang didukung. Dipakai engine kompatibilitas. */
+  compat: string[];
   updated: string;
   /** ISO untuk pengurutan. */
   sortDate: string;
@@ -85,9 +87,10 @@ export const APPS: AppItem[] = [
     size: "28 MB",
     developer: "XyStudio",
     initials: "N7",
+    compat: ["arm64-v8a", "armeabi-v7a", "x86_64"],
     accent: "#7C3AED",
     accent2: "#1E1B4B",
-    age: "3+",
+    age: "7+",
     updated: "12 Agu 2026",
     sortDate: "2026-08-12",
     released: "2 Mar 2026",
@@ -207,9 +210,10 @@ export const APPS: AppItem[] = [
     size: "14 MB",
     developer: "XyStudio",
     initials: "VL",
+    compat: ["Windows x64", "Linux x64", "macOS ARM64"],
     accent: "#A78BFA",
     accent2: "#2E1065",
-    age: "12+",
+    age: "16+",
     updated: "2 Agu 2026",
     sortDate: "2026-08-02",
     released: "Belum dirilis",
@@ -257,6 +261,7 @@ export const APPS: AppItem[] = [
     size: "Web",
     developer: "XyStudio",
     initials: "KM",
+    compat: ["Browser modern"],
     accent: "#6EE7B7",
     accent2: "#042F2E",
     age: "3+",
@@ -332,6 +337,7 @@ export const APPS: AppItem[] = [
     size: "9 MB",
     developer: "XyStudio",
     initials: "FN",
+    compat: ["arm64-v8a", "armeabi-v7a"],
     accent: "#818CF8",
     accent2: "#1E1B4B",
     age: "3+",
@@ -408,6 +414,7 @@ export const APPS: AppItem[] = [
     size: "Web",
     developer: "XyStudio",
     initials: "LN",
+    compat: ["Browser modern"],
     accent: "#C084FC",
     accent2: "#3B0764",
     age: "12+",
@@ -476,6 +483,7 @@ export const APPS: AppItem[] = [
     size: "31 MB",
     developer: "XyStudio",
     initials: "PP",
+    compat: ["arm64-v8a", "armeabi-v7a"],
     accent: "#C084FC",
     accent2: "#3B0764",
     age: "3+",
@@ -560,6 +568,7 @@ export const APPS: AppItem[] = [
     size: "Web",
     developer: "XyStudio",
     initials: "OD",
+    compat: ["Browser modern"],
     accent: "#6EE7B7",
     accent2: "#042F2E",
     age: "3+",
@@ -628,6 +637,7 @@ export const APPS: AppItem[] = [
     size: "26 MB",
     developer: "XyStudio",
     initials: "NR",
+    compat: ["arm64-v8a"],
     accent: "#818CF8",
     accent2: "#1E1B4B",
     age: "3+",

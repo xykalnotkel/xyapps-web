@@ -83,6 +83,7 @@ npm run start
 | `/login` | Masuk: branding, tombol Google mock, validasi form bericon, error state |
 | `/me` | Profil lengkap: stats, Pengaturan (toggle notifikasi/update otomatis), Preferensi tema, link trust/legal/bantuan, keluar |
 | `/help` | Bantuan: FAQ bisa dibuka-tutup |
+| `/age-rating` | Papan rating usia (3+, 7+, 12+, 16+, 18+) + deskriptor konten |
 | `/profile/u/[id]` | Profil user publik dengan id hash (dibangun dari data ulasan) |
 | `/profile/dev/[id]` dan `/profile/dev/u/[id]` | Profil developer: banner, verifikasi, stats, daftar app |
 | `/e/403` `/e/404` `/e/500` `/e/503` | Demo halaman error bericon (asli: `not-found.tsx` untuk 404, `error.tsx` untuk 500, `global-error.tsx` untuk root) |
@@ -111,6 +112,11 @@ npm run start
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat, transisi tekan pada tombol
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
+
+## Arsitektur platform
+
+Jawaban untuk format AAB, engine XyScan, deteksi arsitektur perangkat,
+penyimpanan file, dan sistem rating usia ada di [docs/PLATFORM.md](./docs/PLATFORM.md).
 
 ## Console terpisah
 
