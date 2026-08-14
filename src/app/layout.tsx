@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { BottomNav, TopBar } from "@/components/Nav";
+import { AppBanner } from "@/components/AppBanner";
 import { SessionProvider } from "@/components/Session";
 import { ThemeProvider } from "@/components/Theme";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           <SessionProvider>
             <TopBar />
+            <AppBanner />
             <div className="page-pad">{children}</div>
             <BottomNav />
           </SessionProvider>

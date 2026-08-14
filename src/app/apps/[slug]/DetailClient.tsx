@@ -392,10 +392,12 @@ export function DetailClient({ app }: { app: AppItem }) {
           </Link>
           <p className="updated-line">Diperbarui {app.updated}</p>
           <div className="hero-chips">
-            <AgeBadge age={app.age} />
             <span className={`badge ${badge.tone}`}>{badge.text}</span>
             <span className={`badge plat`}>{app.platform}</span>
             {app.containsAds && <span className="ad-note">Mengandung iklan</span>}
+            {app.inAppPurchases && (
+              <span className="ad-note">Pembelian dalam app</span>
+            )}
           </div>
         </div>
       </div>
@@ -572,48 +574,6 @@ export function DetailClient({ app }: { app: AppItem }) {
       </section>
 
       
-      {/* YANG BARU */}
-      <section className="wrap detail-sec">
-        <h2>Yang baru</h2>
-        <div className="panel">
-          <p className="chg-head">
-            <strong>{latest.version}</strong>
-            <span>{latest.date}</span>
-          </p>
-          <ul className="chg-list">
-            {latest.notes.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
-          {older.length > 0 && (
-            <>
-              <button
-                type="button"
-                className="text-btn"
-                onClick={() => setShowOldChangelog((v) => !v)}
-              >
-                {showOldChangelog ? "Sembunyikan" : "Versi sebelumnya"}
-                <Sym name={showOldChangelog ? "expand_less" : "expand_more"} size={16} />
-              </button>
-              {showOldChangelog &&
-                older.map((c) => (
-                  <div key={c.version} className="chg-old">
-                    <p className="chg-head">
-                      <strong>{c.version}</strong>
-                      <span>{c.date}</span>
-                    </p>
-                    <ul className="chg-list">
-                      {c.notes.map((n) => (
-                        <li key={n}>{n}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-            </>
-          )}
-        </div>
-      </section>
-
       {/* RATING */}
       <section className="wrap detail-sec">
         <h2>Rating dan ulasan</h2>
@@ -718,7 +678,7 @@ export function DetailClient({ app }: { app: AppItem }) {
                 </p>
               </div>
             ) : (
-              <div className="stack-12">
+              <div className="stack-12 review-list">
                 {visibleReviews.map((r) => (
                   <ReviewCard
                     key={r.id}
@@ -734,10 +694,52 @@ export function DetailClient({ app }: { app: AppItem }) {
         )}
       </section>
 
+      {/* YANG BARU */}
+      <section className="wrap detail-sec">
+        <h2>Yang baru</h2>
+        <div className="panel">
+          <p className="chg-head">
+            <strong>{latest.version}</strong>
+            <span>{latest.date}</span>
+          </p>
+          <ul className="chg-list">
+            {latest.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+          {older.length > 0 && (
+            <>
+              <button
+                type="button"
+                className="text-btn"
+                onClick={() => setShowOldChangelog((v) => !v)}
+              >
+                {showOldChangelog ? "Sembunyikan" : "Versi sebelumnya"}
+                <Sym name={showOldChangelog ? "expand_less" : "expand_more"} size={16} />
+              </button>
+              {showOldChangelog &&
+                older.map((c) => (
+                  <div key={c.version} className="chg-old">
+                    <p className="chg-head">
+                      <strong>{c.version}</strong>
+                      <span>{c.date}</span>
+                    </p>
+                    <ul className="chg-list">
+                      {c.notes.map((n) => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+            </>
+          )}
+        </div>
+      </section>
+
       {/* KEAMANAN DATA */}
       <section className="wrap detail-sec">
         <h2>Keamanan data</h2>
-        <div className="panel safety-list">
+        <div className="safety-list">
           {app.dataSafety.map((s) => (
             <p key={s}>
               <Sym name="shield" size={17} fill /> {s}
@@ -1009,7 +1011,7 @@ function ReviewCard({
   onHelpful: () => void;
 }) {
   return (
-    <article className="panel review">
+    <article className="review">
       <div className="review-head">
         <span
           className="review-ava"

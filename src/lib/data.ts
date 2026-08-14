@@ -60,6 +60,8 @@ export type AppItem = {
   ratingCount: number;
   installs: string;
   containsAds: boolean;
+  /** Ada pembelian dalam app (IAP). Ditampilkan sebagai catatan di detail. */
+  inAppPurchases?: boolean;
   /** Jumlah ulasan per bintang, indeks 0 = bintang 5. */
   ratingBreakdown: [number, number, number, number, number];
   reviews: ReviewItem[];
@@ -235,6 +237,7 @@ export const APPS: AppItem[] = [
     ratingCount: 0,
     installs: "Belum dirilis",
     containsAds: false,
+    inAppPurchases: true,
     ratingBreakdown: [0, 0, 0, 0, 0],
     reviews: [],
     permissions: ["Tidak dipublikasikan — app belum rilis"],

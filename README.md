@@ -96,7 +96,7 @@ npm run start
 
 - Bottom nav 4 tab: Beranda, Aplikasi, Game, Library. Icon dua versi per tab (fill saat aktif, outline saat tidak). Label tab tersembunyi, muncul di bawah icon saat aktif dengan animasi
 - Pencarian cuma satu pintu: pill di topbar membuka halaman `/search` penuh dengan autofocus, kata kunci sedang dicari, dan riwayat
-- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur 3+, unduhan) tepat di atas tombol Install, "Tentang aplikasi ini" di bawah cuplikan, baris info bericon
+- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur monokrom, unduhan) di atas tombol Install, "Tentang aplikasi ini" di bawah cuplikan, ulasan tepat setelah rating (bukan di bawah), baris info bericon, catatan "Mengandung iklan" dan "Pembelian dalam app"
 - Viewer cuplikan fullscreen polos tanpa card: panah, swipe sentuh, keyboard, counter
 - Rating bintang + distribusi per bintang + ulasan (sort relevan/terbaru/membantu, filter per bintang) + balasan developer
 - Progres unduh melingkar di icon app dengan gaya ular: busur gradien ungu + ekor terang yang berputar + persen di tengah, tombol menampilkan status "Mengunduh… %"
@@ -112,6 +112,13 @@ npm run start
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat, transisi tekan pada tombol
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
+- Banner "Lanjut ke aplikasi" muncul sekali per perangkat (dismiss tersimpan) — disiapkan untuk versi aplikasi native XyApps
+- Security headers dipasang (CSP, anti-clickjacking, nosniff, referrer-policy) — lihat docs/SECURITY.md
+
+## Keamanan web
+
+Asesmen jujur + roadmap ada di [docs/SECURITY.md](./docs/SECURITY.md).
+Header keamanan sudah aktif di `next.config.ts`.
 
 ## Arsitektur platform
 
