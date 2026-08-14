@@ -813,28 +813,6 @@ button {
 }
 
 /* FORMS / MISC */
-.form {
-  max-width: 400px;
-  margin: 24px auto;
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 12px 0;
-  font-size: 13px;
-  color: var(--mute);
-}
-
-.field input {
-  background: var(--metal);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 11px 12px;
-  outline: none;
-}
-
 .note {
   font-size: 12px;
   color: var(--mute);
@@ -2296,4 +2274,396 @@ button:active {
   .stat {
     padding: 13px 6px 11px;
   }
+}
+
+/* ============================================================
+   XYAPPS v6 — login, profil lengkap, halaman error, legal+icon
+   ============================================================ */
+
+/* LOGIN */
+.login-wrap {
+  max-width: 420px;
+  margin: 28px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.login-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #7c3aed, #1e1b4b);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.login-mark b {
+  color: #ddd6fe;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 46px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--bg-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--mute);
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--mute);
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.field-input input {
+  width: 100%;
+  background: var(--metal);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  outline: none;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.field-input input:focus {
+  border-color: var(--violet-2);
+}
+
+.field-input.bad input {
+  border-color: var(--danger);
+}
+
+.form-err {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* PROFIL — pengaturan */
+.me-ic {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.me-ic.ok {
+  background: var(--notif-ok-bg);
+  color: var(--ok);
+}
+
+.me-ic.lilac {
+  background: var(--notif-lilac-bg);
+  color: var(--lilac);
+}
+
+.me-ic.indigo {
+  background: var(--notif-indigo-bg);
+  color: #a5b4fc;
+}
+
+.panel h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin: 0;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.set-row strong {
+  display: block;
+  font-size: 14px;
+}
+
+.set-row em {
+  display: block;
+  font-style: normal;
+  color: var(--mute);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* TOGGLE */
+.toggle {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--track);
+  position: relative;
+  flex: 0 0 auto;
+  transition: background 0.2s ease;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--mute);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.toggle.on {
+  background: var(--chip-on);
+  border-color: var(--violet-strong);
+}
+
+.toggle.on .toggle-knob {
+  transform: translateX(20px);
+  background: var(--lilac);
+}
+
+/* TAMU (belum login) */
+.me-guest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  padding-top: 24px;
+}
+
+/* HALAMAN ERROR */
+.err-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 40px 0 20px;
+}
+
+.err-ic {
+  width: 84px;
+  height: 84px;
+  border-radius: 26px;
+  display: grid;
+  place-items: center;
+}
+
+.err-ic.danger {
+  background: #2a1220;
+  color: var(--danger);
+}
+
+.err-ic.warn {
+  background: #2a2212;
+  color: #fbbf24;
+}
+
+.err-ic.mute {
+  background: var(--metal);
+  color: var(--mute);
+}
+
+[data-theme="light"] .err-ic.danger {
+  background: #fde8ec;
+}
+
+[data-theme="light"] .err-ic.warn {
+  background: #fdf3d8;
+}
+
+.err-code {
+  font-family: var(--font-geist-mono), ui-monospace, Menlo, Consolas, monospace;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--lilac);
+}
+
+.err-desc {
+  max-width: 380px;
+}
+
+.err-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+.err-actions .lbtn {
+  text-decoration: none;
+}
+
+/* LEGAL — kartu bericon */
+.legal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 560px) {
+  .legal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.legal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legal-ic {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+}
+
+.legal-card.ok .legal-ic {
+  background: var(--notif-ok-bg);
+  color: var(--ok);
+}
+
+.legal-card.danger .legal-ic {
+  background: #2a1220;
+  color: var(--danger);
+}
+
+.legal-card.warn .legal-ic {
+  background: #2a2212;
+  color: #fbbf24;
+}
+
+.legal-card.mute .legal-ic {
+  background: var(--metal);
+  color: var(--mute);
+}
+
+[data-theme="light"] .legal-card.danger .legal-ic {
+  background: #fde8ec;
+}
+
+[data-theme="light"] .legal-card.warn .legal-ic {
+  background: #fdf3d8;
+}
+
+.legal-card h3 {
+  font-size: 15px;
+}
+
+.legal-card ul {
+  margin-left: 18px;
+  color: var(--text-soft);
+  font-size: 13.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* TRUST — baris bericon */
+.trust-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.trust-row strong {
+  font-size: 14px;
+  display: block;
+}
+
+.trust-row p {
+  color: var(--text-soft);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* FAQ */
+.faq-q {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+  text-align: left;
+  padding: 2px 0;
+}
+
+.faq-ic {
+  color: var(--lilac);
+  flex: 0 0 auto;
+}
+
+.faq-a {
+  color: var(--text-soft);
+  font-size: 13.5px;
+  margin: 10px 0 2px 27px;
+  line-height: 1.6;
 }

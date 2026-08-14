@@ -59,7 +59,10 @@ npm run start
 | `/notifications` | Notifikasi mock + tandai semua dibaca |
 | `/legal` | XySANC-1.0 |
 | `/trust` | Kebijakan data |
-| `/login` `/me` | Session mock + Preferensi tema (Sistem/Gelap/Terang) |
+| `/login` | Masuk: branding, tombol Google mock, validasi form bericon, error state |
+| `/me` | Profil lengkap: stats, Pengaturan (toggle notifikasi/update otomatis), Preferensi tema, link trust/legal/bantuan, keluar |
+| `/help` | Bantuan: FAQ bisa dibuka-tutup |
+| `/e/403` `/e/404` `/e/500` `/e/503` | Demo halaman error bericon (asli: `not-found.tsx` untuk 404, `error.tsx` untuk 500, `global-error.tsx` untuk root) |
 | `/console` | Halaman "pindah rumah" — XyConsole proyek terpisah |
 | `/api/apps` | JSON katalog, field publik saja |
 | `/api/apps/[slug]` | JSON detail per app |
@@ -75,6 +78,8 @@ npm run start
 - Progres unduh di icon app (lingkar persen), bukan bar — sama seperti Play Store
 - Bottom sheet hanya untuk gerbang unduh. Share lewat navigator.share (fallback modal), izin inline, laporan modal
 - Tema gelap/terang konsisten, default mengikuti sistem, bisa diatur di Preferensi (Profil). Dipasang sebelum paint, tanpa kilatan
+- Halaman error lengkap dengan icon: 403 akses ditolak, 404 tidak ditemukan, 500 kesalahan server, 503 pemeliharaan — plus error boundary global
+- Lisensi dan Trust ditampilkan sebagai kartu bericon, bukan dinding teks
 - Responsive: padding fluid, clamp untuk cuplikan, layout khusus layar kecil (<380px) dan desktop (>860px: nav pill melayang, ulasan 2 kolom)
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat, transisi tekan pada tombol
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang

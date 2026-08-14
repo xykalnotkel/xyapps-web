@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { useMounted, useSession } from "@/components/Session";
 import { useTheme, type Theme } from "@/components/Theme";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { Toggle } from "@/components/ui/Toggle";
 import { Sym } from "@/components/Icon";
 import { readLibrary, readWishlist } from "@/lib/library";
+import { readSettings, writeSettings, type Settings } from "@/lib/settings";
 
 const THEME_OPTIONS: { id: Theme; label: string; icon: "contrast" | "light_mode" | "dark_mode" }[] = [
   { id: "system", label: "Sistem", icon: "contrast" },
@@ -19,6 +21,7 @@ export default function MePage() {
   const { theme, setTheme } = useTheme();
   const mounted = useMounted();
   const [counts, setCounts] = useState({ installed: 0, wish: 0 });
+  const [settings, setSettings] = useState<Settings>(() => readSettings());
 
   // Muat setelah hidrasi supaya markup server dan klien identik.
   useEffect(() => {
@@ -27,6 +30,14 @@ export default function MePage() {
     }, 0);
     return () => window.clearTimeout(id);
   }, []);
+
+  function patch(p: Partial<Settings>) {
+    setSettings((s) => {
+      const next = { ...s, ...p };
+      writeSettings(next);
+      return next;
+    });
+  }
 
   if (!mounted) {
     return (
@@ -39,10 +50,15 @@ export default function MePage() {
   if (!user) {
     return (
       <div className="wrap page-inner stack-16">
-        <h1 className="page-title">Akun</h1>
-        <p className="sub">Belum masuk. Browsing katalog tidak wajib login.</p>
-        <div className="panel stack-12">
-          <p>Login masih mock: tersimpan di localStorage, bukan server.</p>
+        <div className="me-guest">
+          <span className="err-ic mute">
+            <Sym name="account_circle" size={44} />
+          </span>
+          <h1 className="page-title">Akun</h1>
+          <p className="sub">
+            Belum masuk. Browsing katalog tidak wajib login — login cuma untuk
+            library, wishlist, dan ulasan di perangkat ini.
+          </p>
           <Link className="lbtn solid" href="/login">
             <Sym name="key" size={16} /> Masuk
           </Link>
@@ -59,35 +75,85 @@ export default function MePage() {
           <h1 className="page-title">{user.name}</h1>
           <p className="sub">{user.email} · tidak ditampilkan ke orang lain</p>
         </div>
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Ubah profil"
+          title="Ubah profil masih mock"
+        >
+          <Sym name="edit" size={17} />
+        </button>
       </div>
 
       <div className="panel stack-10">
         <Link className="me-link" href="/library">
-          <Sym name="download_done" size={18} />
+          <span className="me-ic ok">
+            <Sym name="download_done" size={18} />
+          </span>
           <span className="grow">Terpasang</span>
           <span className="me-count">{counts.installed}</span>
           <Sym name="chevron_right" size={17} />
         </Link>
         <Link className="me-link" href="/library">
-          <Sym name="favorite" size={18} />
+          <span className="me-ic lilac">
+            <Sym name="favorite" size={18} />
+          </span>
           <span className="grow">Wishlist</span>
           <span className="me-count">{counts.wish}</span>
           <Sym name="chevron_right" size={17} />
         </Link>
-        <Link className="me-link" href="/trust">
-          <Sym name="verified_user" size={18} />
-          <span className="grow">Trust &amp; privasi</span>
-          <Sym name="chevron_right" size={17} />
-        </Link>
-        <Link className="me-link" href="/legal">
-          <Sym name="gavel" size={18} />
-          <span className="grow">Lisensi XySANC-1.0</span>
+        <Link className="me-link" href="/notifications">
+          <span className="me-ic indigo">
+            <Sym name="notifications" size={18} />
+          </span>
+          <span className="grow">Notifikasi</span>
           <Sym name="chevron_right" size={17} />
         </Link>
       </div>
 
+      <div className="panel stack-14">
+        <h3>
+          <Sym name="settings" size={17} /> Pengaturan
+        </h3>
+        <div className="set-row">
+          <span className="grow">
+            <strong>Notifikasi unduhan</strong>
+            <em>Beri tahu saat unduhan selesai</em>
+          </span>
+          <Toggle
+            on={settings.notifDownload}
+            onChange={(v) => patch({ notifDownload: v })}
+            label="Notifikasi unduhan"
+          />
+        </div>
+        <div className="set-row">
+          <span className="grow">
+            <strong>Notifikasi update</strong>
+            <em>Beri tahu saat versi baru rilis</em>
+          </span>
+          <Toggle
+            on={settings.notifUpdate}
+            onChange={(v) => patch({ notifUpdate: v })}
+            label="Notifikasi update"
+          />
+        </div>
+        <div className="set-row">
+          <span className="grow">
+            <strong>Perbarui otomatis</strong>
+            <em>Pasang update tanpa konfirmasi (mock)</em>
+          </span>
+          <Toggle
+            on={settings.autoUpdate}
+            onChange={(v) => patch({ autoUpdate: v })}
+            label="Perbarui otomatis"
+          />
+        </div>
+      </div>
+
       <div className="panel stack-12">
-        <h3>Preferensi</h3>
+        <h3>
+          <Sym name="palette" size={17} /> Preferensi
+        </h3>
         <p className="sub">Tema</p>
         <div className="theme-ctrl" role="radiogroup" aria-label="Pilih tema">
           {THEME_OPTIONS.map((o) => (
@@ -109,8 +175,33 @@ export default function MePage() {
         </p>
       </div>
 
+      <div className="panel stack-10">
+        <Link className="me-link" href="/trust">
+          <span className="me-ic ok">
+            <Sym name="verified_user" size={18} />
+          </span>
+          <span className="grow">Trust &amp; privasi</span>
+          <Sym name="chevron_right" size={17} />
+        </Link>
+        <Link className="me-link" href="/legal">
+          <span className="me-ic lilac">
+            <Sym name="gavel" size={18} />
+          </span>
+          <span className="grow">Lisensi XySANC-1.0</span>
+          <Sym name="chevron_right" size={17} />
+        </Link>
+        <Link className="me-link" href="/help" >
+          <span className="me-ic indigo">
+            <Sym name="support_agent" size={18} />
+          </span>
+          <span className="grow">Bantuan</span>
+          <Sym name="chevron_right" size={17} />
+        </Link>
+      </div>
+
       <p className="meta-line">
-        Console dipisah dari toko — buka console.xyapps.my.id setelah DNS aktif.
+        XyApps v0.1.0 · mock. Console dipisah — console.xyapps.my.id setelah DNS
+        aktif.
       </p>
 
       <LoadingButton variant="ghost" onClick={logout}>
