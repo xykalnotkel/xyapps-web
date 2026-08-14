@@ -4,12 +4,15 @@ export type Settings = {
   notifDownload: boolean;
   notifUpdate: boolean;
   autoUpdate: boolean;
+  /** Dev: simulasi perangkat 32-bit untuk uji alur inkompatibel. */
+  sim32: boolean;
 };
 
 const DEFAULTS: Settings = {
   notifDownload: true,
   notifUpdate: true,
   autoUpdate: false,
+  sim32: false,
 };
 
 export function readSettings(): Settings {

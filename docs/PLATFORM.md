@@ -132,6 +132,18 @@ terikat limit GitHub dan mesti pindah nanti.
 Yang tidak pernah boleh: file di Vercel (limit body ~4.5 MB, APK 25-80 MB
 pasti putus) dan redirect langsung ke GitHub.
 
+## 6. Yang diatur developer lewat Console (nanti)
+
+Console developer (`console.xystudio.my.id`, repo terpisah) mengatur per app:
+
+- Harga + catatan pembayaran (contoh: "APK + Source Code dikirim ke email setelah bayar")
+- Ketentuan layanan & kebijakan privasi — baris ini hanya muncul di toko kalau dev menerbitkannya
+- Rating usia, deskriptor konten, arsitektur yang didukung
+- Changelog, screenshot, metadata katalog
+- Status rilis: draft -> pending_scan -> published / needs_review / rejected
+
+Semua perubahan lewat API ingest (token per developer), bukan langsung ke database.
+
 ## 5. Rating usia
 
 **Sistem 5 level ala IARC/Play Store:** `3+`, `7+`, `12+`, `16+`, `18+`.

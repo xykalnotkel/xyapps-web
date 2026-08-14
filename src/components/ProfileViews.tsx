@@ -113,59 +113,91 @@ export function DeveloperProfileView({ id }: { id: string }) {
         <p className="profile-path">Profil developer</p>
       </div>
 
-      <div className="dev-banner">
-        <span className="dev-logo">{dev.name.slice(0, 2).toUpperCase()}</span>
-        <div className="grow">
-          <h1 className="dev-name">
-            {dev.name}
-            {dev.verified && (
-              <span className="dev-verify" title="Terverifikasi">
-                <Sym name="verified" size={17} fill />
-              </span>
-            )}
-          </h1>
-          <p className="dev-tagline">{dev.tagline}</p>
+      {/* KOVER */}
+      <div className="dev-cover">
+        <span className="dev-cover-pattern" aria-hidden />
+        <div className="dev-cover-inner">
+          <span className="dev-logo lg">{dev.name.slice(0, 2).toUpperCase()}</span>
+          <div className="grow">
+            <h1 className="dev-name lg">
+              {dev.name}
+              {dev.verified && (
+                <span className="dev-verify" title="Terverifikasi">
+                  <Sym name="verified" size={19} fill />
+                </span>
+              )}
+            </h1>
+            <p className="dev-tagline">{dev.tagline}</p>
+          </div>
         </div>
-      </div>
-
-      <div className="stats-grid profile-stats">
-        <div className="stat">
-          <Sym name="apps" size={18} className="stat-ic" />
-          <strong>{devApps.length}</strong>
-          <span>Aplikasi</span>
-        </div>
-        <div className="stat">
-          <Sym name="star_rate" size={18} className="stat-ic" />
-          <strong>{avg.toFixed(1)}</strong>
-          <span>Rating rata-rata</span>
-        </div>
-        <div className="stat">
-          <Sym name="reviews" size={18} className="stat-ic" />
-          <strong>{totalReviews}</strong>
-          <span>Total ulasan</span>
-        </div>
-      </div>
-
-      <div className="panel stack-10">
-        <h2 className="profile-sec">Tentang developer</h2>
-        <p>{dev.bio}</p>
-        <div className="dev-info">
-          <span>
-            <Sym name="schedule" size={15} /> Bergabung {dev.joined}
-          </span>
-          {dev.website && (
-            <a href={`https://${dev.website}`} target="_blank" rel="noreferrer">
-              <Sym name="link" size={15} /> {dev.website}
-            </a>
+        <div className="dev-meta">
+          {dev.location && (
+            <span className="dev-meta-chip">
+              <Sym name="map" size={14} /> {dev.location}
+            </span>
           )}
-          <a href={`mailto:${dev.supportEmail}`}>
-            <Sym name="mail" size={15} /> {dev.supportEmail}
-          </a>
+          <span className="dev-meta-chip">
+            <Sym name="schedule" size={14} /> Bergabung {dev.joined}
+          </span>
+          <span className="dev-meta-chip">
+            <Sym name="apps" size={14} /> {devApps.length} aplikasi
+          </span>
         </div>
       </div>
 
+      {/* AKSI KONTAK */}
+      <div className="dev-actions">
+        {dev.website && (
+          <a
+            className="lbtn soft"
+            href={`https://${dev.website}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Sym name="link" size={16} /> Situs web
+          </a>
+        )}
+        <a className="lbtn ghost" href={`mailto:${dev.supportEmail}`}>
+          <Sym name="mail" size={16} /> Email
+        </a>
+      </div>
+
+      {/* STATS */}
+      <div className="stats-grid dev-stats">
+        <div className="stat">
+          <Sym name="apps" size={20} className="stat-ic" />
+          <strong>{devApps.length}</strong>
+          <em>Aplikasi</em>
+        </div>
+        <div className="stat">
+          <Sym name="star" size={20} fill={avg > 0} className={avg > 0 ? "stat-ic amber" : "stat-ic"} />
+          <strong>{avg > 0 ? avg.toFixed(1) : "—"}</strong>
+          <em>Rating rata-rata</em>
+        </div>
+        <div className="stat">
+          <Sym name="reviews" size={20} className="stat-ic" />
+          <strong>{totalReviews}</strong>
+          <em>Total ulasan</em>
+        </div>
+      </div>
+
+      {/* TENTANG */}
+      <div className="panel stack-10">
+        <h3>
+          <Sym name="info" size={17} /> Tentang developer
+        </h3>
+        <p>{dev.bio}</p>
+        <p className="dev-trust">
+          <Sym name="shield" size={16} fill />
+          Semua rilis melewati XyScan dan verifikasi signature sebelum tayang.
+        </p>
+      </div>
+
+      {/* APLIKASI */}
       <section>
-        <h2 className="profile-sec">Aplikasi oleh developer ini</h2>
+        <div className="rail-head">
+          <h2>Aplikasi oleh developer ini</h2>
+        </div>
         <div className="stack-8">
           {devApps.map((app) => (
             <AppRow key={app.slug} app={app} />

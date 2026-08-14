@@ -10,6 +10,8 @@ import { StarPicker, Stars } from "@/components/ui/Stars";
 import { ToastView, useToast } from "@/components/ui/Toast";
 import { Sym } from "@/components/Icon";
 import { AgeBadge } from "@/components/AgeBadge";
+import { useDeviceIs32 } from "@/hooks/useDevice";
+import { readSettings } from "@/lib/settings";
 import type { SymName } from "@/lib/symbols";
 import { useSession } from "@/components/Session";
 import {
@@ -39,7 +41,7 @@ type InstallPhase =
 
 /* Satu-satunya bottom sheet: gerbang unduh. Share pakai navigator.share
    (fallback modal), izin inline, laporan modal. */
-type SheetKind = "install" | null;
+type SheetKind = "install" | "pay" | null;
 
 type ReviewSort = "rel" | "new" | "help";
 
@@ -88,6 +90,8 @@ export function DetailClient({ app }: { app: AppItem }) {
   const [preview, setPreview] = useState<number | null>(null);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [showOldChangelog, setShowOldChangelog] = useState(false);
+  const device32 = useDeviceIs32();
+  const [sim32, setSim32] = useState(false);
   const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
   const [helpful, setHelpful] = useState<Set<string>>(new Set());
   const [shotIdx, setShotIdx] = useState(0);
@@ -193,6 +197,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       setWished(inWishlist(app.slug));
       setMyReviews(loadMyReviews(app.slug));
       setHelpful(loadHelpful());
+      setSim32(readSettings().sim32);
     }, 0);
     return () => {
       window.clearTimeout(id);
@@ -243,7 +248,10 @@ export function DetailClient({ app }: { app: AppItem }) {
   }
 
   function startAction() {
-    if (app.sourceKind === "paid") return;
+    if (app.sourceKind === "paid") {
+      setSheet("pay");
+      return;
+    }
     if (owned && app.sourceKind === "xysanc") {
       show(`Mock: membuka ${app.title}…`);
       return;
@@ -324,7 +332,7 @@ export function DetailClient({ app }: { app: AppItem }) {
     if (app.sourceKind === "paid")
       return (
         <>
-          <Sym name="lock" size={15} /> Terkunci
+          <Sym name="lock" size={15} /> {app.price ?? "Terkunci"}
         </>
       );
     if (app.sourceKind === "none") return "Buka";
@@ -335,6 +343,9 @@ export function DetailClient({ app }: { app: AppItem }) {
   }
 
   const busy = phase === "downloading" || phase === "installing";
+  const is32 = device32 || sim32;
+  const incompatible =
+    app.platform === "Android" && is32 && !app.compat.includes("armeabi-v7a");
 
   return (
     <div className="detail">
@@ -430,28 +441,35 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </div>
 
-      {app.platform === "Android" && !app.compat.includes("armeabi-v7a") && (
+      {/* AKSI — tombol hilang otomatis kalau perangkat tidak kompatibel */}
+      {incompatible ? (
         <div className="wrap">
           <p className="compat-warn">
             <Sym name="warning" size={16} />
-            Perangkat 32-bit tidak didukung — aplikasi ini khusus arsitektur
-            yang tertera di atas.
+            Aplikasi tidak kompatibel dengan perangkatmu (32-bit). Tombol unduh
+            dinonaktifkan otomatis.
+          </p>
+        </div>
+      ) : (
+        <div className="wrap action-row">
+          <LoadingButton
+            block
+            className="cta-main"
+            onClick={startAction}
+            disabled={owned && phase === "done"}
+            loading={busy}
+          >
+            {ctaContent()}
+          </LoadingButton>
+        </div>
+      )}
+      {app.priceNote && !incompatible && (
+        <div className="wrap">
+          <p className="buy-note">
+            <Sym name="mail" size={14} /> {app.priceNote}
           </p>
         </div>
       )}
-
-      {/* AKSI — satu tombol penuh, heart ada di baris judul, share di nav atas */}
-      <div className="wrap action-row">
-        <LoadingButton
-          block
-          className="cta-main"
-          onClick={startAction}
-          disabled={app.sourceKind === "paid" || (owned && phase === "done")}
-          loading={busy}
-        >
-          {ctaContent()}
-        </LoadingButton>
-      </div>
 
       {/* CUPLIKAN */}
       <div className="rail pad-left shots-rail" ref={railRef} onScroll={onRailScroll}>
@@ -481,99 +499,6 @@ export function DetailClient({ app }: { app: AppItem }) {
         ))}
       </div>
 
-      {/* TENTANG */}
-      <section className="wrap detail-sec">
-        <h2>Tentang aplikasi ini</h2>
-        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
-        {app.description.length > 140 && (
-          <button
-            type="button"
-            className="text-btn"
-            onClick={() => setAboutOpen((v) => !v)}
-            aria-expanded={aboutOpen}
-          >
-            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
-            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
-          </button>
-        )}
-        <div className="about-rows">
-          <Row k="Versi" v={app.version} icon="info" />
-          <Row k="Diperbarui" v={app.updated} icon="schedule" />
-          <Row k="Ukuran" v={app.size} icon="storage" />
-          <Row k="Diunduh" v={app.installs} icon="download" />
-          <Row k="Dirilis" v={app.released} icon="rocket_launch" />
-          <Link
-            className="about-row about-btn"
-            href={`/profile/dev/${dev.id}`}
-          >
-            <span className="about-k">
-              <Sym name="person" size={15} />
-              Pengembang
-            </span>
-            <span className="about-val">{app.developer}</span>
-          </Link>
-          <Row k="Platform" v={app.platform} icon="devices" />
-          <Link className="about-row about-btn" href="/age-rating">
-            <span className="about-k">
-              <Sym name="shield" size={15} />
-              Rating usia
-            </span>
-            <span className="about-val">{app.age} · lihat detail</span>
-          </Link>
-          <Row k="Arsitektur" v={app.compat.join(", ")} icon="memory" />
-          <a
-            className="about-row about-btn"
-            href={`mailto:${app.supportEmail}`}
-          >
-            <span>Email pengembang</span>
-            <span className="about-val">{app.supportEmail}</span>
-          </a>
-          {app.website && (
-            <a
-              className="about-row about-btn"
-              href={`https://${app.website}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span>Situs web</span>
-              <span className="about-val">{app.website}</span>
-            </a>
-          )}
-        </div>
-        <button
-          type="button"
-          className="text-btn"
-          onClick={() => setPermsOpen((v) => !v)}
-          aria-expanded={permsOpen}
-        >
-          Izin aplikasi
-          <Sym name={permsOpen ? "expand_less" : "expand_more"} size={16} />
-        </button>
-        {permsOpen && (
-          <ul className="perm-list inline">
-            {app.permissions.map((p) => (
-              <li key={p}>
-                <Sym name="check_circle" size={17} fill />
-                {p}
-              </li>
-            ))}
-          </ul>
-        )}
-        <ul className="feat">
-          {app.features.map((x) => (
-            <li key={x}>{x}</li>
-          ))}
-        </ul>
-        <button
-          type="button"
-          className="report-btn"
-          onClick={() => setReportOpen(true)}
-        >
-          <Sym name="flag" size={15} /> Laporkan aplikasi
-        </button>
-      </section>
-
-      
       {/* RATING */}
       <section className="wrap detail-sec">
         <h2>Rating dan ulasan</h2>
@@ -694,6 +619,128 @@ export function DetailClient({ app }: { app: AppItem }) {
         )}
       </section>
 
+      {/* TENTANG */}
+      <section className="wrap detail-sec">
+        <h2>Tentang aplikasi ini</h2>
+        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
+        {app.description.length > 140 && (
+          <button
+            type="button"
+            className="text-btn"
+            onClick={() => setAboutOpen((v) => !v)}
+            aria-expanded={aboutOpen}
+          >
+            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
+            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
+          </button>
+        )}
+        <div className="about-rows">
+          <Row k="Versi" v={app.version} icon="info" />
+          <Row k="Diperbarui" v={app.updated} icon="schedule" />
+          <Row k="Ukuran" v={app.size} icon="storage" />
+          <Row k="Diunduh" v={app.installs} icon="download" />
+          <Row k="Dirilis" v={app.released} icon="rocket_launch" />
+          <Link
+            className="about-row about-btn"
+            href={`/profile/dev/${dev.id}`}
+          >
+            <span className="about-k">
+              <Sym name="person" size={15} />
+              Pengembang
+            </span>
+            <span className="about-val">{app.developer}</span>
+          </Link>
+          <Row k="Platform" v={app.platform} icon="devices" />
+          <Row
+            k="Harga"
+            v={
+              app.price
+                ? app.price
+                : app.sourceKind === "paid"
+                  ? "Belum diumumkan"
+                  : "Gratis"
+            }
+            icon="sell"
+          />
+          {app.tos && (
+            <Link className="about-row about-btn" href={`/terms/${app.slug}`}>
+              <span className="about-k">
+                <Sym name="gavel" size={15} />
+                Ketentuan layanan
+              </span>
+              <Sym name="chevron_right" size={16} />
+            </Link>
+          )}
+          {app.privacy && (
+            <Link className="about-row about-btn" href={`/privacy/${app.slug}`}>
+              <span className="about-k">
+                <Sym name="policy" size={15} />
+                Kebijakan privasi
+              </span>
+              <Sym name="chevron_right" size={16} />
+            </Link>
+          )}
+          <Link className="about-row about-btn" href="/age-rating">
+            <span className="about-k">
+              <Sym name="shield" size={15} />
+              Rating usia
+            </span>
+            <span className="about-val">{app.age} · lihat detail</span>
+          </Link>
+          <Row k="Arsitektur" v={app.compat.join(", ")} icon="memory" />
+          <a
+            className="about-row about-btn"
+            href={`mailto:${app.supportEmail}`}
+          >
+            <span>Email pengembang</span>
+            <span className="about-val">{app.supportEmail}</span>
+          </a>
+          {app.website && (
+            <a
+              className="about-row about-btn"
+              href={`https://${app.website}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Situs web</span>
+              <span className="about-val">{app.website}</span>
+            </a>
+          )}
+        </div>
+        <button
+          type="button"
+          className="text-btn"
+          onClick={() => setPermsOpen((v) => !v)}
+          aria-expanded={permsOpen}
+        >
+          Izin aplikasi
+          <Sym name={permsOpen ? "expand_less" : "expand_more"} size={16} />
+        </button>
+        {permsOpen && (
+          <ul className="perm-list inline">
+            {app.permissions.map((p) => (
+              <li key={p}>
+                <Sym name="check_circle" size={17} fill />
+                {p}
+              </li>
+            ))}
+          </ul>
+        )}
+        <ul className="feat">
+          {app.features.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          className="report-btn"
+          onClick={() => setReportOpen(true)}
+        >
+          <Sym name="flag" size={15} /> Laporkan aplikasi
+        </button>
+      </section>
+
+      
       {/* YANG BARU */}
       <section className="wrap detail-sec">
         <h2>Yang baru</h2>
@@ -754,6 +801,33 @@ export function DetailClient({ app }: { app: AppItem }) {
         slugs={app.moreFromDev}
       />
       <RailSection title="Mirip dengan ini" slugs={app.similar} />
+
+      {/* SHEET: PEMBAYARAN */}
+      <BottomSheet
+        open={sheet === "pay"}
+        title="Beli aplikasi"
+        onClose={() => setSheet(null)}
+      >
+        <div className="stack-12">
+          <p className="pay-price">{app.price ?? "Harga menyusul"}</p>
+          <p>
+            {app.priceNote ??
+              "Lisensi proprietary. Midtrans menyusul — pembayaran masih mock."}
+          </p>
+          <LoadingButton
+            block
+            onClick={() => {
+              setSheet(null);
+              show("Pembayaran belum dibuka (mock)");
+            }}
+          >
+            Lanjut ke pembayaran
+          </LoadingButton>
+          <p className="note">
+            Setelah bayar: APK + Source Code dikirim ke email akun kamu.
+          </p>
+        </div>
+      </BottomSheet>
 
       {/* SHEET: GERBANG UNDUH */}
       <BottomSheet

@@ -148,6 +148,17 @@ export default function MePage() {
             label="Perbarui otomatis"
           />
         </div>
+        <div className="set-row">
+          <span className="grow">
+            <strong>Simulasi perangkat 32-bit</strong>
+            <em>Uji alur inkompatibel: tombol unduh hilang di app khusus 64-bit</em>
+          </span>
+          <Toggle
+            on={settings.sim32}
+            onChange={(v) => patch({ sim32: v })}
+            label="Simulasi perangkat 32-bit"
+          />
+        </div>
       </div>
 
       <div className="panel stack-12">

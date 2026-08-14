@@ -92,11 +92,11 @@ export function AppGlyph({
 }) {
   return (
     <div
-      className="glyph"
+      className={`glyph ${src ? "flat" : ""}`}
       style={{
         width: size,
         height: size,
-        background: `linear-gradient(160deg, ${accent}, #121218 78%)`,
+        background: src ? undefined : `linear-gradient(160deg, ${accent}, #121218 78%)`,
       }}
     >
       {src ? (

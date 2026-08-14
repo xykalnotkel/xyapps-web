@@ -72,6 +72,13 @@ export type AppItem = {
   website?: string;
   supportEmail: string;
   repoUrl?: string;
+  /** Harga untuk produk berbayar. Gratis = tidak diisi. */
+  price?: string;
+  /** Penjelasan tambahan di bawah tombol harga (misal pengiriman email). */
+  priceNote?: string;
+  /** Dokumen yang diterbitkan developer — tampil di baris Tentang. */
+  tos?: boolean;
+  privacy?: boolean;
 };
 
 export const APPS: AppItem[] = [
@@ -196,6 +203,8 @@ export const APPS: AppItem[] = [
     similar: ["field-notes", "kilometer"],
     moreFromDev: ["field-notes", "kilometer", "lantern"],
     website: "northroom.xystudio.my.id",
+    tos: true,
+    privacy: true,
     supportEmail: "studio@xystudio.my.id",
   },
   {
@@ -238,6 +247,8 @@ export const APPS: AppItem[] = [
     installs: "Belum dirilis",
     containsAds: false,
     inAppPurchases: true,
+    price: "Rp 149.000",
+    priceNote: "APK + Source Code otomatis dikirim ke email setelah bayar (mock, Midtrans menyusul).",
     ratingBreakdown: [0, 0, 0, 0, 0],
     reviews: [],
     permissions: ["Tidak dipublikasikan — app belum rilis"],
@@ -324,6 +335,7 @@ export const APPS: AppItem[] = [
     similar: ["lantern", "field-notes"],
     moreFromDev: ["northroom", "field-notes", "lantern"],
     supportEmail: "studio@xystudio.my.id",
+    privacy: true,
     website: "kilometer.xystudio.my.id",
   },
   {
@@ -555,6 +567,7 @@ export const APPS: AppItem[] = [
     similar: ["orbit-dash", "neon-rally"],
     moreFromDev: ["orbit-dash", "neon-rally"],
     supportEmail: "studio@xystudio.my.id",
+    tos: true,
   },
   {
     slug: "orbit-dash",
@@ -746,6 +759,7 @@ export type Developer = {
   supportEmail: string;
   verified: boolean;
   joined: string;
+  location?: string;
 };
 
 export const DEVELOPERS: Developer[] = [
@@ -758,6 +772,7 @@ export const DEVELOPERS: Developer[] = [
     supportEmail: "studio@xystudio.my.id",
     verified: true,
     joined: "Jan 2026",
+    location: "Selong, Lombok, Indonesia",
   },
 ];
 

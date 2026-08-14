@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { sourceLabel, type AppItem } from "@/lib/data";
-import { SmartImage } from "./ui/SmartImage";
+import { AppGlyph, SmartImage } from "./ui/SmartImage";
 import { Stars } from "./ui/Stars";
 
 export function FeaturedCard({ app }: { app: AppItem }) {
@@ -17,17 +17,12 @@ export function FeaturedCard({ app }: { app: AppItem }) {
         rounded="xl"
       />
       <div className="feature-meta">
-        <span
-          className="glyph sm"
-          style={{ background: `linear-gradient(160deg, ${app.accent}, #121218)` }}
-        >
-          {app.icon ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={app.icon} alt="" className="glyph-pic" />
-          ) : (
-            app.initials
-          )}
-        </span>
+        <AppGlyph
+          initials={app.initials}
+          accent={app.accent}
+          src={app.icon}
+          size={36}
+        />
         <div>
           <strong>{app.title}</strong>
           <em>

@@ -84,6 +84,7 @@ npm run start
 | `/me` | Profil lengkap: stats, Pengaturan (toggle notifikasi/update otomatis), Preferensi tema, link trust/legal/bantuan, keluar |
 | `/help` | Bantuan: FAQ bisa dibuka-tutup |
 | `/age-rating` | Papan rating usia (3+, 7+, 12+, 16+, 18+) + deskriptor konten |
+| `/terms/[slug]` `/privacy/[slug]` | Ketentuan layanan & kebijakan privasi per app — hanya untuk app yang dev-nya menerbitkan |
 | `/profile/u/[id]` | Profil user publik dengan id hash (dibangun dari data ulasan) |
 | `/profile/dev/[id]` dan `/profile/dev/u/[id]` | Profil developer: banner, verifikasi, stats, daftar app |
 | `/e/403` `/e/404` `/e/500` `/e/503` | Demo halaman error bericon (asli: `not-found.tsx` untuk 404, `error.tsx` untuk 500, `global-error.tsx` untuk root) |
@@ -96,7 +97,7 @@ npm run start
 
 - Bottom nav 4 tab: Beranda, Aplikasi, Game, Library. Icon dua versi per tab (fill saat aktif, outline saat tidak). Label tab tersembunyi, muncul di bawah icon saat aktif dengan animasi
 - Pencarian cuma satu pintu: pill di topbar membuka halaman `/search` penuh dengan autofocus, kata kunci sedang dicari, dan riwayat
-- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur monokrom, unduhan) di atas tombol Install, "Tentang aplikasi ini" di bawah cuplikan, ulasan tepat setelah rating (bukan di bawah), baris info bericon, catatan "Mengandung iklan" dan "Pembelian dalam app"
+- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur, unduhan) di atas tombol Install, ulasan setelah rating, "Tentang aplikasi ini" setelah ulasan, baris info bericon, ketentuan layanan + kebijakan privasi tampil HANYA kalau dev menerbitkannya, harga di tombol untuk produk berbayar + catatan pengiriman email, tombol unduh hilang otomatis kalau perangkat tidak kompatibel
 - Viewer cuplikan fullscreen polos tanpa card: panah, swipe sentuh, keyboard, counter
 - Rating bintang + distribusi per bintang + ulasan (sort relevan/terbaru/membantu, filter per bintang) + balasan developer
 - Progres unduh melingkar di icon app dengan gaya ular: busur gradien ungu + ekor terang yang berputar + persen di tengah, tombol menampilkan status "Mengunduh… %"
@@ -113,6 +114,10 @@ npm run start
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
 - Banner "Lanjut ke aplikasi" muncul sekali per perangkat (dismiss tersimpan) — disiapkan untuk versi aplikasi native XyApps
+- Badge rating umur SVG ala Play Store: outline shield + angka di tengah + tanda plus ter-mask di pojok, monokrom
+- Icon app tampil rata tanpa box/background (fallback gradien hanya untuk app tanpa gambar)
+- Profil developer: cover gradien berpola, badge terverifikasi, chip lokasi, kontak, stats, daftar app
+- Simulasi perangkat 32-bit tersedia di Pengaturan (uji alur tombol unduh hilang)
 - Security headers dipasang (CSP, anti-clickjacking, nosniff, referrer-policy) — lihat docs/SECURITY.md
 
 ## Keamanan web
