@@ -52,7 +52,7 @@ button {
 .wrap {
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 clamp(12px, 4vw, 24px);
 }
 
 .page-pad {
@@ -104,10 +104,38 @@ button {
 
 .topbar-inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 12px;
   align-items: center;
   height: var(--top);
+}
+
+.bell-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--metal);
+  border: 1px solid transparent;
+  color: var(--text);
+  text-decoration: none;
+  position: relative;
+}
+
+.bell-btn:hover {
+  border-color: var(--line);
+}
+
+.bell-dot {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--danger);
+  border: 2px solid var(--bg);
 }
 
 .logo {
@@ -162,6 +190,8 @@ button {
   bottom: 0;
   z-index: 30;
   display: flex;
+  justify-content: center;
+  gap: 4px;
   background: rgba(10, 10, 12, 0.94);
   border-top: 1px solid var(--line);
   padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
@@ -169,10 +199,9 @@ button {
 
 .bottom a {
   flex: 1;
+  max-width: 140px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
+  justify-content: center;
   color: var(--mute);
   text-decoration: none;
   font-size: 10px;
@@ -187,7 +216,7 @@ button {
 /* CHIPS + RAILS */
 .chip-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
   padding: 6px 0 12px;
   scrollbar-width: none;
@@ -203,7 +232,7 @@ button {
   background: var(--metal);
   color: var(--text);
   border-radius: 999px;
-  padding: 7px 12px;
+  padding: 8px 15px;
   font-size: 13px;
   font-weight: 550;
   text-decoration: none;
@@ -236,7 +265,7 @@ button {
 
 .rail {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   padding-bottom: 8px;
@@ -248,8 +277,8 @@ button {
 }
 
 .pad-left {
-  padding-left: max(16px, calc((100vw - 720px) / 2 + 16px));
-  padding-right: 16px;
+  padding-left: max(clamp(12px, 4vw, 24px), calc((100vw - 720px) / 2 + clamp(12px, 4vw, 24px)));
+  padding-right: clamp(12px, 4vw, 24px);
 }
 
 /* FEATURE CARDS */
@@ -354,14 +383,14 @@ button {
 .detail-nav {
   display: flex;
   justify-content: space-between;
-  padding-top: 8px;
+  padding-top: 10px;
 }
 
 .app-hero {
   display: flex;
-  gap: 14px;
-  align-items: center;
-  padding: 12px 16px 8px;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 14px 16px 10px;
 }
 
 .app-hero h1 {
@@ -377,24 +406,6 @@ button {
   margin-bottom: 8px;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  padding: 14px 0;
-  text-align: center;
-}
-
-.stats strong {
-  display: block;
-  font-size: 13px;
-}
-
-.stats span {
-  color: var(--mute);
-  font-size: 11px;
-}
-
 .shots-rail {
   position: relative;
   padding-top: 4px;
@@ -402,13 +413,13 @@ button {
 }
 
 .shots-rail .shot-port {
-  flex: 0 0 148px;
-  height: 262px;
+  flex: 0 0 clamp(136px, 34vw, 186px);
+  height: clamp(240px, 60vw, 330px);
 }
 
 .shots-rail .shot-land {
-  flex: 0 0 236px;
-  height: 134px;
+  flex: 0 0 clamp(220px, 54vw, 330px);
+  height: clamp(124px, 30vw, 186px);
 }
 
 .detail h2 {
@@ -447,17 +458,35 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
 }
 
-.sticky-inner strong {
+.sticky-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sticky-text {
+  min-width: 0;
+}
+
+.sticky-text strong {
   display: block;
   font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sticky-inner span {
+.sticky-text span {
   color: var(--mute);
   font-size: 12px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* BADGE */
@@ -716,7 +745,12 @@ button {
 
 .preview-img {
   width: 100%;
-  height: 360px;
+  height: clamp(320px, 66vh, 540px);
+}
+
+.preview-img.land {
+  height: auto;
+  max-height: 60vh;
 }
 
 /* SKELETON */
@@ -736,12 +770,8 @@ button {
 .sk-chip { width: 72px; height: 32px; border-radius: 999px; }
 .sk-feature { flex: 0 0 260px; height: 148px; border-radius: 18px; }
 .sk-icon { width: 56px; height: 56px; border-radius: 14px; }
-.sk-icon.lg { width: 84px; height: 84px; border-radius: 18px; }
 .sk-line { height: 12px; }
 .sk-btn { width: 76px; height: 34px; border-radius: 999px; }
-.sk-shot { flex: 0 0 168px; height: 260px; border-radius: 18px; }
-.sk-stat { height: 42px; }
-.sk-block { height: 88px; }
 .w-30 { width: 30%; }
 .w-35 { width: 35%; }
 .w-40 { width: 40%; }
@@ -765,20 +795,6 @@ button {
 }
 
 /* FORMS / MISC */
-.search-field {
-  width: 100%;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--metal);
-  padding: 0 16px;
-  outline: none;
-}
-
-.search-field:focus {
-  border-color: #6d28d9;
-}
-
 .form {
   max-width: 400px;
   margin: 24px auto;
@@ -857,22 +873,6 @@ button {
   height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
-}
-
-@media (min-width: 860px) {
-  .wrap {
-    max-width: 980px;
-  }
-
-  .feature-card,
-  .feature-art {
-    flex-basis: 300px;
-  }
-
-  .feature-art {
-    width: 300px;
-    height: 168px;
-  }
 }
 
 /* ============================================================
@@ -1081,9 +1081,9 @@ button {
 /* AKSI utama */
 .action-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  padding: 10px 16px 4px;
+  padding: 12px 16px 6px;
 }
 
 .cta-main {
@@ -1100,7 +1100,7 @@ button {
 
 /* SEKSI DETAIL */
 .detail-sec {
-  margin-top: 22px;
+  margin-top: 26px;
 }
 
 .detail-sec h2 {
@@ -1347,8 +1347,8 @@ button {
 .about-row {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  padding: 11px 2px;
+  gap: 16px;
+  padding: 12px 2px;
   border-bottom: 1px solid var(--line);
   font-size: 13.5px;
 }
@@ -1412,21 +1412,49 @@ button {
   margin-top: auto;
 }
 
-/* PROGRES INSTALL (sticky) */
-.install-progress {
-  height: 3px;
-  background: #1d1d25;
-  border-radius: 99px;
-  overflow: hidden;
-  margin-bottom: 8px;
+/* LINGKAR PROGRES UNDUH DI ICON (ala Play Store) */
+.ring-wrap {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
 }
 
-.install-progress i {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #7c3aed, #a78bfa);
-  transition: width 0.12s linear;
-  border-radius: 99px;
+.ring-wrap .glyph {
+  filter: saturate(0.72) brightness(0.72);
+}
+
+.ring-svg {
+  position: absolute;
+  inset: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.ring-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 5;
+}
+
+.ring-val {
+  fill: none;
+  stroke: var(--lilac);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.14s linear;
+}
+
+.ring-pct {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* SHEET IZIN */
@@ -1623,7 +1651,7 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 5px 16px;
+  padding: 6px 18px;
   border-radius: 999px;
   transition: background 0.2s ease;
 }
@@ -2018,8 +2046,229 @@ button {
   font-size: 12.5px;
 }
 
+/* ============================================================
+   XYAPPS v4 — notifikasi, modal lebar, ring progres, responsive
+   ============================================================ */
+
+/* MODAL LEBAR (viewer cuplikan) */
+.modal.wide {
+  width: min(680px, 100%);
+}
+
+/* NOTIFIKASI */
+.notif-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.notif-head .text-btn {
+  margin-top: 4px;
+}
+
+.notif {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.notif-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+
+.notif-icon.ok {
+  background: #123227;
+  color: var(--ok);
+}
+
+.notif-icon.lilac {
+  background: #241539;
+  color: var(--lilac);
+}
+
+.notif-icon.indigo {
+  background: #1c2140;
+  color: #a5b4fc;
+}
+
+.notif-body {
+  min-width: 0;
+}
+
+.notif-body strong {
+  font-size: 14px;
+  display: block;
+}
+
+.notif-body p {
+  color: #c9c9d4;
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.notif-body em {
+  font-style: normal;
+  color: var(--mute);
+  font-size: 11px;
+}
+
+.notif.read {
+  opacity: 0.55;
+}
+
+/* OPSI LAPORAN (modal) */
+.report-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--metal);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.report-option:has(input:checked) {
+  border-color: #5b21b6;
+  background: #1d1430;
+}
+
+.report-option input {
+  accent-color: var(--violet);
+  width: 16px;
+  height: 16px;
+}
+
+/* IZIN INLINE */
+.perm-list.inline {
+  margin-top: 10px;
+}
+
+/* GRID ULASAN DI LAYAR LEBAR */
 @media (min-width: 860px) {
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .rating-panel {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .rating-sum {
+    min-width: 150px;
+  }
+
+  .rating-break {
+    flex: 1;
+  }
+}
+
+/* RESPONSIVE — layar kecil */
+@media (max-width: 380px) {
+  .topbar-inner {
+    gap: 8px;
+  }
+
+  .search-pill {
+    height: 36px;
+    padding: 0 10px;
+  }
+
+  .bell-btn,
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-item {
+    padding: 5px 12px;
+  }
+
+  .bottom a {
+    font-size: 9px;
+  }
+
+  .app-hero h1 {
+    font-size: 22px;
+  }
+
+  .action-row {
+    gap: 10px;
+  }
+
+  .cta-main {
+    min-height: 42px;
+    font-size: 14px;
+  }
+
   .hero-banner {
-    height: 220px;
+    height: 150px;
+  }
+
+  .banner-text strong {
+    font-size: 17px;
+  }
+}
+
+/* RESPONSIVE — desktop */
+@media (min-width: 860px) {
+  .wrap {
+    max-width: 980px;
+  }
+
+  .pad-left {
+    padding-left: max(clamp(12px, 4vw, 24px), calc((100vw - 980px) / 2 + clamp(12px, 4vw, 24px)));
+  }
+
+  .hero-banner {
+    height: clamp(200px, 24vw, 260px);
+  }
+
+  .banner-text strong {
+    font-size: 24px;
+  }
+
+  /* Bottom nav melayang di tengah, ala pill */
+  .bottom {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(420px, 92vw);
+    bottom: 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(13, 13, 17, 0.96);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+    padding: 8px 6px;
+  }
+
+  .bottom a {
+    max-width: none;
+  }
+
+  .sticky-cta {
+    bottom: calc(var(--nav) + 28px);
+  }
+
+  .feature-card,
+  .feature-art {
+    flex-basis: 288px;
+  }
+
+  .feature-art {
+    width: 288px;
+    height: 164px;
   }
 }

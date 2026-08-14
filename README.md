@@ -50,10 +50,11 @@ npm run start
 
 | Path | Isi |
 | --- | --- |
-| `/` | Beranda: search bar, chips, rail pilihan, teratas, terbaru |
-| `/apps` | Katalog: pencarian dari URL (`?q=` `?f=`), filter, sort |
-| `/apps/[slug]` | Detail ala Play Store: rating + breakdown, ulasan + balasan developer, tulis ulasan (mock lokal), screenshot, changelog, keamanan data, izin, app serupa, gerbang unduh bertiket |
+| `/` | Beranda: banner hero, rail kategori, pilihan, teratas, terbaru |
+| `/apps` | Katalog: pencarian dari topbar (`?q=` `?f=`), filter, sort, kata kunci populer + riwayat |
+| `/apps/[slug]` | Detail ala Play Store: rating + breakdown, ulasan (sort + filter bintang) + balasan developer, tulis ulasan, cuplikan dengan viewer, changelog, keamanan data, izin inline, email developer, laporkan app, gerbang unduh bertiket |
 | `/library` | Tab Terpasang + Wishlist (localStorage) |
+| `/notifications` | Notifikasi mock + tandai semua dibaca |
 | `/legal` | XySANC-1.0 |
 | `/trust` | Kebijakan data |
 | `/login` `/me` | Session mock (localStorage, `useSyncExternalStore`) |
@@ -64,12 +65,16 @@ npm run start
 
 ## UX yang sengaja ditiru dari Play Store
 
-- Bottom nav berikon dengan dua versi per icon: fill saat aktif, outline saat tidak (satu font, sumbu FILL). Tab aktif muncul dalam pill
+- Bottom nav berikon dengan dua versi per icon: fill saat aktif, outline saat tidak (satu font, sumbu FILL). Tab aktif muncul dalam pill. Tiga tab: Beranda, Telusuri, Library — Akun lewat avatar kanan atas, tidak dobel
 - Beranda: banner hero berputar (auto-advance + titik navigasi), rail kategori, pilihan untukmu, teratas, terbaru
-- Pencarian: dropdown saran langsung di topbar, riwayat pencarian, kata kunci populer di katalog
-- Detail app: rating bintang + distribusi per bintang + daftar ulasan (sort relevan/terbaru/membantu, filter per bintang) + tombol bermanfaat + balasan developer
+- Pencarian cuma satu tempat: topbar (dropdown saran + riwayat). Katalog tidak punya input sendiri
+- Notifikasi: lonceng di topbar dengan titik belum dibaca + halaman notifikasi
+- Detail app: rating bintang + distribusi per bintang + ulasan (sort relevan/terbaru/membantu, filter per bintang) + balasan developer
+- Progres unduh di icon app (lingkar persen), bukan bar — sama seperti Play Store
+- Bottom sheet hanya untuk gerbang unduh. Share lewat navigator.share (fallback modal), izin inline, laporan modal
 - Cuplikan: rail dengan titik posisi, viewer layar penuh dengan panah, swipe sentuh, navigasi keyboard
-- Sticky install bar dengan progres mengunduh palsu (ticket -> unduh -> pasang -> buka)
+- Sticky install bar dengan icon app + tombol yang berubah status (tiket -> unduh -> pasang -> buka)
+- Responsive: padding fluid, clamp untuk ukuran cuplikan/banner, layout khusus layar kecil (<380px) dan desktop (>860px: nav pill melayang, ulasan 2 kolom, rating panel menyamping)
 - "Tentang aplikasi ini" bisa dibuka-tutup, kontak email developer, tombol laporkan aplikasi
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang

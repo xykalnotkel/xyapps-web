@@ -6,11 +6,13 @@ export function Modal({
   open,
   title,
   onClose,
+  wide = false,
   children,
 }: {
   open: boolean;
   title: string;
   onClose: () => void;
+  wide?: boolean;
   children: ReactNode;
 }) {
   useEffect(() => {
@@ -31,7 +33,7 @@ export function Modal({
   return (
     <div className="overlay" onClick={onClose} role="presentation">
       <div
-        className="modal"
+        className={`modal ${wide ? "wide" : ""}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}

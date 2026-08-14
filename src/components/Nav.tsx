@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Sym } from "@/components/Icon";
 import { useSession } from "@/components/Session";
 import { addRecent } from "@/lib/recent";
@@ -16,6 +16,8 @@ type Tab = {
   match: (p: string) => boolean;
 };
 
+/* Bawah: Beranda, Telusuri, Library. Akun ada di avatar kanan atas,
+   bukan dobel di dua tempat. */
 const tabs: Tab[] = [
   { href: "/", label: "Beranda", icon: "home", match: (p) => p === "/" },
   {
@@ -30,12 +32,6 @@ const tabs: Tab[] = [
     icon: "library_books",
     match: (p) => p.startsWith("/library"),
   },
-  {
-    href: "/me",
-    label: "Akun",
-    icon: "account_circle",
-    match: (p) => p === "/me" || p === "/login",
-  },
 ];
 
 export function TopBar() {
@@ -44,7 +40,21 @@ export function TopBar() {
   const { user } = useSession();
   const [q, setQ] = useState("");
   const [focus, setFocus] = useState(false);
+  const [unread, setUnread] = useState(true);
   const hideSearch = path.startsWith("/apps/") && path !== "/apps";
+
+  // Status lonceng: SSR selalu menampilkan titik (konsisten), setelah
+  // hidrasi baca penanda "sudah dibaca" dari localStorage (async).
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      try {
+        if (localStorage.getItem("xyapps.nread") === "1") setUnread(false);
+      } catch {
+        /* abaikan */
+      }
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const matches = useMemo(() => {
     const t = q.trim().toLowerCase();
@@ -145,6 +155,10 @@ export function TopBar() {
             </div>
           )}
         </form>
+        <Link href="/notifications" className="bell-btn" aria-label="Notifikasi">
+          <Sym name="notifications" size={21} />
+          {unread && <span className="bell-dot" />}
+        </Link>
         <Link href={user ? "/me" : "/login"} className="avatar" aria-label="Akun">
           {user ? user.name.slice(0, 1).toUpperCase() : "?"}
         </Link>

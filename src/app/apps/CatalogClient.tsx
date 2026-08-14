@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AppRow } from "@/components/AppRow";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 import { useMockLoad } from "@/hooks/useMockLoad";
@@ -28,6 +28,7 @@ const POPULAR = ["northroom", "Musik", "Kotlin", "Tools", "Rust", "Tauri"];
 type Sort = "pop" | "new";
 
 export function CatalogClient() {
+  const router = useRouter();
   const params = useSearchParams();
   const preset = params.get("f");
   const presetQ = params.get("q") ?? "";
@@ -36,6 +37,14 @@ export function CatalogClient() {
   const [sort, setSort] = useState<Sort>("pop");
   const [recent, setRecent] = useState<string[]>([]);
   const ready = useMockLoad(520);
+
+  // Kolom cari cuma ada di topbar. Katalog ikut query URL lewat
+  // pola "adjust state during render" (resmi React untuk derived state).
+  const [prevQ, setPrevQ] = useState(presetQ);
+  if (prevQ !== presetQ) {
+    setPrevQ(presetQ);
+    setQ(presetQ);
+  }
 
   // Muat riwayat setelah hidrasi supaya markup server dan klien identik.
   useEffect(() => {
@@ -64,19 +73,6 @@ export function CatalogClient() {
 
   return (
     <>
-      <input
-        className="search-field"
-        placeholder="Cari aplikasi, stack, kategori"
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && q.trim()) {
-            addRecent(q);
-            setRecent(readRecent());
-          }
-        }}
-        onBlur={() => setRecent(readRecent())}
-      />
       {!q && (
         <div className="suggest-block">
           <p className="suggest-title">
@@ -87,7 +83,10 @@ export function CatalogClient() {
               <button
                 key={name}
                 className="chip suggest"
-                onClick={() => setQ(name)}
+                onClick={() => {
+                  setQ(name);
+                  addRecent(name);
+                }}
                 type="button"
               >
                 {name}
@@ -160,6 +159,7 @@ export function CatalogClient() {
             onClick={() => {
               setQ("");
               setF("Semua");
+              router.replace("/apps");
             }}
           >
             Reset pencarian

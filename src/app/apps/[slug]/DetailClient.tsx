@@ -32,7 +32,10 @@ type InstallPhase =
   | "downloading"
   | "installing"
   | "done";
-type SheetKind = "install" | "perms" | "share" | "report" | null;
+
+/* Satu-satunya bottom sheet: gerbang unduh. Share pakai navigator.share
+   (fallback modal), izin inline, laporan modal. */
+type SheetKind = "install" | null;
 
 type ReviewSort = "rel" | "new" | "help";
 
@@ -86,6 +89,10 @@ export function DetailClient({ app }: { app: AppItem }) {
   const [reviewSort, setReviewSort] = useState<ReviewSort>("rel");
   const [starFilter, setStarFilter] = useState(0);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [permsOpen, setPermsOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState<string | null>(null);
 
   const timer = useRef<number | null>(null);
   const interval = useRef<number | null>(null);
@@ -242,6 +249,23 @@ export function DetailClient({ app }: { app: AppItem }) {
     show(msg);
   }
 
+  function onShare() {
+    const url = `https://xyapps.my.id/apps/${app.slug}`;
+    const data = { title: app.title, text: app.tagline, url };
+    if (typeof navigator !== "undefined" && "share" in navigator) {
+      navigator.share(data).catch(() => {
+        /* dibatalkan user: tidak usah jatuh ke modal */
+      });
+    } else {
+      setShareOpen(true);
+    }
+  }
+
+  function submitReport() {
+    setReportOpen(false);
+    show("Laporan terkirim (mock)");
+  }
+
   function submitReview(rating: number, text: string) {
     const item: ReviewItem = {
       id: `u-${Date.now()}`,
@@ -302,7 +326,7 @@ export function DetailClient({ app }: { app: AppItem }) {
           type="button"
           className="icon-btn"
           aria-label="Bagikan"
-          onClick={() => setSheet("share")}
+          onClick={onShare}
         >
           <Sym name="share" size={18} />
         </button>
@@ -310,12 +334,23 @@ export function DetailClient({ app }: { app: AppItem }) {
 
       {/* HERO */}
       <div className="wrap app-hero">
-        <AppGlyph
-          initials={app.initials}
-          accent={app.accent}
-          src={app.icon}
-          size={84}
-        />
+        {busy ? (
+          <Ring pct={pct} size={84}>
+            <AppGlyph
+              initials={app.initials}
+              accent={app.accent}
+              src={app.icon}
+              size={84}
+            />
+          </Ring>
+        ) : (
+          <AppGlyph
+            initials={app.initials}
+            accent={app.accent}
+            src={app.icon}
+            size={84}
+          />
+        )}
         <div className="hero-main">
           <h1>{app.title}</h1>
           <p className="dev">{app.developer}</p>
@@ -366,7 +401,7 @@ export function DetailClient({ app }: { app: AppItem }) {
           type="button"
           className="icon-btn"
           aria-label="Bagikan"
-          onClick={() => setSheet("share")}
+          onClick={onShare}
         >
           <Sym name="share" size={19} />
         </button>
@@ -604,14 +639,6 @@ export function DetailClient({ app }: { app: AppItem }) {
             <span>Email pengembang</span>
             <span className="about-val">{app.supportEmail}</span>
           </a>
-          <button
-            type="button"
-            className="about-row about-btn"
-            onClick={() => setSheet("perms")}
-          >
-            <span>Izin aplikasi</span>
-            <Sym name="chevron_right" size={17} />
-          </button>
           {app.website && (
             <a
               className="about-row about-btn"
@@ -624,6 +651,25 @@ export function DetailClient({ app }: { app: AppItem }) {
             </a>
           )}
         </div>
+        <button
+          type="button"
+          className="text-btn"
+          onClick={() => setPermsOpen((v) => !v)}
+          aria-expanded={permsOpen}
+        >
+          Izin aplikasi
+          <Sym name={permsOpen ? "expand_less" : "expand_more"} size={16} />
+        </button>
+        {permsOpen && (
+          <ul className="perm-list inline">
+            {app.permissions.map((p) => (
+              <li key={p}>
+                <Sym name="check_circle" size={17} fill />
+                {p}
+              </li>
+            ))}
+          </ul>
+        )}
         <ul className="feat">
           {app.features.map((x) => (
             <li key={x}>{x}</li>
@@ -632,7 +678,7 @@ export function DetailClient({ app }: { app: AppItem }) {
         <button
           type="button"
           className="report-btn"
-          onClick={() => setSheet("report")}
+          onClick={() => setReportOpen(true)}
         >
           <Sym name="flag" size={15} /> Laporkan aplikasi
         </button>
@@ -648,21 +694,35 @@ export function DetailClient({ app }: { app: AppItem }) {
       {/* STICKY CTA */}
       <div className="sticky-cta">
         <div className="wrap">
-          {busy && (
-            <div className="install-progress">
-              <i style={{ width: `${pct}%` }} />
-            </div>
-          )}
           <div className="sticky-inner">
-            <div>
-              <strong>{owned ? "Di perangkat ini" : app.title}</strong>
-              <span>
-                {app.sourceKind === "paid"
-                  ? "Source berbayar · belum dibuka"
-                  : app.sourceKind === "none"
-                    ? "Demo web"
-                    : "XySANC-1.0 · gerbang resmi"}
-              </span>
+            <div className="sticky-info">
+              {busy ? (
+                <Ring pct={pct} size={40}>
+                  <AppGlyph
+                    initials={app.initials}
+                    accent={app.accent}
+                    src={app.icon}
+                    size={40}
+                  />
+                </Ring>
+              ) : (
+                <AppGlyph
+                  initials={app.initials}
+                  accent={app.accent}
+                  src={app.icon}
+                  size={40}
+                />
+              )}
+              <div className="sticky-text">
+                <strong>{owned ? "Di perangkat ini" : app.title}</strong>
+                <span>
+                  {app.sourceKind === "paid"
+                    ? "Source berbayar · belum dibuka"
+                    : app.sourceKind === "none"
+                      ? "Demo web"
+                      : "XySANC-1.0 · gerbang resmi"}
+                </span>
+              </div>
             </div>
             <LoadingButton
               onClick={startAction}
@@ -726,52 +786,33 @@ export function DetailClient({ app }: { app: AppItem }) {
         )}
       </BottomSheet>
 
-      {/* SHEET: IZIN */}
-      <BottomSheet
-        open={sheet === "perms"}
-        title="Izin aplikasi"
-        onClose={() => setSheet(null)}
-      >
-        <ul className="perm-list">
-          {app.permissions.map((p) => (
-            <li key={p}>
-              <Sym name="check_circle" size={17} fill />
-              {p}
-            </li>
-          ))}
-        </ul>
-        <p className="note">
-          Lisensi: {badge.text}. Detail lengkap di halaman legal.
-        </p>
-      </BottomSheet>
-
-      {/* SHEET: LAPORKAN */}
-      <BottomSheet
-        open={sheet === "report"}
+      {/* MODAL: LAPORKAN */}
+      <Modal
+        open={reportOpen}
         title="Laporkan aplikasi"
-        onClose={() => setSheet(null)}
+        onClose={() => setReportOpen(false)}
       >
-        <div className="stack-12">
-          <p>Pilih alasan. Laporan masuk ke tim XyStudio (mock).</p>
+        <div className="stack-14">
+          <p className="sub">Pilih alasan. Laporan masuk ke tim XyStudio (mock).</p>
           {REPORT_REASONS.map((r) => (
-            <button
-              key={r}
-              type="button"
-              className="report-item"
-              onClick={() => {
-                setSheet(null);
-                show("Laporan terkirim (mock)");
-              }}
-            >
-              {r}
-              <Sym name="chevron_right" size={16} />
-            </button>
+            <label key={r} className="report-option">
+              <input
+                type="radio"
+                name="reason"
+                checked={reportReason === r}
+                onChange={() => setReportReason(r)}
+              />
+              <span>{r}</span>
+            </label>
           ))}
+          <LoadingButton block disabled={!reportReason} onClick={submitReport}>
+            Kirim laporan
+          </LoadingButton>
         </div>
-      </BottomSheet>
+      </Modal>
 
-      {/* SHEET: BAGIKAN */}
-      <BottomSheet open={sheet === "share"} title="Bagikan" onClose={() => setSheet(null)}>
+      {/* MODAL: BAGIKAN (fallback browser tanpa navigator.share) */}
+      <Modal open={shareOpen} title="Bagikan" onClose={() => setShareOpen(false)}>
         <div className="stack-12">
           <p>Bagikan halaman aplikasi ini:</p>
           <div className="ticket">https://xyapps.my.id/apps/{app.slug}</div>
@@ -782,13 +823,14 @@ export function DetailClient({ app }: { app: AppItem }) {
             Salin tautan
           </LoadingButton>
         </div>
-      </BottomSheet>
+      </Modal>
 
       {/* MODAL: PREVIEW CUPLIKAN */}
       <Modal
         open={preview !== null}
         title={preview !== null ? app.screenshots[preview].label : "Cuplikan"}
         onClose={() => setPreview(null)}
+        wide
       >
         {preview !== null && (
           <div
@@ -854,6 +896,36 @@ function Row({ k, v }: { k: string; v: string }) {
       <span>{k}</span>
       <span className="about-val">{v}</span>
     </div>
+  );
+}
+
+/** Lingkar progres unduhan di icon app, ala Play Store. */
+function Ring({
+  pct,
+  size,
+  children,
+}: {
+  pct: number;
+  size: number;
+  children: React.ReactNode;
+}) {
+  const C = 283; // keliling r=45 pada viewBox 100
+  return (
+    <span className="ring-wrap" style={{ width: size, height: size }}>
+      {children}
+      <svg className="ring-svg" viewBox="0 0 100 100" aria-hidden>
+        <circle className="ring-track" cx="50" cy="50" r="45" />
+        <circle
+          className="ring-val"
+          cx="50"
+          cy="50"
+          r="45"
+          strokeDasharray={C}
+          strokeDashoffset={C * (1 - Math.min(pct, 100) / 100)}
+        />
+      </svg>
+      <span className="ring-pct">{Math.min(pct, 100)}%</span>
+    </span>
   );
 }
 

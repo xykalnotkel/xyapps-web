@@ -55,28 +55,3 @@ export function ListSkeleton() {
     </div>
   );
 }
-
-export function DetailSkeleton() {
-  return (
-    <div className="wrap stack-18" aria-hidden>
-      <div className="row-sk">
-        <Skeleton className="sk-icon lg" />
-        <div className="grow stack-8">
-          <Skeleton className="sk-line w-50" />
-          <Skeleton className="sk-line w-30" />
-        </div>
-      </div>
-      <div className="stats">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="sk-stat" />
-        ))}
-      </div>
-      <div className="rail">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="sk-shot" />
-        ))}
-      </div>
-      <Skeleton className="sk-block" />
-    </div>
-  );
-}
