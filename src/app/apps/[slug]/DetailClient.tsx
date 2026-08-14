@@ -371,7 +371,18 @@ export function DetailClient({ app }: { app: AppItem }) {
           />
         )}
         <div className="hero-main">
-          <h1>{app.title}</h1>
+          <div className="hero-title-row">
+            <h1>{app.title}</h1>
+            <button
+              type="button"
+              className={`icon-btn heart ${wished ? "on" : ""}`}
+              aria-label={wished ? "Hapus dari wishlist" : "Tambah ke wishlist"}
+              aria-pressed={wished}
+              onClick={onWishlist}
+            >
+              <Sym name="favorite" size={20} fill={wished} />
+            </button>
+          </div>
           <Link href={`/profile/dev/${dev.id}`} className="dev">
             {app.developer}
             {dev.verified && (
@@ -415,7 +426,7 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </div>
 
-      {/* AKSI */}
+      {/* AKSI — satu tombol penuh, heart ada di baris judul, share di nav atas */}
       <div className="wrap action-row">
         <LoadingButton
           block
@@ -426,22 +437,6 @@ export function DetailClient({ app }: { app: AppItem }) {
         >
           {ctaContent()}
         </LoadingButton>
-        <button
-          type="button"
-          className={`icon-btn heart ${wished ? "on" : ""}`}
-          aria-label={wished ? "Hapus dari wishlist" : "Tambah ke wishlist"}
-          onClick={onWishlist}
-        >
-          <Sym name="favorite" size={20} fill={wished} />
-        </button>
-        <button
-          type="button"
-          className="icon-btn"
-          aria-label="Bagikan"
-          onClick={onShare}
-        >
-          <Sym name="share" size={19} />
-        </button>
       </div>
 
       {/* CUPLIKAN */}

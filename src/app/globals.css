@@ -39,6 +39,9 @@
   --sk-b: #221c30;
   --glow: rgba(124, 58, 237, 0.14);
   --viewer-bg: rgba(0, 0, 0, 0.95);
+  --metal-hi: rgba(255, 255, 255, 0.16);
+  --metal-lo: rgba(0, 0, 0, 0.42);
+  --hairline-hi: rgba(255, 255, 255, 0.07);
   --radius: 18px;
   --nav: 64px;
   --top: 64px;
@@ -85,6 +88,9 @@
   --sk-b: #efe9fb;
   --glow: rgba(124, 58, 237, 0.1);
   --viewer-bg: rgba(10, 10, 14, 0.96);
+  --metal-hi: rgba(255, 255, 255, 0.9);
+  --metal-lo: rgba(23, 23, 29, 0.08);
+  --hairline-hi: #ffffff;
 }
 
 * {
@@ -140,11 +146,20 @@ body {
 body {
   font-family: var(--font-ui), ui-sans-serif, "Segoe UI", Helvetica, Arial, sans-serif;
   background:
-    radial-gradient(800px 420px at 10% -10%, var(--glow), transparent 55%),
-    var(--bg);
+    radial-gradient(900px 460px at 12% -8%, var(--glow), transparent 55%),
+    radial-gradient(640px 380px at 106% -4%, rgba(124, 58, 237, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
   color: var(--text);
   line-height: 1.55;
   letter-spacing: -0.011em;
+  transition: background-color 0.25s ease;
+}
+
+[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 460px at 12% -8%, var(--glow), transparent 55%),
+    radial-gradient(640px 380px at 106% -4%, rgba(124, 58, 237, 0.08), transparent 60%),
+    linear-gradient(180deg, #060609 0%, var(--bg) 34%);
 }
 
 a {
@@ -210,8 +225,8 @@ button {
   top: 0;
   z-index: 30;
   background: var(--topbar-bg);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid transparent;
+  backdrop-filter: blur(18px) saturate(1.2);
+  border-bottom: 1px solid var(--line);
 }
 
 .topbar-inner {
@@ -252,13 +267,23 @@ button {
 
 .logo {
   text-decoration: none;
-  font-weight: 750;
+  font-weight: 800;
   letter-spacing: -0.045em;
-  font-size: 17px;
+  font-size: 18px;
+  background: linear-gradient(100deg, #c4b5fd 0%, #8b5cf6 45%, #a78bfa 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 12px rgba(139, 92, 246, 0.35));
 }
 
 .logo b {
-  color: var(--lilac);
+  color: inherit;
+}
+
+[data-theme="light"] .logo {
+  background: linear-gradient(100deg, #6d28d9 0%, #7c3aed 55%, #8b5cf6 90%);
+  filter: none;
 }
 
 .search-pill {
@@ -268,8 +293,11 @@ button {
   height: 42px;
   padding: 0 14px;
   border-radius: 999px;
-  background: var(--metal);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 42%),
+    var(--metal);
   border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--metal-hi);
   color: var(--mute);
   text-decoration: none;
   font-size: 14px;
@@ -281,11 +309,14 @@ button {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, #7c3aed, #1e1b4b);
+  background: linear-gradient(160deg, #8b5cf6, #2a1a5e 80%);
   color: #fff;
   font-weight: 700;
   font-size: 13px;
   text-decoration: none;
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
 .avatar.lg {
@@ -351,9 +382,12 @@ button {
 }
 
 .chip.on {
-  background: var(--chip-on);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 46%),
+    var(--chip-on);
   border-color: var(--violet-strong);
   color: var(--chip-on-text);
+  box-shadow: inset 0 1px 0 var(--metal-hi);
 }
 
 .rail-head {
@@ -481,7 +515,10 @@ button {
   letter-spacing: -0.05em;
   color: #fff;
   flex: 0 0 auto;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.35);
 }
 
 .glyph.sm {
@@ -594,8 +631,20 @@ button {
 }
 
 .lbtn.solid {
-  background: linear-gradient(180deg, #9f67ff, var(--violet-2));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.07) 40%, transparent 58%),
+    linear-gradient(180deg, #a78bfa 0%, #7c3aed 52%, #6d28d9 100%);
   color: #fff;
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 6px 18px rgba(124, 58, 237, 0.3);
+}
+
+.lbtn.solid:active {
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(124, 58, 237, 0.2);
 }
 
 .lbtn.ghost {
@@ -859,14 +908,17 @@ button {
 }
 
 .panel {
-  background: var(--bg-2);
+  background: linear-gradient(180deg, var(--surface), var(--bg-2) 130%);
   border: 1px solid var(--line);
+  border-top-color: var(--hairline-hi);
   border-radius: var(--radius);
   padding: 18px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 [data-theme="light"] .panel {
+  background: linear-gradient(180deg, #ffffff, #f6f6f9 130%);
   box-shadow: 0 1px 3px rgba(23, 23, 29, 0.05);
 }
 
@@ -931,8 +983,14 @@ button {
 .msym {
   font-family: "Material Symbols Rounded", sans-serif;
   line-height: 1;
-  display: inline-block;
+  display: inline-grid;
+  place-items: center;
+  width: 1em;
+  height: 1em;
   flex: 0 0 auto;
+  letter-spacing: 0;
+  font-style: normal;
+  text-transform: none;
 }
 
 .bottom a .msym {
@@ -1095,6 +1153,43 @@ button {
   color: #fb7185;
   border-color: var(--heart-line);
   background: var(--heart-bg);
+}
+
+/* AKSI UTAMA — tombol Install penuh, heart di baris judul */
+.action-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 16px 8px;
+}
+
+.hero-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hero-title-row h1 {
+  min-width: 0;
+}
+
+.hero-title-row .heart {
+  flex: 0 0 auto;
+}
+
+.ad-note {
+  font-size: 11px;
+  color: var(--mute);
+}
+
+.break-label {
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.search-page {
+  padding-top: 4px;
 }
 
 /* SEKSI DETAIL */
@@ -1528,7 +1623,9 @@ button {
   z-index: 60;
   max-width: 90vw;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .toast.on {
@@ -1703,8 +1800,13 @@ button {
 }
 
 .bottom a.active .nav-item {
-  background: var(--pill-on);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 46%),
+    var(--pill-on);
   color: var(--lilac);
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    0 4px 14px rgba(124, 58, 237, 0.22);
 }
 
 .bottom a.active .nav-label {
@@ -1742,8 +1844,11 @@ button {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, var(--chip-on), #14141a);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 48%),
+    linear-gradient(160deg, #2c1a52, #131318 90%);
   color: var(--lilac);
+  box-shadow: inset 0 1px 0 var(--metal-hi);
 }
 
 .cat-card strong {
@@ -2127,8 +2232,7 @@ button {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  padding: 12px 0 4px;
-  border-bottom: 1px solid var(--line);
+  padding: 14px 0 2px;
 }
 
 .stat {
@@ -2396,12 +2500,17 @@ button:active {
   border-radius: 20px;
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, #7c3aed, #1e1b4b);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 46%),
+    linear-gradient(160deg, #8b5cf6, #231457 82%);
   color: #fff;
   font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.05em;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 10px 26px rgba(124, 58, 237, 0.35);
 }
 
 .login-mark b {
@@ -2883,10 +2992,15 @@ button:active {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(120deg, #1e1b4b, #7c3aed);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.13), transparent 44%),
+    linear-gradient(120deg, #1e1b4b 0%, #7c3aed 110%);
   border-radius: 22px;
   padding: 22px 20px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 10px 30px rgba(124, 58, 237, 0.22);
 }
 
 .dev-logo {

@@ -27,7 +27,7 @@ export function UserProfileView({ id }: { id: string }) {
         <Link href="/apps" className="icon-btn" aria-label="Kembali">
           <Sym name="arrow_back" size={20} />
         </Link>
-        <p className="profile-path">/profile/u/{u.id}</p>
+        <p className="profile-path">Profil pengguna</p>
       </div>
 
       <div className="profile-head">
@@ -110,7 +110,7 @@ export function DeveloperProfileView({ id }: { id: string }) {
         <Link href="/apps" className="icon-btn" aria-label="Kembali">
           <Sym name="arrow_back" size={20} />
         </Link>
-        <p className="profile-path">/profile/dev/u/{dev.id}</p>
+        <p className="profile-path">Profil developer</p>
       </div>
 
       <div className="dev-banner">
