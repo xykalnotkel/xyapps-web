@@ -32,6 +32,7 @@
   --paid-line: #3b2066;
   --violet-strong: #5b21b6;
   --violet-2: #6d28d9;
+  --age-fg: #d7d7de;
   --notif-ok-bg: #123227;
   --notif-lilac-bg: #241539;
   --notif-indigo-bg: #1c2140;
@@ -81,6 +82,7 @@
   --paid-line: #dccbfb;
   --violet-strong: #7c3aed;
   --violet-2: #8b5cf6;
+  --age-fg: #494954;
   --notif-ok-bg: #d3f5e6;
   --notif-lilac-bg: #ece7fe;
   --notif-indigo-bg: #e3e8ff;
@@ -2993,17 +2995,13 @@ button:active {
    XYAPPS v8 — badge rating umur, halaman rating, peringatan kompat
    ============================================================ */
 
-/* BADGE RATING UMUR — kotak outline, angka transparan, plus di pojok */
+/* BADGE RATING UMUR — netral abu-putih, cocok dark & light */
 .age-badge {
   display: inline-flex;
   align-items: center;
-  color: #fff;
+  color: var(--age-fg);
   flex: 0 0 auto;
   line-height: 0;
-}
-
-[data-theme="light"] .age-badge {
-  color: #17171d;
 }
 
 .age-svg {
@@ -3041,6 +3039,23 @@ button:active {
 
 .age-badge.lg .age-plus {
   font-size: 11px;
+}
+
+/* ARTWORK ASLI (18+) — gambar putih, dibalik jadi abu-gelap di terang */
+.age-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+}
+
+.age-badge.lg .age-img {
+  width: 38px;
+  height: 38px;
+}
+
+[data-theme="light"] .age-img {
+  filter: invert(0.8) contrast(1.05);
 }
 
 /* PERINGATAN KOMPATIBILITAS */

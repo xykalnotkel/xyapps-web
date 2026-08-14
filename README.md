@@ -114,7 +114,7 @@ npm run start
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
 - Banner "Lanjut ke aplikasi" muncul sekali per perangkat (dismiss tersimpan) — disiapkan untuk versi aplikasi native XyApps
-- Badge rating umur: kotak outline + angka transparan (tembus) + tanda plus di pojok kotak, monokrom
+- Badge rating umur: netral abu-putih agar cocok di tema gelap dan terang (var --age-fg). Level 18+ memakai artwork asli XyStudio (public/gen/icons/age-18.png dari desain Alight Motion); level lain SVG dengan gaya yang sama
 - Icon app tampil rata tanpa box/background (fallback gradien hanya untuk app tanpa gambar)
 - Profil developer: cover gradien berpola, badge terverifikasi, chip lokasi, kontak, stats, daftar app
 - Simulasi perangkat 32-bit tersedia di Pengaturan (uji alur tombol unduh hilang)
