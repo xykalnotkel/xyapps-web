@@ -14,6 +14,8 @@ export type ReviewItem = {
   hue: number;
   rating: number;
   date: string;
+  /** Timestamp untuk sort "Terbaru" (mock, urutan relatif). */
+  ts?: number;
   text: string;
   helpful: number;
   reply?: { user: string; date: string; text: string };
@@ -62,6 +64,7 @@ export type AppItem = {
   similar: string[];
   moreFromDev: string[];
   website?: string;
+  supportEmail: string;
   repoUrl?: string;
 };
 
@@ -127,6 +130,7 @@ export const APPS: AppItem[] = [
         hue: 262,
         rating: 5,
         date: "12 Agu 2026",
+        ts: 1767686400000,
         text: "Baru nyoba versi 1.4.2. Sleep timer-nya nolong banget buat dengerin musik sebelum tidur. Install lewat tiket agak beda dari toko lain, tapi sekali setup langsung kebiasa.",
         helpful: 34,
         reply: {
@@ -141,6 +145,7 @@ export const APPS: AppItem[] = [
         hue: 320,
         rating: 5,
         date: "9 Agu 2026",
+        ts: 1767427200000,
         text: "Tanpa iklan beneran. Library offline-nya cepet, ga ada loading nyangkut pas ganti lagu.",
         helpful: 21,
       },
@@ -150,6 +155,7 @@ export const APPS: AppItem[] = [
         hue: 210,
         rating: 4,
         date: "4 Agu 2026",
+        ts: 1766995200000,
         text: "Mantap buat file lokal. Minta fitur queue seret-tarik dan lyric timer di rilis berikutnya.",
         helpful: 12,
         reply: {
@@ -164,6 +170,7 @@ export const APPS: AppItem[] = [
         hue: 24,
         rating: 3,
         date: "28 Jul 2026",
+        ts: 1766390400000,
         text: "Di HP lama saya animasi equalizer agak berat. Mode hemat performa tolong dibikin biar tetap mulus.",
         helpful: 8,
       },
@@ -181,6 +188,8 @@ export const APPS: AppItem[] = [
     ],
     similar: ["field-notes", "kilometer"],
     moreFromDev: ["field-notes", "kilometer", "lantern"],
+    website: "northroom.xystudio.my.id",
+    supportEmail: "studio@xystudio.my.id",
   },
   {
     slug: "vaultline",
@@ -230,6 +239,7 @@ export const APPS: AppItem[] = [
     ],
     similar: ["lantern", "northroom"],
     moreFromDev: ["northroom", "field-notes", "kilometer"],
+    supportEmail: "studio@xystudio.my.id",
   },
   {
     slug: "kilometer",
@@ -277,6 +287,7 @@ export const APPS: AppItem[] = [
         hue: 160,
         rating: 5,
         date: "11 Agu 2026",
+        ts: 1767600000000,
         text: "Ringan, langsung kebuka tanpa akun. Grafik mingguannya bersih dan gampang dibaca.",
         helpful: 9,
       },
@@ -286,6 +297,7 @@ export const APPS: AppItem[] = [
         hue: 200,
         rating: 4,
         date: "30 Jul 2026",
+        ts: 1766563200000,
         text: "Buat lari santai cukup. Export GPX masih ditunggu biar bisa dipindah ke app lain.",
         helpful: 5,
       },
@@ -301,6 +313,7 @@ export const APPS: AppItem[] = [
     ],
     similar: ["lantern", "field-notes"],
     moreFromDev: ["northroom", "field-notes", "lantern"],
+    supportEmail: "studio@xystudio.my.id",
     website: "kilometer.xystudio.my.id",
   },
   {
@@ -354,6 +367,7 @@ export const APPS: AppItem[] = [
         hue: 240,
         rating: 4,
         date: "8 Agu 2026",
+        ts: 1767340800000,
         text: "Markdown-nya nyaman dipakai tiap hari. Sinkron antar perangkat belum ada, semoga masuk di 0.4.",
         helpful: 6,
       },
@@ -363,6 +377,7 @@ export const APPS: AppItem[] = [
         hue: 300,
         rating: 5,
         date: "25 Jul 2026",
+        ts: 1766131200000,
         text: "Simpel, ga ribet. Export teks langsung jalan tanpa langkah aneh.",
         helpful: 4,
       },
@@ -374,6 +389,8 @@ export const APPS: AppItem[] = [
     dataSafety: ["Tidak ada data dikumpulkan", "Semua data di perangkat", "Tidak ada iklan"],
     similar: ["northroom", "lantern"],
     moreFromDev: ["northroom", "kilometer", "lantern"],
+    website: "fieldnotes.xystudio.my.id",
+    supportEmail: "studio@xystudio.my.id",
   },
   {
     slug: "lantern",
@@ -420,6 +437,7 @@ export const APPS: AppItem[] = [
         hue: 280,
         rating: 4,
         date: "31 Jul 2026",
+        ts: 1766649600000,
         text: "Status chip jelas dilihat sekilas. Kadang masih harus refresh manual, auto-poll menyusul ya.",
         helpful: 3,
       },
@@ -429,6 +447,7 @@ export const APPS: AppItem[] = [
         hue: 12,
         rating: 3,
         date: "18 Jul 2026",
+        ts: 1765526400000,
         text: "Masih demo, jangan dipakai buat produksi dulu. Struktur halamannya sudah oke.",
         helpful: 2,
       },
@@ -438,6 +457,7 @@ export const APPS: AppItem[] = [
     similar: ["kilometer", "vaultline"],
     moreFromDev: ["northroom", "field-notes", "kilometer"],
     website: "lantern.xystudio.my.id",
+    supportEmail: "studio@xystudio.my.id",
   },
 ];
 

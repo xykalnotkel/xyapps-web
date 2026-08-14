@@ -64,9 +64,13 @@ npm run start
 
 ## UX yang sengaja ditiru dari Play Store
 
-- Bottom nav berikon dengan dua versi per icon: fill saat aktif, outline saat tidak (satu font, sumbu FILL)
-- Detail app: rating bintang + distribusi per bintang + daftar ulasan + tombol bermanfaat + balasan developer
+- Bottom nav berikon dengan dua versi per icon: fill saat aktif, outline saat tidak (satu font, sumbu FILL). Tab aktif muncul dalam pill
+- Beranda: banner hero berputar (auto-advance + titik navigasi), rail kategori, pilihan untukmu, teratas, terbaru
+- Pencarian: dropdown saran langsung di topbar, riwayat pencarian, kata kunci populer di katalog
+- Detail app: rating bintang + distribusi per bintang + daftar ulasan (sort relevan/terbaru/membantu, filter per bintang) + tombol bermanfaat + balasan developer
+- Cuplikan: rail dengan titik posisi, viewer layar penuh dengan panah, swipe sentuh, navigasi keyboard
 - Sticky install bar dengan progres mengunduh palsu (ticket -> unduh -> pasang -> buka)
+- "Tentang aplikasi ini" bisa dibuka-tutup, kontak email developer, tombol laporkan aplikasi
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xyapps.my.id`, URL origin tidak pernah dikirim ke browser

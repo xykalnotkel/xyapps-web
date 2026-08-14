@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { Sym } from "@/components/Icon";
 import { useSession } from "@/components/Session";
+import { addRecent } from "@/lib/recent";
+import { APPS } from "@/lib/data";
 import type { SymName } from "@/lib/symbols";
 
 type Tab = {
@@ -41,14 +43,35 @@ export function TopBar() {
   const router = useRouter();
   const { user } = useSession();
   const [q, setQ] = useState("");
+  const [focus, setFocus] = useState(false);
   const hideSearch = path.startsWith("/apps/") && path !== "/apps";
+
+  const matches = useMemo(() => {
+    const t = q.trim().toLowerCase();
+    if (!t) return [];
+    return APPS.filter((a) =>
+      `${a.title} ${a.tagline} ${a.category} ${a.developer}`
+        .toLowerCase()
+        .includes(t),
+    ).slice(0, 5);
+  }, [q]);
 
   if (hideSearch) return null;
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
     const t = q.trim();
-    router.push(t ? `/apps?q=${encodeURIComponent(t)}` : "/apps");
+    if (!t) return;
+    addRecent(t);
+    router.push(`/apps?q=${encodeURIComponent(t)}`);
+    setFocus(false);
+  }
+
+  function goDetail(slug: string) {
+    addRecent(q.trim());
+    setQ("");
+    setFocus(false);
+    router.push(`/apps/${slug}`);
   }
 
   return (
@@ -62,6 +85,8 @@ export function TopBar() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onFocus={() => setFocus(true)}
+            onBlur={() => window.setTimeout(() => setFocus(false), 150)}
             placeholder="Cari aplikasi"
             aria-label="Cari aplikasi"
           />
@@ -74,6 +99,50 @@ export function TopBar() {
             >
               <Sym name="close" size={15} />
             </button>
+          )}
+          {focus && matches.length > 0 && (
+            <div className="search-pop">
+              {matches.map((a) => (
+                <button
+                  key={a.slug}
+                  type="button"
+                  className="pop-item"
+                  onClick={() => goDetail(a.slug)}
+                >
+                  <span
+                    className="pop-glyph"
+                    style={{
+                      background: `linear-gradient(160deg, ${a.accent}, #121218)`,
+                    }}
+                  >
+                    {a.icon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={a.icon} alt="" className="glyph-pic" />
+                    ) : (
+                      a.initials
+                    )}
+                  </span>
+                  <span className="pop-text">
+                    <strong>{a.title}</strong>
+                    <em>
+                      {a.developer} · {a.category}
+                    </em>
+                  </span>
+                </button>
+              ))}
+              <button
+                type="button"
+                className="pop-item pop-all"
+                onClick={() => {
+                  addRecent(q.trim());
+                  setFocus(false);
+                  router.push(`/apps?q=${encodeURIComponent(q.trim())}`);
+                }}
+              >
+                <Sym name="search" size={15} />
+                Lihat semua hasil untuk “{q.trim()}”
+              </button>
+            </div>
           )}
         </form>
         <Link href={user ? "/me" : "/login"} className="avatar" aria-label="Akun">
@@ -91,9 +160,16 @@ export function BottomNav() {
       {tabs.map((t) => {
         const on = t.match(path);
         return (
-          <Link key={t.href} href={t.href} className={on ? "active" : ""} aria-current={on ? "page" : undefined}>
-            <Sym name={t.icon} size={24} fill={on} />
-            <span>{t.label}</span>
+          <Link
+            key={t.href}
+            href={t.href}
+            className={on ? "active" : ""}
+            aria-current={on ? "page" : undefined}
+          >
+            <span className="nav-item">
+              <Sym name={t.icon} size={24} fill={on} />
+              <span className="nav-label">{t.label}</span>
+            </span>
           </Link>
         );
       })}

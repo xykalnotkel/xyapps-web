@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { Modal } from "@/components/ui/Modal";
@@ -32,7 +32,17 @@ type InstallPhase =
   | "downloading"
   | "installing"
   | "done";
-type SheetKind = "install" | "perms" | "share" | null;
+type SheetKind = "install" | "perms" | "share" | "report" | null;
+
+type ReviewSort = "rel" | "new" | "help";
+
+const REPORT_REASONS = [
+  "Menipu atau spam",
+  "Konten berbahaya",
+  "Melanggar lisensi",
+  "Salinan tidak resmi",
+  "Lainnya",
+];
 
 const RKEY = (slug: string) => `xyapps.reviews.${slug}`;
 const HKEY = "xyapps.helpful";
@@ -72,9 +82,15 @@ export function DetailClient({ app }: { app: AppItem }) {
   const [showOldChangelog, setShowOldChangelog] = useState(false);
   const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
   const [helpful, setHelpful] = useState<Set<string>>(new Set());
+  const [shotIdx, setShotIdx] = useState(0);
+  const [reviewSort, setReviewSort] = useState<ReviewSort>("rel");
+  const [starFilter, setStarFilter] = useState(0);
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   const timer = useRef<number | null>(null);
   const interval = useRef<number | null>(null);
+  const railRef = useRef<HTMLDivElement | null>(null);
+  const touchX = useRef<number | null>(null);
 
   const ticket = useMemo(
     () => `https://dl.xyapps.my.id/d/${app.slug}/e71ed747-demo-${app.version.replace(/\./g, "")}`,
@@ -82,9 +98,76 @@ export function DetailClient({ app }: { app: AppItem }) {
   );
 
   const rated = app.ratingCount > 0;
-  const allReviews = [...myReviews, ...app.reviews];
+  const allReviews = useMemo(
+    () => [...myReviews, ...app.reviews],
+    [myReviews, app.reviews],
+  );
   const latest = app.changelog[0];
   const older = app.changelog.slice(1);
+
+  const visibleReviews = useMemo(() => {
+    let list = allReviews.filter((r) => starFilter === 0 || r.rating === starFilter);
+    if (reviewSort === "new") list = [...list].sort((a, b) => (b.ts ?? 0) - (a.ts ?? 0));
+    if (reviewSort === "help")
+      list = [...list].sort(
+        (a, b) => b.helpful - a.helpful || (b.ts ?? 0) - (a.ts ?? 0),
+      );
+    return list;
+  }, [allReviews, starFilter, reviewSort]);
+
+  const starCounts = useMemo(() => {
+    const counts = [0, 0, 0, 0, 0];
+    allReviews.forEach((r) => {
+      const i = 5 - r.rating;
+      if (i >= 0 && i < 5) counts[i] += 1;
+    });
+    return counts;
+  }, [allReviews]);
+
+  function onRailScroll() {
+    const el = railRef.current;
+    if (!el) return;
+    const kids = Array.from(el.children) as HTMLElement[];
+    const mid = el.scrollLeft + el.clientWidth / 2;
+    let best = 0;
+    let bestDist = Infinity;
+    kids.forEach((k, i) => {
+      const c = k.offsetLeft + k.offsetWidth / 2;
+      const d = Math.abs(c - mid);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    });
+    setShotIdx(best);
+  }
+
+  function goShot(i: number) {
+    const el = railRef.current;
+    const target = el?.children[i] as HTMLElement | undefined;
+    if (el && target) el.scrollTo({ left: Math.max(target.offsetLeft - 16, 0), behavior: "smooth" });
+  }
+
+  const shotCount = app.screenshots.length;
+
+  const nextShot = useCallback(() => {
+    setPreview((p) => (p === null ? 0 : (p + 1) % shotCount));
+  }, [shotCount]);
+
+  const prevShot = useCallback(() => {
+    setPreview((p) => (p === null ? 0 : (p - 1 + shotCount) % shotCount));
+  }, [shotCount]);
+
+  // Navigasi keyboard di viewer cuplikan.
+  useEffect(() => {
+    if (preview === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextShot();
+      if (e.key === "ArrowLeft") prevShot();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [preview, nextShot, prevShot]);
 
   // Sinkron state dari localStorage setelah hidrasi, bukan saat render awal.
   useEffect(() => {
@@ -166,6 +249,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       hue: 265,
       rating,
       date: "Hari ini",
+      ts: Date.now(),
       text: text.trim(),
       helpful: 0,
     };
@@ -289,7 +373,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       </div>
 
       {/* CUPLIKAN */}
-      <div className="rail pad-left shots-rail">
+      <div className="rail pad-left shots-rail" ref={railRef} onScroll={onRailScroll}>
         {app.screenshots.map((s, i) => (
           <SmartImage
             key={s.src}
@@ -301,6 +385,17 @@ export function DetailClient({ app }: { app: AppItem }) {
             className={s.landscape ? "shot-land" : "shot-port"}
             rounded="xl"
             onClick={() => setPreview(i)}
+          />
+        ))}
+      </div>
+      <div className="wrap shot-dots" aria-label="Posisi cuplikan">
+        {app.screenshots.map((s, i) => (
+          <button
+            key={s.src}
+            type="button"
+            className={i === shotIdx ? "on" : ""}
+            aria-label={`Ke cuplikan ${i + 1}`}
+            onClick={() => goShot(i)}
           />
         ))}
       </div>
@@ -407,17 +502,63 @@ export function DetailClient({ app }: { app: AppItem }) {
             <p>Belum ada ulasan untuk aplikasi ini.</p>
           </div>
         ) : (
-          <div className="stack-12">
-            {allReviews.map((r) => (
-              <ReviewCard
-                key={r.id}
-                r={r}
-                mine={myReviews.some((m) => m.id === r.id)}
-                helpfulOn={helpful.has(r.id)}
-                onHelpful={() => toggleHelpful(r.id)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="review-controls">
+              <div className="chip-row review-stars">
+                {[0, 5, 4, 3, 2, 1].map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    className={`chip ${starFilter === s ? "on" : ""}`}
+                    onClick={() => setStarFilter(s)}
+                  >
+                    {s === 0 ? "Semua" : `${s}`}
+                    {s > 0 && <Sym name="star" size={12} fill className="chip-star" />}
+                    <span className="chip-count">
+                      {s === 0 ? allReviews.length : starCounts[5 - s]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <div className="sort-group">
+                {(
+                  [
+                    ["rel", "Paling relevan"],
+                    ["new", "Terbaru"],
+                    ["help", "Paling membantu"],
+                  ] as const
+                ).map(([k, l]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={`sort-btn ${reviewSort === k ? "on" : ""}`}
+                    onClick={() => setReviewSort(k)}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {visibleReviews.length === 0 ? (
+              <div className="empty">
+                <p>
+                  Tidak ada ulasan bintang {starFilter} dengan filter ini.
+                </p>
+              </div>
+            ) : (
+              <div className="stack-12">
+                {visibleReviews.map((r) => (
+                  <ReviewCard
+                    key={r.id}
+                    r={r}
+                    mine={myReviews.some((m) => m.id === r.id)}
+                    helpfulOn={helpful.has(r.id)}
+                    onHelpful={() => toggleHelpful(r.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </section>
 
@@ -436,7 +577,18 @@ export function DetailClient({ app }: { app: AppItem }) {
       {/* TENTANG */}
       <section className="wrap detail-sec">
         <h2>Tentang aplikasi ini</h2>
-        <p className="body">{app.description}</p>
+        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
+        {app.description.length > 140 && (
+          <button
+            type="button"
+            className="text-btn"
+            onClick={() => setAboutOpen((v) => !v)}
+            aria-expanded={aboutOpen}
+          >
+            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
+            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
+          </button>
+        )}
         <div className="about-rows">
           <Row k="Versi" v={app.version} />
           <Row k="Diperbarui" v={app.updated} />
@@ -445,6 +597,13 @@ export function DetailClient({ app }: { app: AppItem }) {
           <Row k="Dirilis" v={app.released} />
           <Row k="Pengembang" v={app.developer} />
           <Row k="Platform" v={app.platform} />
+          <a
+            className="about-row about-btn"
+            href={`mailto:${app.supportEmail}`}
+          >
+            <span>Email pengembang</span>
+            <span className="about-val">{app.supportEmail}</span>
+          </a>
           <button
             type="button"
             className="about-row about-btn"
@@ -470,6 +629,13 @@ export function DetailClient({ app }: { app: AppItem }) {
             <li key={x}>{x}</li>
           ))}
         </ul>
+        <button
+          type="button"
+          className="report-btn"
+          onClick={() => setSheet("report")}
+        >
+          <Sym name="flag" size={15} /> Laporkan aplikasi
+        </button>
       </section>
 
       {/* MIRIP / LAINNYA DARI PENGEMBANG */}
@@ -579,6 +745,31 @@ export function DetailClient({ app }: { app: AppItem }) {
         </p>
       </BottomSheet>
 
+      {/* SHEET: LAPORKAN */}
+      <BottomSheet
+        open={sheet === "report"}
+        title="Laporkan aplikasi"
+        onClose={() => setSheet(null)}
+      >
+        <div className="stack-12">
+          <p>Pilih alasan. Laporan masuk ke tim XyStudio (mock).</p>
+          {REPORT_REASONS.map((r) => (
+            <button
+              key={r}
+              type="button"
+              className="report-item"
+              onClick={() => {
+                setSheet(null);
+                show("Laporan terkirim (mock)");
+              }}
+            >
+              {r}
+              <Sym name="chevron_right" size={16} />
+            </button>
+          ))}
+        </div>
+      </BottomSheet>
+
       {/* SHEET: BAGIKAN */}
       <BottomSheet open={sheet === "share"} title="Bagikan" onClose={() => setSheet(null)}>
         <div className="stack-12">
@@ -600,18 +791,47 @@ export function DetailClient({ app }: { app: AppItem }) {
         onClose={() => setPreview(null)}
       >
         {preview !== null && (
-          <SmartImage
-            src={app.screenshots[preview].src}
-            label={app.screenshots[preview].label}
-            accent={preview % 2 ? app.accent2 : app.accent}
-            accent2={preview % 2 ? app.accent : app.accent2}
-            delay={80}
-            className={
-              app.screenshots[preview].landscape ? "preview-img land" : "preview-img"
-            }
-            rounded="xl"
-            fit="contain"
-          />
+          <div
+            className="viewer"
+            onTouchStart={(e) => {
+              touchX.current = e.touches[0].clientX;
+            }}
+            onTouchEnd={(e) => {
+              if (touchX.current === null) return;
+              const dx = e.changedTouches[0].clientX - touchX.current;
+              if (Math.abs(dx) > 40) {
+                if (dx < 0) nextShot();
+                else prevShot();
+              }
+              touchX.current = null;
+            }}
+          >
+            <SmartImage
+              src={app.screenshots[preview].src}
+              label={app.screenshots[preview].label}
+              accent={preview % 2 ? app.accent2 : app.accent}
+              accent2={preview % 2 ? app.accent : app.accent2}
+              delay={80}
+              className={
+                app.screenshots[preview].landscape ? "preview-img land" : "preview-img"
+              }
+              rounded="xl"
+              fit="contain"
+            />
+          </div>
+        )}
+        {preview !== null && shotCount > 1 && (
+          <div className="viewer-bar">
+            <button type="button" className="icon-btn" onClick={prevShot} aria-label="Sebelumnya">
+              <Sym name="chevron_left" size={18} />
+            </button>
+            <span>
+              {preview + 1} / {shotCount}
+            </span>
+            <button type="button" className="icon-btn" onClick={nextShot} aria-label="Berikutnya">
+              <Sym name="chevron_right" size={18} />
+            </button>
+          </div>
         )}
       </Modal>
 

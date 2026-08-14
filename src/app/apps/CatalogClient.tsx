@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppRow } from "@/components/AppRow";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 import { useMockLoad } from "@/hooks/useMockLoad";
 import { Sym } from "@/components/Icon";
+import { addRecent, clearRecent, readRecent } from "@/lib/recent";
 import { APPS } from "@/lib/data";
 
 const FILTERS = [
@@ -22,6 +23,8 @@ const FILTERS = [
   "Developer",
 ] as const;
 
+const POPULAR = ["northroom", "Musik", "Kotlin", "Tools", "Rust", "Tauri"];
+
 type Sort = "pop" | "new";
 
 export function CatalogClient() {
@@ -31,7 +34,14 @@ export function CatalogClient() {
   const [q, setQ] = useState(presetQ);
   const [f, setF] = useState<string>(preset && preset !== "Untukmu" ? preset : "Semua");
   const [sort, setSort] = useState<Sort>("pop");
+  const [recent, setRecent] = useState<string[]>([]);
   const ready = useMockLoad(520);
+
+  // Muat riwayat setelah hidrasi supaya markup server dan klien identik.
+  useEffect(() => {
+    const id = window.setTimeout(() => setRecent(readRecent()), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const list = useMemo(() => {
     const filtered = APPS.filter((a) => {
@@ -59,7 +69,62 @@ export function CatalogClient() {
         placeholder="Cari aplikasi, stack, kategori"
         value={q}
         onChange={(e) => setQ(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && q.trim()) {
+            addRecent(q);
+            setRecent(readRecent());
+          }
+        }}
+        onBlur={() => setRecent(readRecent())}
       />
+      {!q && (
+        <div className="suggest-block">
+          <p className="suggest-title">
+            <Sym name="trending_up" size={15} /> Populer dicari
+          </p>
+          <div className="chip-row">
+            {POPULAR.map((name) => (
+              <button
+                key={name}
+                className="chip suggest"
+                onClick={() => setQ(name)}
+                type="button"
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+          {recent.length > 0 && (
+            <>
+              <p className="suggest-title">
+                <Sym name="history" size={15} /> Terakhir dicari
+                <button
+                  type="button"
+                  className="text-btn"
+                  onClick={() => {
+                    clearRecent();
+                    setRecent([]);
+                  }}
+                >
+                  Hapus
+                </button>
+              </p>
+              <div className="chip-row">
+                {recent.map((name) => (
+                  <button
+                    key={name}
+                    className="chip suggest"
+                    onClick={() => setQ(name)}
+                    type="button"
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
       <div className="chip-row">
         {FILTERS.map((name) => (
           <button
@@ -73,9 +138,7 @@ export function CatalogClient() {
         ))}
       </div>
       <div className="list-meta">
-        <span>
-          {ready ? `${list.length} hasil` : "Memuat…"}
-        </span>
+        <span>{ready ? `${list.length} hasil` : "Memuat…"}</span>
         <button
           type="button"
           className="sort-btn"

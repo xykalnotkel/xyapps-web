@@ -17,6 +17,7 @@ export function HomeSkeleton() {
           <Skeleton key={i} className="sk-chip" />
         ))}
       </div>
+      <Skeleton className="sk-banner" />
       <div className="rail">
         {Array.from({ length: 3 }).map((_, i) => (
           <Skeleton key={i} className="sk-feature" />

@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { AppRow } from "@/components/AppRow";
+import { CategoryRail } from "@/components/CategoryRail";
 import { FeaturedCard } from "@/components/FeaturedCard";
+import { HeroBanner } from "@/components/HeroBanner";
 import { HomeSkeleton } from "@/components/ui/Skeleton";
 import { APPS } from "@/lib/data";
 import { useMockLoad } from "@/hooks/useMockLoad";
@@ -38,6 +40,17 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+
+      <section className="wrap banner-sec">
+        <HeroBanner />
+      </section>
+
+      <section>
+        <div className="wrap rail-head">
+          <h2>Kategori</h2>
+        </div>
+        <CategoryRail />
+      </section>
 
       <section>
         <div className="wrap rail-head">
