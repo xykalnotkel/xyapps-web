@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useSession } from "@/components/Session";
+import { LoadingButton } from "@/components/ui/LoadingButton";
 
 export default function MePage() {
   const { user, ready, logout } = useSession();
 
   if (!ready) {
     return (
-      <div className="wrap section">
+      <div className="wrap page-inner">
         <p className="sub">Memuat sesi…</p>
       </div>
     );
@@ -16,10 +17,10 @@ export default function MePage() {
 
   if (!user) {
     return (
-      <div className="wrap section">
-        <h2>Akun</h2>
+      <div className="wrap page-inner stack-16">
+        <h1 className="page-title">Akun</h1>
         <p className="sub">Belum masuk. Browsing katalog tidak wajib login.</p>
-        <Link className="btn solid" href="/login">
+        <Link className="lbtn solid" href="/login">
           Masuk
         </Link>
       </div>
@@ -27,17 +28,23 @@ export default function MePage() {
   }
 
   return (
-    <div className="wrap section">
-      <p className="kicker">Profil sendiri</p>
-      <h2>{user.name}</h2>
-      <p className="sub">{user.email} · tidak ditampilkan ke orang lain.</p>
+    <div className="wrap page-inner stack-16">
+      <div className="account-head">
+        <div className="avatar lg">{user.name.slice(0, 1).toUpperCase()}</div>
+        <div>
+          <h1 className="page-title">{user.name}</h1>
+          <p className="sub">{user.email} · tidak ditampilkan ke orang lain</p>
+        </div>
+      </div>
       <div className="panel">
         <h3>Library</h3>
-        <p>Kosong. Nanti isi app yang pernah di-install / dibeli.</p>
+        <p>
+          <Link href="/library">Lihat yang terpasang</Link>
+        </p>
       </div>
-      <button className="btn ghost" type="button" onClick={logout}>
+      <LoadingButton variant="ghost" onClick={logout}>
         Keluar
-      </button>
+      </LoadingButton>
     </div>
   );
 }

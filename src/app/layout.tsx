@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { BottomNav, Nav } from "@/components/Nav";
+import { Geist_Mono, Outfit } from "next/font/google";
+import { BottomNav, TopBar } from "@/components/Nav";
 import { SessionProvider } from "@/components/Session";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-ui",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -26,10 +27,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="id" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="id" className={`${outfit.variable} ${geistMono.variable}`}>
       <body>
         <SessionProvider>
-          <Nav />
+          <TopBar />
           <div className="page-pad">{children}</div>
           <BottomNav />
         </SessionProvider>

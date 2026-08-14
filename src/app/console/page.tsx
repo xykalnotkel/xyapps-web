@@ -4,12 +4,11 @@ export const metadata: Metadata = { title: "XyConsole" };
 
 export default function ConsolePage() {
   return (
-    <div className="wrap section">
+    <div className="wrap page-inner stack-16">
       <p className="kicker">console.xyapps.my.id</p>
-      <h2>XyConsole</h2>
+      <h1 className="page-title">XyConsole</h1>
       <p className="sub">
-        Beda sikap dari toko: rapat, gelap, tidak ada marketing. Produksi nanti subdomain
-        terpisah + 2FA. Sekarang preview UX.
+        Beda sikap dari toko: rapat, gelap. Produksi nanti subdomain terpisah plus 2FA.
       </p>
       <div className="console-shell">
         <div className="console-bar">

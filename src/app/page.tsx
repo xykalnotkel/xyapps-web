@@ -1,73 +1,74 @@
+"use client";
+
 import Link from "next/link";
-import { AppCard } from "@/components/AppCard";
+import { AppRow } from "@/components/AppRow";
+import { FeaturedCard } from "@/components/FeaturedCard";
+import { HomeSkeleton } from "@/components/ui/Skeleton";
 import { APPS } from "@/lib/data";
+import { useMockLoad } from "@/hooks/useMockLoad";
+
+const chips = ["Untukmu", "Android", "Web", "Desktop", "XySANC", "Tools", "Musik"];
 
 export default function HomePage() {
+  const ready = useMockLoad(640);
+
+  if (!ready) {
+    return (
+      <div className="home">
+        <HomeSkeleton />
+      </div>
+    );
+  }
+
   return (
-    <div className="wrap">
-      <section className="hero">
-        <div>
-          <p className="kicker">XyStudio · xyapps.my.id</p>
-          <h1>
-            Hitam doff.
-            <br />
-            Ungu logam.
-          </h1>
-          <p className="lede">
-            Toko resmi XyStudio. Source gratis boleh dipakai — dilarang dijual.
-            Install lewat gerbang, bukan tautan GitHub mentah.
-          </p>
-          <div className="hero-actions">
-            <Link className="btn solid" href="/apps">
-              Buka katalog
+    <div className="home">
+      <div className="wrap">
+        <div className="chip-row">
+          {chips.map((c, i) => (
+            <Link
+              key={c}
+              href={c === "Untukmu" ? "/" : `/apps?f=${encodeURIComponent(c)}`}
+              className={`chip ${i === 0 ? "on" : ""}`}
+            >
+              {c}
             </Link>
-            <Link className="btn ghost" href="/legal">
-              Baca XySANC
-            </Link>
-          </div>
+          ))}
         </div>
-        <aside className="plate">
-          <div className="mono">Xy</div>
-          <small>Next.js · siap Vercel</small>
-        </aside>
-      </section>
+      </div>
 
-      <section className="section">
-        <h2>Cara kerjanya</h2>
-        <p className="sub">Tiga langkah. Tidak ada bintang palsu.</p>
-        <div className="steps">
-          <article className="step">
-            <em>01</em>
-            <h3>Lihat</h3>
-            <p>Katalog publik tanpa login. Badge jujur: XySANC, berbayar, atau demo.</p>
-          </article>
-          <article className="step">
-            <em>02</em>
-            <h3>Install resmi</h3>
-            <p>Tombol membuat tiket dl.xyapps.my.id — origin GitHub tidak tampil.</p>
-          </article>
-          <article className="step">
-            <em>03</em>
-            <h3>Pakai, jangan jual</h3>
-            <p>Source gratis = XySANC-1.0. Yang berbayar terkunci sampai ada kontrak.</p>
-          </article>
+      <section>
+        <div className="wrap rail-head">
+          <h2>Dipilih untukmu</h2>
+          <Link href="/apps">Lihat semua</Link>
         </div>
-      </section>
-
-      <section className="section">
-        <h2>Unggulan</h2>
-        <p className="sub">Data mock. Nanti diganti query server.</p>
-        <div className="grid">
+        <div className="rail pad-left">
           {APPS.slice(0, 3).map((app) => (
-            <AppCard key={app.slug} app={app} />
+            <FeaturedCard key={app.slug} app={app} />
           ))}
         </div>
       </section>
 
-      <footer className="site-foot">
-        <span>© XyStudio</span>
-        <span>xystudio.my.id · xyapps.my.id</span>
-      </footer>
+      <section className="wrap stack-8">
+        <div className="rail-head">
+          <h2>Teratas</h2>
+        </div>
+        {APPS.map((app) => (
+          <AppRow key={app.slug} app={app} />
+        ))}
+      </section>
+
+      <section>
+        <div className="wrap rail-head">
+          <h2>Baru di XyApps</h2>
+        </div>
+        <div className="rail pad-left">
+          {APPS.slice()
+            .reverse()
+            .map((app) => (
+              <FeaturedCard key={app.slug} app={app} />
+            ))}
+        </div>
+      </section>
     </div>
   );
 }

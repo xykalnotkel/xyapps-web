@@ -2,47 +2,63 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Bookmark,
+  Grid2x2,
+  House,
+  Search,
+  UserRound,
+} from "lucide-react";
 import { useSession } from "./Session";
 
-const links = [
-  { href: "/apps", label: "Katalog" },
-  { href: "/legal", label: "Lisensi" },
-  { href: "/trust", label: "Trust" },
-  { href: "/console", label: "Console" },
+const tabs = [
+  { href: "/", label: "Beranda", icon: House, match: (p: string) => p === "/" },
+  {
+    href: "/apps",
+    label: "Telusuri",
+    icon: Search,
+    match: (p: string) => p.startsWith("/apps"),
+  },
+  {
+    href: "/library",
+    label: "Library",
+    icon: Bookmark,
+    match: (p: string) => p.startsWith("/library"),
+  },
+  {
+    href: "/console",
+    label: "Console",
+    icon: Grid2x2,
+    match: (p: string) => p.startsWith("/console"),
+  },
+  {
+    href: "/me",
+    label: "Akun",
+    icon: UserRound,
+    match: (p: string) => p === "/me" || p === "/login",
+  },
 ];
 
-export function Nav() {
+export function TopBar() {
   const path = usePathname();
   const { user } = useSession();
+  const hideSearch = path.startsWith("/apps/") && path !== "/apps";
+
+  if (hideSearch) return null;
 
   return (
-    <header className="topnav">
-      <div className="wrap topnav-inner">
+    <header className="topbar">
+      <div className="wrap topbar-inner">
         <Link href="/" className="logo">
           <b>Xy</b>Apps
         </Link>
-        <nav className="nav-links">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className={path === l.href || path.startsWith(l.href + "/") ? "active" : ""}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="nav-right">
-          {user ? (
-            <Link className="pill" href="/me">
-              {user.name}
-            </Link>
-          ) : (
-            <Link className="pill" href="/login">
-              Masuk
-            </Link>
-          )}
-        </div>
+        <Link href="/apps" className="search-pill" aria-label="Cari aplikasi">
+          <Search size={16} strokeWidth={2} />
+          <span>Cari aplikasi</span>
+        </Link>
+        <Link href={user ? "/me" : "/login"} className="avatar" aria-label="Akun">
+          {user ? user.name.slice(0, 1).toUpperCase() : "?"}
+        </Link>
       </div>
     </header>
   );
@@ -51,16 +67,17 @@ export function Nav() {
 export function BottomNav() {
   const path = usePathname();
   return (
-    <nav className="bottom">
-      <Link href="/" className={path === "/" ? "active" : ""}>
-        Beranda
-      </Link>
-      <Link href="/apps" className={path.startsWith("/apps") ? "active" : ""}>
-        Telusuri
-      </Link>
-      <Link href="/me" className={path === "/me" || path === "/login" ? "active" : ""}>
-        Akun
-      </Link>
+    <nav className="bottom" aria-label="Utama">
+      {tabs.map((t) => {
+        const Icon = t.icon;
+        const on = t.match(path);
+        return (
+          <Link key={t.href} href={t.href} className={on ? "active" : ""}>
+            <Icon size={20} strokeWidth={on ? 2.4 : 1.8} />
+            <span>{t.label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

@@ -15,6 +15,9 @@ export type AppItem = {
   developer: string;
   initials: string;
   accent: string;
+  accent2: string;
+  age: string;
+  updated: string;
   changelog: { version: string; notes: string }[];
   features: string[];
 };
@@ -25,7 +28,7 @@ export const APPS: AppItem[] = [
     title: "Northroom",
     tagline: "Pemutar lokal. Tanpa iklan, tanpa akun.",
     description:
-      "Contoh app Android di XyApps. Installer resmi hanya lewat gerbang dl.xyapps.my.id. Source berlisensi XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
+      "Pemutar musik lokal. Installer resmi hanya lewat gerbang dl.xyapps.my.id. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
     platform: "Android",
     category: "Musik",
     stack: ["Kotlin"],
@@ -35,8 +38,11 @@ export const APPS: AppItem[] = [
     developer: "XyStudio",
     initials: "N7",
     accent: "#7C3AED",
+    accent2: "#1E1B4B",
+    age: "3+",
+    updated: "12 Agu 2026",
     changelog: [
-      { version: "1.4.2", notes: "Perbaikan unduhan tiket & mode gelap." },
+      { version: "1.4.2", notes: "Perbaikan unduhan tiket dan mode gelap." },
       { version: "1.4.0", notes: "Antrian lagu, sleep timer." },
     ],
     features: ["Offline library", "Tidak ada iklan", "XySANC-1.0"],
@@ -46,7 +52,7 @@ export const APPS: AppItem[] = [
     title: "Vaultline",
     tagline: "Source private. Tiket unduh 10 menit.",
     description:
-      "Contoh produk berbayar. Repo tidak public. Tombol beli belum hidup — sengaja, biar UX-nya terasa terkunci dengan jujur.",
+      "Produk berbayar. Repo tidak public. Tombol beli belum hidup — sengaja, biar UX-nya terasa terkunci dengan jujur.",
     platform: "Desktop",
     category: "Tools",
     stack: ["Rust", "Tauri"],
@@ -56,6 +62,9 @@ export const APPS: AppItem[] = [
     developer: "XyStudio",
     initials: "VL",
     accent: "#A78BFA",
+    accent2: "#2E1065",
+    age: "12+",
+    updated: "2 Agu 2026",
     changelog: [{ version: "0.9.1", notes: "Build internal. Belum dijual." }],
     features: ["Repo private", "Signed ticket", "Lisensi proprietary"],
   },
@@ -64,7 +73,7 @@ export const APPS: AppItem[] = [
     title: "Kilometer",
     tagline: "Web tool. Satu tombol: buka demo.",
     description:
-      "Tidak ada file unduhan. Tidak ada source di listing ini. UX-nya harus terasa ringan — jangan paksa user lewat alur install.",
+      "Tidak ada file unduhan. Tidak ada source di listing ini. UX-nya harus terasa ringan.",
     platform: "Web",
     category: "Tools",
     stack: ["TypeScript"],
@@ -74,6 +83,9 @@ export const APPS: AppItem[] = [
     developer: "XyStudio",
     initials: "KM",
     accent: "#6EE7B7",
+    accent2: "#042F2E",
+    age: "3+",
+    updated: "28 Jul 2026",
     changelog: [{ version: "2.0.0", notes: "Tulis ulang UI." }],
     features: ["Tanpa akun", "Langsung di browser"],
   },
@@ -82,7 +94,7 @@ export const APPS: AppItem[] = [
     title: "Field Notes",
     tagline: "Catatan cepat, sinkron belakangan.",
     description:
-      "Listing dummy untuk ngetes grid, filter, dan halaman kosong. Source XySANC.",
+      "Catatan markdown ringan. Source XySANC. Listing dummy untuk ngetes list dan filter.",
     platform: "Android",
     category: "Produktivitas",
     stack: ["Kotlin", "SQLDelight"],
@@ -92,6 +104,9 @@ export const APPS: AppItem[] = [
     developer: "XyStudio",
     initials: "FN",
     accent: "#818CF8",
+    accent2: "#1E1B4B",
+    age: "3+",
+    updated: "1 Agu 2026",
     changelog: [{ version: "0.3.0", notes: "Mock data saja." }],
     features: ["Markdown", "Export teks"],
   },
@@ -100,7 +115,7 @@ export const APPS: AppItem[] = [
     title: "Lantern",
     tagline: "Dashboard status mesin. Demo only.",
     description:
-      "Untuk ngetes kartu Demo only di samping yang berbayar dan yang XySANC.",
+      "Preview status scan. Demo only, tanpa file unduhan.",
     platform: "Web",
     category: "Developer",
     stack: ["React"],
@@ -109,7 +124,10 @@ export const APPS: AppItem[] = [
     size: "Web",
     developer: "XyStudio",
     initials: "LN",
-    accent: "#F472B6",
+    accent: "#C084FC",
+    accent2: "#3B0764",
+    age: "12+",
+    updated: "20 Jul 2026",
     changelog: [{ version: "0.1.0", notes: "Prototype." }],
     features: ["Status chip", "Tanpa login"],
   },
@@ -121,28 +139,56 @@ export function getApp(slug: string) {
 
 export function sourceLabel(kind: SourceKind) {
   if (kind === "xysanc")
-    return { text: "XySANC · jangan jual", tone: "free" as const };
-  if (kind === "paid")
-    return { text: "Source berbayar", tone: "paid" as const };
-  return { text: "Demo only", tone: "mute" as const };
+    return { text: "XySANC", tone: "free" as const };
+  if (kind === "paid") return { text: "Berbayar", tone: "paid" as const };
+  return { text: "Demo", tone: "mute" as const };
+}
+
+export function ctaLabel(kind: SourceKind) {
+  if (kind === "xysanc") return "Install";
+  if (kind === "paid") return "Terkunci";
+  return "Buka";
 }
 
 export function toPublicApp(app: AppItem) {
+  const {
+    slug,
+    title,
+    tagline,
+    description,
+    platform,
+    category,
+    stack,
+    sourceKind,
+    version,
+    size,
+    developer,
+    initials,
+    accent,
+    accent2,
+    age,
+    updated,
+    changelog,
+    features,
+  } = app;
   return {
-    slug: app.slug,
-    title: app.title,
-    tagline: app.tagline,
-    description: app.description,
-    platform: app.platform,
-    category: app.category,
-    stack: app.stack,
-    sourceKind: app.sourceKind,
-    version: app.version,
-    size: app.size,
-    developer: app.developer,
-    initials: app.initials,
-    accent: app.accent,
-    changelog: app.changelog,
-    features: app.features,
+    slug,
+    title,
+    tagline,
+    description,
+    platform,
+    category,
+    stack,
+    sourceKind,
+    version,
+    size,
+    developer,
+    initials,
+    accent,
+    accent2,
+    age,
+    updated,
+    changelog,
+    features,
   };
 }
