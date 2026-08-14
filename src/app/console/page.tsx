@@ -19,7 +19,7 @@ export default function ConsolePage() {
       <div className="panel stack-14">
         <p className="moved-row">
           <Sym name="link" size={18} />
-          console.xyapps.my.id
+          console.xystudio.my.id
         </p>
         <p>
           Domain menyusul aktif setelah DNS diarahkan. Sampai saat itu, console tetap
@@ -27,11 +27,11 @@ export default function ConsolePage() {
         </p>
         <a
           className="lbtn solid"
-          href="https://console.xyapps.my.id"
+          href="https://console.xystudio.my.id"
           target="_blank"
           rel="noreferrer"
         >
-          Buka console.xyapps.my.id
+          Buka console.xystudio.my.id
           <Sym name="open_in_new" size={15} />
         </a>
       </div>

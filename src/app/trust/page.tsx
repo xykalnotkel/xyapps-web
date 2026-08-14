@@ -20,7 +20,7 @@ const ROWS = [
     icon: "shield" as const,
     tone: "lilac" as const,
     title: "Satu pintu unduhan",
-    text: "Installer resmi hanya lewat dl.xyapps.my.id dengan tiket bertanda tangan.",
+    text: "Installer resmi hanya lewat dl.xystudio.my.id dengan tiket bertanda tangan.",
   },
   {
     icon: "fingerprint" as const,

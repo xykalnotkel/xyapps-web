@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Toko resmi XyStudio. Source gratis boleh dipakai, dilarang dijual. Install lewat gerbang, bukan tautan GitHub mentah.",
-  metadataBase: new URL("https://xyapps.my.id"),
+  metadataBase: new URL("https://xyapps.xystudio.my.id"),
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

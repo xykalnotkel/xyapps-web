@@ -200,7 +200,7 @@ export default function MePage() {
       </div>
 
       <p className="meta-line">
-        XyApps v0.1.0 · mock. Console dipisah — console.xyapps.my.id setelah DNS
+        XyApps v0.1.0 · mock. Console dipisah — console.xystudio.my.id setelah DNS
         aktif.
       </p>
 

@@ -6,7 +6,7 @@ import { Sym } from "@/components/Icon";
 const FAQ: { q: string; a: string }[] = [
   {
     q: "Kenapa unduhan lewat tiket, bukan tombol biasa?",
-    a: "Tiket itu gerbang resmi: file di-stream dari dl.xyapps.my.id supaya URL asal (misal GitHub) tidak pernah muncul di browser. Tiket punya masa aktif 10 menit.",
+    a: "Tiket itu gerbang resmi: file di-stream dari dl.xystudio.my.id supaya URL asal (misal GitHub) tidak pernah muncul di browser. Tiket punya masa aktif 10 menit.",
   },
   {
     q: "Kenapa ada app yang tombolnya Terkunci?",
@@ -22,7 +22,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: "Console di mana?",
-    a: "XyConsole proyek terpisah: console.xyapps.my.id (aktif setelah DNS). Tidak lagi numpang di toko.",
+    a: "XyConsole proyek terpisah: console.xystudio.my.id (aktif setelah DNS). Tidak lagi numpang di toko.",
   },
 ];
 

@@ -7,11 +7,30 @@
 [![License](https://img.shields.io/badge/App%20source-XySANC--1.0-7C3AED?style=flat-square)](./XYSANC-1.0.md)
 [![Status](https://img.shields.io/badge/status-UI%20mock-8B8B98?style=flat-square)](#status)
 
-Toko resmi **XyStudio**. Hitam doff, ungu logam.
+Toko resmi **## Catatan font logo
+
+Logo memakai **Asrog Genos** (Productype). Versi yang dipasang adalah
+trial **personal-use only** — di-subset ke 8 glyph (XyApps) dan hanya
+dipakai di wordmark. Sebelum toko produksi, wajib salah satu:
+
+1. Beli lisensi komersial: productype.com/asrog-genos/
+2. Ganti font display OFL yang mirip: Orbitron, Michroma, Audiowide
+
+XyStudio**. Hitam doff, ungu logam.
 
 Source gratis boleh dipakai. Dilarang dijual. Installer resmi lewat gerbang, bukan tautan GitHub mentah.
 
-Situs: [xyapps.my.id](https://xyapps.my.id) (setelah DNS + Vercel). Studio: [xystudio.my.id](https://xystudio.my.id)
+## Domain (semua di bawah xystudio.my.id)
+
+| Layanan | Domain |
+| --- | --- |
+| Toko XyApps | `xyapps.xystudio.my.id` |
+| Console developer | `console.xystudio.my.id` |
+| Gerbang unduh | `dl.xystudio.my.id` |
+| API | `api.xystudio.my.id` (menyusul) |
+| Studio | `xystudio.my.id` |
+
+Situs toko: [xyapps.xystudio.my.id](https://xyapps.xystudio.my.id) (setelah DNS + Vercel).
 
 ---
 
@@ -28,7 +47,9 @@ Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 | App | Next.js 16 App Router, React 19, TypeScript |
 | Hosting | Vercel |
 | Data sekarang | `src/lib/data.ts` (mock) |
-| Icon | Material Symbols Rounded (self-host, subset 92 KB, sumbu FILL) |
+| Icon | Material Symbols Rounded (self-host, subset, sumbu FILL) |
+| Font judul | Asrog Genos (trial personal-only — wajib lisensi komersial sebelum produksi, lihat catatan) |
+| Font UI | Outfit (Google Fonts, OFL) |
 | Gambar | WebP/JPG hasil generate + SVG mockup di `public/gen/` |
 | Lisensi app gratis | XySANC-1.0 |
 
@@ -89,17 +110,17 @@ npm run start
 - Responsive: padding fluid, clamp untuk cuplikan, layout khusus layar kecil (<380px) dan desktop (>860px: nav pill melayang, ulasan 2 kolom)
 - Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat, transisi tekan pada tombol
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
-- Gerbang unduh: tiket `dl.xyapps.my.id`, URL origin tidak pernah dikirim ke browser
+- Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
 
 ## Console terpisah
 
-XyConsole tidak lagi numpang di repo ini. Target subdomain sendiri: `console.xyapps.my.id`. Repo, secret, dan alur rilisnya dipisah dari toko sesuai plan.
+XyConsole tidak lagi numpang di repo ini. Target subdomain sendiri: `console.xystudio.my.id`, repo terpisah (`xyapps-console`). Sinkronisasi lewat API bersama (`api.xystudio.my.id`), bukan database dobel — toko dan console dua klien dari satu sumber data.
 
 ## Deploy Vercel
 
 1. Import repo ini di [vercel.com/new](https://vercel.com/new)
 2. Framework: Next.js (otomatis). Root: `/`
-3. Domain custom: `xyapps.my.id` ke `cname.vercel-dns.com`
+3. Domain custom: `xyapps.xystudio.my.id` ke `cname.vercel-dns.com`
 
 Jangan rewrite semua path ke `index.html`. Itu mematikan App Router.
 
@@ -108,7 +129,7 @@ Jangan rewrite semua path ke `index.html`. Itu mematikan App Router.
 Auth.js, Postgres, tiket unduh sungguhan, XyScan, Midtrans.
 
 Progres unduh saat ini masih simulasi (interval mock). Kontrak saat backend
-`dl.xyapps.my.id` hidup: persentase wajib dihitung dari byte yang diterima
+`dl.xystudio.my.id` hidup: persentase wajib dihitung dari byte yang diterima
 dari stream asli (diterima / Content-Length), bukan ditambah-tambah — lihat
 komentar di `src/app/apps/[slug]/DetailClient.tsx` fungsi `startDownload`.
 

@@ -267,9 +267,11 @@ button {
 
 .logo {
   text-decoration: none;
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  font-size: 18px;
+  font-family: "Asrog Genos", var(--font-ui), ui-sans-serif, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  font-size: 17px;
+  line-height: 1;
   background: linear-gradient(100deg, #c4b5fd 0%, #8b5cf6 45%, #a78bfa 85%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -978,6 +980,18 @@ button {
   font-weight: 100 700;
   font-style: normal;
   font-display: block;
+}
+
+/* LOGO — Asrog Genos (trial, subset 8 glyph: XyApps).
+   LISENSI: demo personal-only dari Productype. SEBELUM PRODUKSI wajib
+   beli lisensi komersial (productype.com/asrog-genos/) atau ganti
+   font display berlisensi OFL (mis. Orbitron, Michroma, Audiowide). */
+@font-face {
+  font-family: "Asrog Genos";
+  src: url("/fonts/asrog-genos.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 .msym {
@@ -2500,6 +2514,8 @@ button:active {
   border-radius: 20px;
   display: grid;
   place-items: center;
+  font-family: "Asrog Genos", var(--font-ui), ui-sans-serif, sans-serif;
+  font-weight: 400;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 46%),
     linear-gradient(160deg, #8b5cf6, #231457 82%);

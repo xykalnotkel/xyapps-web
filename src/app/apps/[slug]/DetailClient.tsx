@@ -104,7 +104,7 @@ export function DetailClient({ app }: { app: AppItem }) {
   const touchX = useRef<number | null>(null);
 
   const ticket = useMemo(
-    () => `https://dl.xyapps.my.id/d/${app.slug}/e71ed747-demo-${app.version.replace(/\./g, "")}`,
+    () => `https://dl.xystudio.my.id/d/${app.slug}/e71ed747-demo-${app.version.replace(/\./g, "")}`,
     [app.slug, app.version],
   );
 
@@ -212,7 +212,7 @@ export function DetailClient({ app }: { app: AppItem }) {
     setPhase("downloading");
     setPct(0);
     /* KONTRAK PROGRES ASLI (belum ada file sungguhan):
-       - Saat backend dl.xyapps.my.id hidup, interval mock di bawah DIGANTI
+       - Saat backend dl.xystudio.my.id hidup, interval mock di bawah DIGANTI
          progres sungguhan dari stream:
            fetch(ticket) -> ReadableStream reader loop, atau XHR
            onprogress, lalu pct = diterima / Content-Length * 100.
@@ -269,7 +269,7 @@ export function DetailClient({ app }: { app: AppItem }) {
   }
 
   function onShare() {
-    const url = `https://xyapps.my.id/apps/${app.slug}`;
+    const url = `https://xyapps.xystudio.my.id/apps/${app.slug}`;
     const data = { title: app.title, text: app.tagline, url };
     if (typeof navigator !== "undefined" && "share" in navigator) {
       navigator.share(data).catch(() => {
@@ -766,7 +766,7 @@ export function DetailClient({ app }: { app: AppItem }) {
         ) : (
           <div className="stack-12">
             <p>
-              File di-stream dari dl.xyapps.my.id. URL asal tidak pernah sampai ke
+              File di-stream dari dl.xystudio.my.id. URL asal tidak pernah sampai ke
               browser — ini simulasi, file asli belum ada.
             </p>
             <div className="ticket">{ticket}</div>
@@ -812,10 +812,10 @@ export function DetailClient({ app }: { app: AppItem }) {
       <Modal open={shareOpen} title="Bagikan" onClose={() => setShareOpen(false)}>
         <div className="stack-12">
           <p>Bagikan halaman aplikasi ini:</p>
-          <div className="ticket">https://xyapps.my.id/apps/{app.slug}</div>
+          <div className="ticket">https://xyapps.xystudio.my.id/apps/{app.slug}</div>
           <LoadingButton
             block
-            onClick={() => onCopy(`https://xyapps.my.id/apps/${app.slug}`, "Tautan disalin")}
+            onClick={() => onCopy(`https://xyapps.xystudio.my.id/apps/${app.slug}`, "Tautan disalin")}
           >
             Salin tautan
           </LoadingButton>

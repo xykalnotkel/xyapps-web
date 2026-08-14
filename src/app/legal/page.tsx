@@ -68,7 +68,7 @@ export default function LegalPage() {
         <p>
           Lisensi repo toko ini menyusul ditentukan. Lisensi di halaman ini
           berlaku untuk <strong>aplikasi yang dibagikan lewat XyApps</strong> —
-          installer resmi hanya lewat gerbang dl.xyapps.my.id, bukan tautan
+          installer resmi hanya lewat gerbang dl.xystudio.my.id, bukan tautan
           GitHub mentah.
         </p>
         <p className="meta-line">

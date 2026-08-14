@@ -170,4 +170,4 @@ Di setiap app XyApps: field `license = XySANC-1.0` + tautan ke `/legal/xysanc`.
 
 ---
 
-XyStudio · xyapps.my.id · xystudio.my.id
+XyStudio · xyapps.xystudio.my.id · xystudio.my.id
