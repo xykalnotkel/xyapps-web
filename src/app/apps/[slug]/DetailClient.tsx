@@ -9,6 +9,7 @@ import { AppGlyph, SmartImage } from "@/components/ui/SmartImage";
 import { StarPicker, Stars } from "@/components/ui/Stars";
 import { ToastView, useToast } from "@/components/ui/Toast";
 import { Sym } from "@/components/Icon";
+import type { SymName } from "@/lib/symbols";
 import { useSession } from "@/components/Session";
 import {
   addToLibrary,
@@ -386,27 +387,31 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </div>
 
-      {/* STAT DENGAN ICON — ala Play Store */}
+      {/* STAT DENGAN ICON — tanpa card, tepat di atas tombol Install */}
       <div className="wrap stats-grid">
         <div className="stat">
-          <Sym name="star" size={18} fill={rated} className={rated ? "stat-ic on" : "stat-ic"} />
+          <Sym
+            name="star"
+            size={20}
+            fill={rated}
+            className={rated ? "stat-ic amber" : "stat-ic"}
+          />
           <strong>{rated ? app.rating.toFixed(1) : "—"}</strong>
-          <span>{rated ? `${fmtCount(app.ratingCount)} ulasan` : "Belum dinilai"}</span>
+          <em>Rating</em>
         </div>
         <div className="stat">
-          <Sym name="download" size={18} className="stat-ic" />
-          <strong>{app.installs}</strong>
-          <span>Unduhan</span>
+          <Sym name="storage" size={20} className="stat-ic" />
+          <strong>{app.size}</strong>
+          <em>Ukuran</em>
         </div>
         <div className="stat">
           <span className="age-box">{app.age}</span>
-          <strong>Rating umur</strong>
-          <span>Cocok untuk</span>
+          <em>Rating umur</em>
         </div>
         <div className="stat">
-          <Sym name="storage" size={18} className="stat-ic" />
-          <strong>{app.size}</strong>
-          <span>Ukuran</span>
+          <Sym name="download" size={20} className="stat-ic" />
+          <strong>{app.installs}</strong>
+          <em>Unduhan</em>
         </div>
       </div>
 
@@ -483,19 +488,22 @@ export function DetailClient({ app }: { app: AppItem }) {
           </button>
         )}
         <div className="about-rows">
-          <Row k="Versi" v={app.version} />
-          <Row k="Diperbarui" v={app.updated} />
-          <Row k="Ukuran" v={app.size} />
-          <Row k="Diunduh" v={app.installs} />
-          <Row k="Dirilis" v={app.released} />
+          <Row k="Versi" v={app.version} icon="info" />
+          <Row k="Diperbarui" v={app.updated} icon="schedule" />
+          <Row k="Ukuran" v={app.size} icon="storage" />
+          <Row k="Diunduh" v={app.installs} icon="download" />
+          <Row k="Dirilis" v={app.released} icon="rocket_launch" />
           <Link
             className="about-row about-btn"
             href={`/profile/dev/${dev.id}`}
           >
-            <span>Pengembang</span>
+            <span className="about-k">
+              <Sym name="person" size={15} />
+              Pengembang
+            </span>
             <span className="about-val">{app.developer}</span>
           </Link>
-          <Row k="Platform" v={app.platform} />
+          <Row k="Platform" v={app.platform} icon="devices" />
           <a
             className="about-row about-btn"
             href={`mailto:${app.supportEmail}`}
@@ -910,16 +918,31 @@ export function DetailClient({ app }: { app: AppItem }) {
   );
 }
 
-function Row({ k, v }: { k: string; v: string }) {
+function Row({
+  k,
+  v,
+  icon,
+}: {
+  k: string;
+  v: string;
+  icon?: SymName;
+}) {
   return (
     <div className="about-row">
-      <span>{k}</span>
+      <span className="about-k">
+        {icon && <Sym name={icon} size={15} />}
+        {k}
+      </span>
       <span className="about-val">{v}</span>
     </div>
   );
 }
 
-/** Lingkar progres unduhan di icon app, ala Play Store. */
+/**
+ * Lingkar progres unduhan di icon app — gaya ular melengkung melingkar:
+ * busur progres dengan kepala membulat plus ekor terang yang berputar
+ * terus selama mengunduh, dan persen di tengah.
+ */
 function Ring({
   pct,
   size,
@@ -930,19 +953,29 @@ function Ring({
   children: React.ReactNode;
 }) {
   const C = 283; // keliling r=45 pada viewBox 100
+  const gid = `ringGrad-${size}`;
   return (
     <span className="ring-wrap" style={{ width: size, height: size }}>
       {children}
       <svg className="ring-svg" viewBox="0 0 100 100" aria-hidden>
+        <defs>
+          <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#a78bfa" />
+            <stop offset="1" stopColor="#7c3aed" />
+          </linearGradient>
+        </defs>
         <circle className="ring-track" cx="50" cy="50" r="45" />
         <circle
           className="ring-val"
           cx="50"
           cy="50"
           r="45"
+          stroke={`url(#${gid})`}
           strokeDasharray={C}
           strokeDashoffset={C * (1 - Math.min(pct, 100) / 100)}
         />
+        {/* ekor ular: busur pendek terang yang mengelilingi ring */}
+        <circle className="ring-snake" cx="50" cy="50" r="45" />
       </svg>
       <span className="ring-pct">{Math.min(pct, 100)}%</span>
     </span>

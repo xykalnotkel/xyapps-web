@@ -72,17 +72,18 @@ npm run start
 
 ## UX yang sengaja ditiru dari Play Store
 
-- Bottom nav 4 tab: Beranda, Aplikasi, Game, Library. Icon dua versi per tab (fill saat aktif, outline saat tidak), tab aktif muncul dalam pill
+- Bottom nav 4 tab: Beranda, Aplikasi, Game, Library. Icon dua versi per tab (fill saat aktif, outline saat tidak). Label tab tersembunyi, muncul di bawah icon saat aktif dengan animasi
 - Pencarian cuma satu pintu: pill di topbar membuka halaman `/search` penuh dengan autofocus, kata kunci sedang dicari, dan riwayat
-- Detail app: stat dengan icon (bintang rating, unduhan, rating umur dengan kotak 3+, ukuran), "Tentang aplikasi ini" tepat di bawah cuplikan
+- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur 3+, unduhan) tepat di atas tombol Install, "Tentang aplikasi ini" di bawah cuplikan, baris info bericon
 - Viewer cuplikan fullscreen polos tanpa card: panah, swipe sentuh, keyboard, counter
 - Rating bintang + distribusi per bintang + ulasan (sort relevan/terbaru/membantu, filter per bintang) + balasan developer
-- Progres unduh di icon app (lingkar persen), bukan bar — sama seperti Play Store
+- Progres unduh melingkar di icon app dengan gaya ular: busur gradien ungu + ekor terang yang berputar + persen di tengah, tombol menampilkan status "Mengunduh… %"
 - Bottom sheet hanya untuk gerbang unduh. Share lewat navigator.share (fallback modal), izin inline, laporan modal
 - Tema gelap/terang konsisten, default mengikuti sistem, bisa diatur di Preferensi (Profil). Dipasang sebelum paint, tanpa kilatan
 - Halaman error lengkap dengan icon: 403 akses ditolak, 404 tidak ditemukan, 500 kesalahan server, 503 pemeliharaan — plus error boundary global
 - Lisensi dan Trust ditampilkan sebagai kartu bericon, bukan dinding teks
-- Link penting memakai hash/slug: nama developer di detail app mengarah ke `/profile/dev/[id]`, nama penulis ulasan ke `/profile/u/[id]` — bukan query param
+- Link penting memakai hash/slug panjang (64 hex, deterministic): nama developer di detail app mengarah ke `/profile/dev/[id]`, nama penulis ulasan ke `/profile/u/[id]` — bukan query param
+- List dan kartu menampilkan total unduhan, bukan total ulasan (jumlah ulasan hanya di seksi Rating)
 - Tanpa kotak fokus biru bawaan browser saat diklik; aksesibilitas keyboard tetap lewat `:focus-visible`
 - Switch pengaturan beranimasi (spring) dan bebas efek tekan global
 - Responsive: padding fluid, clamp untuk cuplikan, layout khusus layar kecil (<380px) dan desktop (>860px: nav pill melayang, ulasan 2 kolom)

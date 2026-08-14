@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { fmtCount, sourceLabel, type AppItem } from "@/lib/data";
+import { sourceLabel, type AppItem } from "@/lib/data";
 import { SmartImage } from "./ui/SmartImage";
 import { Stars } from "./ui/Stars";
 
@@ -35,8 +35,9 @@ export function FeaturedCard({ app }: { app: AppItem }) {
           </em>
           {app.ratingCount > 0 && (
             <em className="feature-rate">
-              <Stars value={app.rating} size={11} /> {app.rating.toFixed(1)} (
-              {fmtCount(app.ratingCount)})
+              <Stars value={app.rating} size={11} /> {app.rating.toFixed(1)}
+              <span className="sep">·</span>
+              {app.installs}
             </em>
           )}
         </div>

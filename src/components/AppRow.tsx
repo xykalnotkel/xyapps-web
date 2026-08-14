@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ctaLabel, fmtCount, type AppItem } from "@/lib/data";
+import { ctaLabel, type AppItem } from "@/lib/data";
 import { AppGlyph } from "./ui/SmartImage";
 import { Stars } from "./ui/Stars";
 import { Sym } from "./Icon";
@@ -25,12 +25,12 @@ export function AppRow({ app }: { app: AppItem }) {
               <>
                 <Stars value={app.rating} size={12} />
                 <b>{app.rating.toFixed(1)}</b>
-                <span className="sep">·</span>
-                <span>{fmtCount(app.ratingCount)} ulasan</span>
               </>
             ) : (
               "Belum dinilai"
             )}
+            <span className="sep">·</span>
+            <span>{app.installs}</span>
             <span className="sep">·</span>
             <span>{app.size}</span>
             {app.containsAds && (

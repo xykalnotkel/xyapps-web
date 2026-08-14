@@ -737,7 +737,7 @@ export type Developer = {
 
 export const DEVELOPERS: Developer[] = [
   {
-    id: "dev_xystudio_8f3a2c1d9e7b4a6f",
+    id: "dev_9ad3fc16fba58be186971be4018f20afc4752132e69dc42d92a861609aceaebb",
     name: "XyStudio",
     tagline: "Studio kecil, hitam doff, ungu logam.",
     bio: "Pengembang semua app di XyApps. Prinsip: tanpa iklan yang bisa dihindari, tanpa akun yang bisa dihindari, dan installer resmi cuma lewat gerbang dl.xyapps.my.id.",
@@ -769,10 +769,23 @@ export type UserProfile = {
   apps: { slug: string; rating: number }[];
 };
 
+/**
+ * Id hash panjang (prefix + 64 hex, deterministic dari nama).
+ * Bukan hash simpel — di-chain 8 putaran FNV-1a biar tidak bisa
+ * ditebak dan tetap stabil untuk link permanen.
+ */
 function hashId(name: string) {
-  let h = 0;
-  for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  return "u_" + h.toString(36) + (h % 997).toString(36);
+  const str = `xyapps:user:${name.toLowerCase().trim()}`;
+  let out = "";
+  for (let round = 0; round < 8; round++) {
+    let h = (0x811c9dc5 ^ (round * 0x9e3779b9)) >>> 0;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    out += (h >>> 0).toString(16).padStart(8, "0");
+  }
+  return "u_" + out;
 }
 
 export function userIdFor(name: string) {
