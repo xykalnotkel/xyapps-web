@@ -28,6 +28,8 @@ Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 | App | Next.js 16 App Router, React 19, TypeScript |
 | Hosting | Vercel |
 | Data sekarang | `src/lib/data.ts` (mock) |
+| Icon | Material Symbols Rounded (self-host, subset 92 KB, sumbu FILL) |
+| Gambar | WebP/JPG hasil generate + SVG mockup di `public/gen/` |
 | Lisensi app gratis | XySANC-1.0 |
 
 ## Jalanin lokal
@@ -48,15 +50,30 @@ npm run start
 
 | Path | Isi |
 | --- | --- |
-| `/` | Beranda |
-| `/apps` | Katalog |
-| `/apps/[slug]` | Detail + tiket unduh palsu |
+| `/` | Beranda: search bar, chips, rail pilihan, teratas, terbaru |
+| `/apps` | Katalog: pencarian dari URL (`?q=` `?f=`), filter, sort |
+| `/apps/[slug]` | Detail ala Play Store: rating + breakdown, ulasan + balasan developer, tulis ulasan (mock lokal), screenshot, changelog, keamanan data, izin, app serupa, gerbang unduh bertiket |
+| `/library` | Tab Terpasang + Wishlist (localStorage) |
 | `/legal` | XySANC-1.0 |
 | `/trust` | Kebijakan data |
-| `/login` `/me` | Session mock (localStorage) |
-| `/console` | Preview XyConsole |
+| `/login` `/me` | Session mock (localStorage, `useSyncExternalStore`) |
+| `/console` | Halaman "pindah rumah" — XyConsole proyek terpisah |
 | `/api/apps` | JSON katalog, field publik saja |
+| `/api/apps/[slug]` | JSON detail per app |
 | `/api/health` | Healthcheck |
+
+## UX yang sengaja ditiru dari Play Store
+
+- Bottom nav berikon dengan dua versi per icon: fill saat aktif, outline saat tidak (satu font, sumbu FILL)
+- Detail app: rating bintang + distribusi per bintang + daftar ulasan + tombol bermanfaat + balasan developer
+- Sticky install bar dengan progres mengunduh palsu (ticket -> unduh -> pasang -> buka)
+- Skeleton saat load, fade-in gambar, fallback saat gambar gagal muat
+- Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
+- Gerbang unduh: tiket `dl.xyapps.my.id`, URL origin tidak pernah dikirim ke browser
+
+## Console terpisah
+
+XyConsole tidak lagi numpang di repo ini. Target subdomain sendiri: `console.xyapps.my.id`. Repo, secret, dan alur rilisnya dipisah dari toko sesuai plan.
 
 ## Deploy Vercel
 
@@ -72,7 +89,7 @@ Auth.js, Postgres, tiket unduh sungguhan, XyScan, Midtrans.
 
 ## Lisensi repo vs lisensi app
 
-Kode toko ini (folder repo) menyusul ditentukan.  
+Kode toko ini (folder repo) menyusul ditentukan.
 Aplikasi yang dibagikan lewat XyApps memakai [XySANC-1.0](./XYSANC-1.0.md): source-available, non-commercial resale.
 
 XyStudio

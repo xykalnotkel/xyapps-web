@@ -1,198 +1,770 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronLeft, Share2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { Modal } from "@/components/ui/Modal";
 import { AppGlyph, SmartImage } from "@/components/ui/SmartImage";
-import { addToLibrary, inLibrary } from "@/lib/library";
-import { ctaLabel, sourceLabel, type AppItem } from "@/lib/data";
+import { StarPicker, Stars } from "@/components/ui/Stars";
+import { ToastView, useToast } from "@/components/ui/Toast";
+import { Sym } from "@/components/Icon";
+import { useSession } from "@/components/Session";
+import {
+  addToLibrary,
+  inLibrary,
+  inWishlist,
+  toggleWishlist,
+} from "@/lib/library";
+import {
+  ctaLabel,
+  fmtCount,
+  getApp,
+  sourceLabel,
+  type AppItem,
+  type ReviewItem,
+} from "@/lib/data";
+
+type InstallPhase =
+  | "idle"
+  | "ticket"
+  | "ready"
+  | "downloading"
+  | "installing"
+  | "done";
+type SheetKind = "install" | "perms" | "share" | null;
+
+const RKEY = (slug: string) => `xyapps.reviews.${slug}`;
+const HKEY = "xyapps.helpful";
+
+function loadMyReviews(slug: string): ReviewItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(RKEY(slug));
+    return raw ? (JSON.parse(raw) as ReviewItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function loadHelpful(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(HKEY);
+    return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
+  } catch {
+    return new Set();
+  }
+}
 
 export function DetailClient({ app }: { app: AppItem }) {
   const badge = sourceLabel(app.sourceKind);
-  const [sheet, setSheet] = useState(false);
-  const [phase, setPhase] = useState<"idle" | "spin" | "ready">("idle");
+  const { user } = useSession();
+  const { msg: toast, show } = useToast();
+
+  const [sheet, setSheet] = useState<SheetKind>(null);
+  const [phase, setPhase] = useState<InstallPhase>("idle");
+  const [pct, setPct] = useState(0);
+  const [owned, setOwned] = useState(false);
+  const [wished, setWished] = useState(false);
   const [preview, setPreview] = useState<number | null>(null);
-  const [owned, setOwned] = useState(() => inLibrary(app.slug));
-  const [shareOpen, setShareOpen] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [showOldChangelog, setShowOldChangelog] = useState(false);
+  const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
+  const [helpful, setHelpful] = useState<Set<string>>(new Set());
+
+  const timer = useRef<number | null>(null);
+  const interval = useRef<number | null>(null);
 
   const ticket = useMemo(
-    () => `https://dl.xyapps.my.id/d/e71ed747-${app.slug}-demo`,
-    [app.slug],
+    () => `https://dl.xyapps.my.id/d/${app.slug}/e71ed747-demo-${app.version.replace(/\./g, "")}`,
+    [app.slug, app.version],
   );
+
+  const rated = app.ratingCount > 0;
+  const allReviews = [...myReviews, ...app.reviews];
+  const latest = app.changelog[0];
+  const older = app.changelog.slice(1);
+
+  // Sinkron state dari localStorage setelah hidrasi, bukan saat render awal.
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setOwned(inLibrary(app.slug));
+      setWished(inWishlist(app.slug));
+      setMyReviews(loadMyReviews(app.slug));
+      setHelpful(loadHelpful());
+    }, 0);
+    return () => {
+      window.clearTimeout(id);
+      if (timer.current) window.clearTimeout(timer.current);
+      if (interval.current) window.clearInterval(interval.current);
+    };
+  }, [app.slug]);
+
+  function clearTimers() {
+    if (timer.current) window.clearTimeout(timer.current);
+    if (interval.current) window.clearInterval(interval.current);
+    timer.current = null;
+    interval.current = null;
+  }
+
+  function startDownload() {
+    setSheet(null);
+    setPhase("downloading");
+    setPct(0);
+    interval.current = window.setInterval(() => {
+      setPct((p) => {
+        const next = p + Math.ceil(Math.random() * 5) + 1;
+        if (next >= 100) {
+          if (interval.current) window.clearInterval(interval.current);
+          setPhase("installing");
+          timer.current = window.setTimeout(() => {
+            addToLibrary(app.slug);
+            setOwned(true);
+            setPhase("done");
+            show(`${app.title} terpasang di perangkat ini`);
+            timer.current = window.setTimeout(() => setPhase("idle"), 900);
+          }, 1300);
+          return 100;
+        }
+        return next;
+      });
+    }, 90);
+  }
 
   function startAction() {
     if (app.sourceKind === "paid") return;
-    if (app.sourceKind === "none") {
-      setSheet(true);
-      setPhase("ready");
+    if (owned && app.sourceKind === "xysanc") {
+      show(`Mock: membuka ${app.title}…`);
       return;
     }
-    setSheet(true);
-    setPhase("spin");
-    window.setTimeout(() => {
-      addToLibrary(app.slug);
-      setOwned(true);
-      setPhase("ready");
-    }, 1100);
+    if (app.sourceKind === "none") {
+      setSheet("install");
+      return;
+    }
+    // xysanc: buka gerbang unduh, tanda tangani tiket dulu
+    setSheet("install");
+    setPhase("ticket");
+    timer.current = window.setTimeout(() => setPhase("ready"), 1100);
   }
+
+  function onWishlist() {
+    const next = toggleWishlist(app.slug);
+    setWished(next);
+    show(next ? "Ditambahkan ke wishlist" : "Dihapus dari wishlist");
+  }
+
+  function onCopy(text: string, msg: string) {
+    navigator.clipboard?.writeText(text).catch(() => {});
+    show(msg);
+  }
+
+  function submitReview(rating: number, text: string) {
+    const item: ReviewItem = {
+      id: `u-${Date.now()}`,
+      user: user?.name ?? "Kamu",
+      hue: 265,
+      rating,
+      date: "Hari ini",
+      text: text.trim(),
+      helpful: 0,
+    };
+    const next = [item, ...myReviews];
+    setMyReviews(next);
+    try {
+      localStorage.setItem(RKEY(app.slug), JSON.stringify(next));
+    } catch {
+      /* penyimpanan penuh: abaikan */
+    }
+    setReviewOpen(false);
+    show("Ulasan terkirim (mock)");
+  }
+
+  function toggleHelpful(id: string) {
+    const next = new Set(helpful);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setHelpful(next);
+    try {
+      localStorage.setItem(HKEY, JSON.stringify([...next]));
+    } catch {
+      /* abaikan */
+    }
+  }
+
+  function ctaContent() {
+    if (app.sourceKind === "paid")
+      return (
+        <>
+          <Sym name="lock" size={15} /> Terkunci
+        </>
+      );
+    if (app.sourceKind === "none") return "Buka";
+    if (owned && phase !== "downloading" && phase !== "installing") return "Buka";
+    if (phase === "downloading") return `Mengunduh… ${pct}%`;
+    if (phase === "installing") return "Memasang…";
+    return "Install";
+  }
+
+  const busy = phase === "downloading" || phase === "installing";
 
   return (
     <div className="detail">
       <div className="wrap detail-nav">
         <Link href="/apps" className="icon-btn" aria-label="Kembali">
-          <ChevronLeft size={22} />
+          <Sym name="arrow_back" size={21} />
         </Link>
         <button
           type="button"
           className="icon-btn"
           aria-label="Bagikan"
-          onClick={() => setShareOpen(true)}
+          onClick={() => setSheet("share")}
         >
-          <Share2 size={18} />
+          <Sym name="share" size={18} />
         </button>
       </div>
 
+      {/* HERO */}
       <div className="wrap app-hero">
-        <AppGlyph initials={app.initials} accent={app.accent} size={84} />
-        <div>
+        <AppGlyph
+          initials={app.initials}
+          accent={app.accent}
+          src={app.icon}
+          size={84}
+        />
+        <div className="hero-main">
           <h1>{app.title}</h1>
           <p className="dev">{app.developer}</p>
-          <span className={`badge ${badge.tone}`}>{badge.text}</span>
+          <div className="hero-meta">
+            {rated ? (
+              <span className="hero-rating">
+                <Stars value={app.rating} size={13} />
+                <b>{app.rating.toFixed(1)}</b>
+                <span className="sep">·</span>
+                {fmtCount(app.ratingCount)} ulasan
+              </span>
+            ) : (
+              <span className="hero-rating">Belum dinilai</span>
+            )}
+            <span className="sep">·</span>
+            <span>{app.installs}</span>
+            <span className="sep">·</span>
+            <span>{app.size}</span>
+          </div>
+          <div className="hero-chips">
+            <span className="age-chip">Rating {app.age}</span>
+            <span className={`badge ${badge.tone}`}>{badge.text}</span>
+            {app.containsAds && <span className="ad-note">Mengandung iklan</span>}
+          </div>
         </div>
       </div>
 
-      <div className="wrap stats">
-        <div>
-          <strong>{app.category}</strong>
-          <span>Kategori</span>
-        </div>
-        <div>
-          <strong>{app.size}</strong>
-          <span>Ukuran</span>
-        </div>
-        <div>
-          <strong>{app.age}</strong>
-          <span>Usia</span>
-        </div>
-        <div>
-          <strong>{app.platform}</strong>
-          <span>Platform</span>
-        </div>
+      {/* AKSI */}
+      <div className="wrap action-row">
+        <LoadingButton
+          block
+          className="cta-main"
+          onClick={startAction}
+          disabled={app.sourceKind === "paid" || (owned && phase === "done")}
+          loading={busy}
+        >
+          {ctaContent()}
+        </LoadingButton>
+        <button
+          type="button"
+          className={`icon-btn heart ${wished ? "on" : ""}`}
+          aria-label={wished ? "Hapus dari wishlist" : "Tambah ke wishlist"}
+          onClick={onWishlist}
+        >
+          <Sym name="favorite" size={20} fill={wished} />
+        </button>
+        <button
+          type="button"
+          className="icon-btn"
+          aria-label="Bagikan"
+          onClick={() => setSheet("share")}
+        >
+          <Sym name="share" size={19} />
+        </button>
       </div>
 
+      {/* CUPLIKAN */}
       <div className="rail pad-left shots-rail">
-        {[0, 1, 2, 3].map((i) => (
+        {app.screenshots.map((s, i) => (
           <SmartImage
-            key={i}
-            label={`${app.title} cuplikan ${i + 1}`}
+            key={s.src}
+            src={s.src}
+            label={s.label}
             accent={i % 2 ? app.accent2 : app.accent}
             accent2={i % 2 ? app.accent : app.accent2}
-            delay={380 + i * 140}
-            className="shot-img"
+            delay={300 + i * 120}
+            className={s.landscape ? "shot-land" : "shot-port"}
             rounded="xl"
             onClick={() => setPreview(i)}
           />
         ))}
       </div>
 
-      <div className="wrap stack-14">
-        <section>
-          <h2>Tentang aplikasi ini</h2>
-          <p className="body">{app.description}</p>
-          <ul className="feat">
-            {app.features.map((x) => (
-              <li key={x}>{x}</li>
+      {/* YANG BARU */}
+      <section className="wrap detail-sec">
+        <h2>Yang baru</h2>
+        <div className="panel">
+          <p className="chg-head">
+            <strong>{latest.version}</strong>
+            <span>{latest.date}</span>
+          </p>
+          <ul className="chg-list">
+            {latest.notes.map((n) => (
+              <li key={n}>{n}</li>
             ))}
           </ul>
-        </section>
-        <section>
-          <h2>Yang baru</h2>
-          {app.changelog.map((c) => (
-            <p key={c.version} className="body">
-              <strong>{c.version}</strong> · {c.notes}
+          {older.length > 0 && (
+            <>
+              <button
+                type="button"
+                className="text-btn"
+                onClick={() => setShowOldChangelog((v) => !v)}
+              >
+                {showOldChangelog ? "Sembunyikan" : "Versi sebelumnya"}
+                <Sym name={showOldChangelog ? "expand_less" : "expand_more"} size={16} />
+              </button>
+              {showOldChangelog &&
+                older.map((c) => (
+                  <div key={c.version} className="chg-old">
+                    <p className="chg-head">
+                      <strong>{c.version}</strong>
+                      <span>{c.date}</span>
+                    </p>
+                    <ul className="chg-list">
+                      {c.notes.map((n) => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* RATING */}
+      <section className="wrap detail-sec">
+        <h2>Rating dan ulasan</h2>
+        <div className="panel rating-panel">
+          {rated ? (
+            <>
+              <div className="rating-sum">
+                <strong className="rating-big">{app.rating.toFixed(1)}</strong>
+                <Stars value={app.rating} size={15} />
+                <span className="meta-line">
+                  {fmtCount(app.ratingCount)} ulasan
+                </span>
+              </div>
+              <div className="rating-break">
+                {app.ratingBreakdown.map((count, i) => {
+                  const star = 5 - i;
+                  const pct = app.ratingCount
+                    ? Math.round((count / app.ratingCount) * 100)
+                    : 0;
+                  return (
+                    <div className="break-row" key={star}>
+                      <span className="break-label">{star}</span>
+                      <span className="break-track">
+                        <i style={{ width: `${pct}%` }} />
+                      </span>
+                      <span className="break-count">{count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="rating-empty">
+              <strong>Belum dinilai</strong>
+              <span className="meta-line">
+                Ulasan dibuka setelah app rilis dan terpasang di perangkat.
+              </span>
+            </div>
+          )}
+          {app.sourceKind !== "paid" && (
+            <button
+              type="button"
+              className="lbtn soft write-review"
+              onClick={() => setReviewOpen(true)}
+            >
+              <Sym name="edit" size={15} /> Tulis ulasan
+            </button>
+          )}
+        </div>
+      </section>
+
+      {/* ULASAN */}
+      <section className="wrap detail-sec">
+        <h2>Ulasan</h2>
+        {allReviews.length === 0 ? (
+          <div className="empty">
+            <Sym name="reviews" size={24} />
+            <p>Belum ada ulasan untuk aplikasi ini.</p>
+          </div>
+        ) : (
+          <div className="stack-12">
+            {allReviews.map((r) => (
+              <ReviewCard
+                key={r.id}
+                r={r}
+                mine={myReviews.some((m) => m.id === r.id)}
+                helpfulOn={helpful.has(r.id)}
+                onHelpful={() => toggleHelpful(r.id)}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* KEAMANAN DATA */}
+      <section className="wrap detail-sec">
+        <h2>Keamanan data</h2>
+        <div className="panel safety-list">
+          {app.dataSafety.map((s) => (
+            <p key={s}>
+              <Sym name="shield" size={17} fill /> {s}
             </p>
           ))}
-          <p className="meta-line">Diperbarui {app.updated}</p>
-        </section>
-      </div>
+        </div>
+      </section>
 
-      <div className="sticky-cta">
-        <div className="wrap sticky-inner">
-          <div>
-            <strong>{owned ? "Di library" : app.title}</strong>
-            <span>
-              {app.sourceKind === "paid"
-                ? "Source berbayar · belum dibuka"
-                : app.sourceKind === "none"
-                  ? "Demo web"
-                  : "XySANC-1.0 · jangan jual"}
-            </span>
-          </div>
-          <LoadingButton
-            onClick={startAction}
-            disabled={app.sourceKind === "paid"}
-            loading={sheet && phase === "spin"}
+      {/* TENTANG */}
+      <section className="wrap detail-sec">
+        <h2>Tentang aplikasi ini</h2>
+        <p className="body">{app.description}</p>
+        <div className="about-rows">
+          <Row k="Versi" v={app.version} />
+          <Row k="Diperbarui" v={app.updated} />
+          <Row k="Ukuran" v={app.size} />
+          <Row k="Diunduh" v={app.installs} />
+          <Row k="Dirilis" v={app.released} />
+          <Row k="Pengembang" v={app.developer} />
+          <Row k="Platform" v={app.platform} />
+          <button
+            type="button"
+            className="about-row about-btn"
+            onClick={() => setSheet("perms")}
           >
-            {owned && app.sourceKind === "xysanc" ? "Install lagi" : ctaLabel(app.sourceKind)}
-          </LoadingButton>
+            <span>Izin aplikasi</span>
+            <Sym name="chevron_right" size={17} />
+          </button>
+          {app.website && (
+            <a
+              className="about-row about-btn"
+              href={`https://${app.website}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Situs web</span>
+              <span className="about-val">{app.website}</span>
+            </a>
+          )}
+        </div>
+        <ul className="feat">
+          {app.features.map((x) => (
+            <li key={x}>{x}</li>
+          ))}
+        </ul>
+      </section>
+
+      {/* MIRIP / LAINNYA DARI PENGEMBANG */}
+      <RailSection
+        title="Aplikasi lain oleh pengembang ini"
+        slugs={app.moreFromDev}
+      />
+      <RailSection title="Mirip dengan ini" slugs={app.similar} />
+
+      {/* STICKY CTA */}
+      <div className="sticky-cta">
+        <div className="wrap">
+          {busy && (
+            <div className="install-progress">
+              <i style={{ width: `${pct}%` }} />
+            </div>
+          )}
+          <div className="sticky-inner">
+            <div>
+              <strong>{owned ? "Di perangkat ini" : app.title}</strong>
+              <span>
+                {app.sourceKind === "paid"
+                  ? "Source berbayar · belum dibuka"
+                  : app.sourceKind === "none"
+                    ? "Demo web"
+                    : "XySANC-1.0 · gerbang resmi"}
+              </span>
+            </div>
+            <LoadingButton
+              onClick={startAction}
+              disabled={app.sourceKind === "paid" || busy}
+              loading={busy}
+              className="cta-main"
+            >
+              {ctaContent()}
+            </LoadingButton>
+          </div>
         </div>
       </div>
 
+      {/* SHEET: GERBANG UNDUH */}
       <BottomSheet
-        open={sheet}
-        title={app.sourceKind === "none" ? "Buka demo" : "Gerbang unduh"}
-        onClose={() => setSheet(false)}
+        open={sheet === "install"}
+        title={app.sourceKind === "none" ? "Buka demo" : "Gerbang unduh resmi"}
+        onClose={() => {
+          setSheet(null);
+          clearTimers();
+          if (phase === "ticket" || phase === "ready") setPhase("idle");
+        }}
       >
         {app.sourceKind === "none" ? (
-          <p>Demo belum punya URL live. Nanti tombol ini buka tab baru.</p>
-        ) : phase === "ready" ? (
-          <>
-            <p>Tiket simulasi. Nanti file di-stream dari dl.xyapps.my.id, bukan GitHub.</p>
-            <div className="ticket">{ticket}</div>
-            <LoadingButton
-              block
-              onClick={() => {
-                navigator.clipboard?.writeText(ticket).catch(() => {});
-                setSheet(false);
-              }}
-            >
-              Salin tiket
+          <div className="stack-12">
+            <p>
+              Demo web belum punya URL live. Nanti tombol ini membuka tab baru — tidak
+              ada file yang diunduh untuk app web.
+            </p>
+            {app.website && (
+              <div className="ticket">https://{app.website} (DNS menyusul)</div>
+            )}
+            <LoadingButton block onClick={() => setSheet(null)}>
+              Mengerti
             </LoadingButton>
-          </>
-        ) : (
-          <>
-            <p>Menandatangani tiket…</p>
+          </div>
+        ) : phase === "ticket" ? (
+          <div className="stack-12">
+            <p>Menandatangani tiket unduh…</p>
             <div className="bar">
               <i style={{ width: "58%" }} />
             </div>
-          </>
+          </div>
+        ) : (
+          <div className="stack-12">
+            <p>
+              File di-stream dari dl.xyapps.my.id. URL asal tidak pernah sampai ke
+              browser — ini simulasi, file asli belum ada.
+            </p>
+            <div className="ticket">{ticket}</div>
+            <LoadingButton
+              block
+              onClick={() => onCopy(ticket, "Tiket disalin")}
+            >
+              Salin tiket
+            </LoadingButton>
+            <LoadingButton block variant="soft" onClick={startDownload}>
+              Mulai unduh
+            </LoadingButton>
+          </div>
         )}
       </BottomSheet>
 
+      {/* SHEET: IZIN */}
+      <BottomSheet
+        open={sheet === "perms"}
+        title="Izin aplikasi"
+        onClose={() => setSheet(null)}
+      >
+        <ul className="perm-list">
+          {app.permissions.map((p) => (
+            <li key={p}>
+              <Sym name="check_circle" size={17} fill />
+              {p}
+            </li>
+          ))}
+        </ul>
+        <p className="note">
+          Lisensi: {badge.text}. Detail lengkap di halaman legal.
+        </p>
+      </BottomSheet>
+
+      {/* SHEET: BAGIKAN */}
+      <BottomSheet open={sheet === "share"} title="Bagikan" onClose={() => setSheet(null)}>
+        <div className="stack-12">
+          <p>Bagikan halaman aplikasi ini:</p>
+          <div className="ticket">https://xyapps.my.id/apps/{app.slug}</div>
+          <LoadingButton
+            block
+            onClick={() => onCopy(`https://xyapps.my.id/apps/${app.slug}`, "Tautan disalin")}
+          >
+            Salin tautan
+          </LoadingButton>
+        </div>
+      </BottomSheet>
+
+      {/* MODAL: PREVIEW CUPLIKAN */}
       <Modal
         open={preview !== null}
-        title="Cuplikan"
+        title={preview !== null ? app.screenshots[preview].label : "Cuplikan"}
         onClose={() => setPreview(null)}
       >
         {preview !== null && (
           <SmartImage
-            label={app.title}
+            src={app.screenshots[preview].src}
+            label={app.screenshots[preview].label}
             accent={preview % 2 ? app.accent2 : app.accent}
             accent2={preview % 2 ? app.accent : app.accent2}
-            delay={120}
-            className="preview-img"
+            delay={80}
+            className={
+              app.screenshots[preview].landscape ? "preview-img land" : "preview-img"
+            }
             rounded="xl"
+            fit="contain"
           />
         )}
       </Modal>
 
-      <Modal open={shareOpen} title="Bagikan" onClose={() => setShareOpen(false)}>
-        <p>Nanti di sini share sheet asli. Sekarang cuma path-nya:</p>
-        <div className="ticket">/apps/{app.slug}</div>
-      </Modal>
+      {/* MODAL: TULIS ULASAN */}
+      <ReviewModal
+        open={reviewOpen}
+        onClose={() => setReviewOpen(false)}
+        onSubmit={submitReview}
+        title={app.title}
+      />
+
+      <ToastView msg={toast} />
     </div>
+  );
+}
+
+function Row({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="about-row">
+      <span>{k}</span>
+      <span className="about-val">{v}</span>
+    </div>
+  );
+}
+
+function ReviewCard({
+  r,
+  mine,
+  helpfulOn,
+  onHelpful,
+}: {
+  r: ReviewItem;
+  mine: boolean;
+  helpfulOn: boolean;
+  onHelpful: () => void;
+}) {
+  return (
+    <article className="panel review">
+      <div className="review-head">
+        <span
+          className="review-ava"
+          style={{ background: `linear-gradient(150deg, hsl(${r.hue} 60% 46%), hsl(${r.hue} 70% 22%))` }}
+        >
+          {r.user.slice(0, 1).toUpperCase()}
+        </span>
+        <div className="grow">
+          <strong>{r.user}</strong>
+          <Stars value={r.rating} size={11} />
+        </div>
+        <span className="review-date">{r.date}</span>
+        {mine && <span className="badge free">Kamu</span>}
+      </div>
+      <p className="review-text">{r.text}</p>
+      <button
+        type="button"
+        className={`helpful ${helpfulOn ? "on" : ""}`}
+        onClick={onHelpful}
+        aria-pressed={helpfulOn}
+      >
+        <Sym name="thumb_up" size={14} fill={helpfulOn} />
+        {helpfulOn ? "Bermanfaat" : "Bermanfaat?"}
+        {r.helpful > 0 && <span>· {r.helpful}</span>}
+      </button>
+      {r.reply && (
+        <div className="review-reply">
+          <strong>{r.reply.user}</strong>
+          <span>{r.reply.date}</span>
+          <p>{r.reply.text}</p>
+        </div>
+      )}
+    </article>
+  );
+}
+
+function RailSection({ title, slugs }: { title: string; slugs: string[] }) {
+  const apps = slugs.map(getApp).filter((a): a is AppItem => Boolean(a));
+  if (apps.length === 0) return null;
+  return (
+    <section className="detail-sec">
+      <div className="wrap rail-head">
+        <h2>{title}</h2>
+      </div>
+      <div className="rail pad-left">
+        {apps.map((a) => (
+          <Link key={a.slug} href={`/apps/${a.slug}`} className="mini-card">
+            <AppGlyph initials={a.initials} accent={a.accent} src={a.icon} size={48} />
+            <strong>{a.title}</strong>
+            {a.ratingCount > 0 ? (
+              <span className="mini-rate">
+                <Stars value={a.rating} size={10} /> {a.rating.toFixed(1)}
+              </span>
+            ) : (
+              <span className="mini-rate">Belum dirilis</span>
+            )}
+            <span className="mini-cta">{ctaLabel(a.sourceKind)}</span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ReviewModal({
+  open,
+  onClose,
+  onSubmit,
+  title,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (rating: number, text: string) => void;
+  title: string;
+}) {
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+
+  function submit() {
+    if (text.trim().length < 5) return;
+    setSending(true);
+    window.setTimeout(() => {
+      onSubmit(rating, text);
+      setSending(false);
+      setText("");
+      setRating(5);
+    }, 600);
+  }
+
+  return (
+    <Modal open={open} title={`Ulas ${title}`} onClose={onClose}>
+      <div className="stack-14 review-form">
+        <p className="sub">Mock: ulasan tersimpan di perangkat ini saja.</p>
+        <StarPicker value={rating} onChange={setRating} />
+        <textarea
+          rows={4}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Ceritakan pengalamanmu…"
+          aria-label="Isi ulasan"
+        />
+        <div className="review-actions">
+          <LoadingButton variant="ghost" onClick={onClose}>
+            Batal
+          </LoadingButton>
+          <LoadingButton
+            loading={sending}
+            disabled={text.trim().length < 5}
+            onClick={submit}
+          >
+            Kirim
+          </LoadingButton>
+        </div>
+      </div>
+    </Modal>
   );
 }

@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/components/Session";
 import { LoadingButton } from "@/components/ui/LoadingButton";
+import { Sym } from "@/components/Icon";
 
 export default function LoginPage() {
   const { login } = useSession();
@@ -26,7 +27,10 @@ export default function LoginPage() {
       <form className="form" onSubmit={onSubmit}>
         <p className="kicker">Akun</p>
         <h1 className="page-title">Masuk</h1>
-        <p className="sub">Mock. Tersimpan di localStorage, bukan server.</p>
+        <p className="sub">
+          Mock. Tersimpan di localStorage, bukan server. Google OAuth menyusul —
+          sengaja tidak dipalsu.
+        </p>
         <label className="field">
           Nama tampilan
           <input value={name} onChange={(e) => setName(e.target.value)} />
@@ -36,9 +40,11 @@ export default function LoginPage() {
           <input value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <LoadingButton type="submit" loading={loading} block>
-          Masuk
+          <Sym name="key" size={16} /> Masuk
         </LoadingButton>
-        <p className="note">Google OAuth menyusul. Sengaja tidak dipalsu.</p>
+        <p className="note">
+          Dengan masuk, ulasan yang kamu tulis akan memakai nama ini (mock lokal).
+        </p>
       </form>
     </div>
   );

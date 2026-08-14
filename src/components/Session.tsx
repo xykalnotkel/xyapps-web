@@ -3,9 +3,8 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -13,7 +12,6 @@ type User = { name: string; email: string };
 
 type Session = {
   user: User | null;
-  ready: boolean;
   login: (name: string, email: string) => void;
   logout: () => void;
 };
@@ -21,35 +19,54 @@ type Session = {
 const Ctx = createContext<Session | null>(null);
 const KEY = "xyapps.session";
 
-export function SessionProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
+/* Store eksternal (localStorage) dengan cache + subscriber sendiri.
+   useSyncExternalStore dipakai supaya baca/tulis tidak lewat effect. */
+let cache: User | null | undefined;
+const listeners = new Set<() => void>();
 
-  useEffect(() => {
+function readUser(): User | null {
+  if (cache === undefined) {
     try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setUser(JSON.parse(raw) as User);
+      const raw =
+        typeof window === "undefined" ? null : localStorage.getItem(KEY);
+      cache = raw ? (JSON.parse(raw) as User) : null;
     } catch {
-      /* ignore */
+      cache = null;
     }
-    setReady(true);
-  }, []);
+  }
+  return cache;
+}
+
+function writeUser(next: User | null) {
+  cache = next;
+  try {
+    if (next) localStorage.setItem(KEY, JSON.stringify(next));
+    else localStorage.removeItem(KEY);
+  } catch {
+    /* penyimpanan tidak tersedia: abaikan */
+  }
+  listeners.forEach((l) => l());
+}
+
+export function SessionProvider({ children }: { children: ReactNode }) {
+  const user = useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb);
+      return () => {
+        listeners.delete(cb);
+      };
+    },
+    readUser,
+    () => null,
+  );
 
   const value = useMemo<Session>(
     () => ({
       user,
-      ready,
-      login: (name, email) => {
-        const next = { name, email };
-        setUser(next);
-        localStorage.setItem(KEY, JSON.stringify(next));
-      },
-      logout: () => {
-        setUser(null);
-        localStorage.removeItem(KEY);
-      },
+      login: (name, email) => writeUser({ name, email }),
+      logout: () => writeUser(null),
     }),
-    [user, ready],
+    [user],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
@@ -59,4 +76,13 @@ export function useSession() {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error("SessionProvider missing");
   return ctx;
+}
+
+/** true hanya setelah hidrasi klien selesai — buat gate loading tanpa effect. */
+export function useMounted() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 }

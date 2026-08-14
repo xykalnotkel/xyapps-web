@@ -1,6 +1,30 @@
 export type SourceKind = "xysanc" | "paid" | "none";
 export type Platform = "Android" | "Web" | "Desktop";
 
+export type Screenshot = {
+  src: string;
+  label: string;
+  /** true = orientasi lanskap (app desktop), false = potret ponsel. */
+  landscape?: boolean;
+};
+
+export type ReviewItem = {
+  id: string;
+  user: string;
+  hue: number;
+  rating: number;
+  date: string;
+  text: string;
+  helpful: number;
+  reply?: { user: string; date: string; text: string };
+};
+
+export type ChangelogEntry = {
+  version: string;
+  date: string;
+  notes: string[];
+};
+
 export type AppItem = {
   slug: string;
   title: string;
@@ -18,8 +42,27 @@ export type AppItem = {
   accent2: string;
   age: string;
   updated: string;
-  changelog: { version: string; notes: string }[];
+  /** ISO untuk pengurutan. */
+  sortDate: string;
+  released: string;
+  changelog: ChangelogEntry[];
   features: string[];
+  icon: string;
+  screenshots: Screenshot[];
+  /** 0 = belum dinilai. */
+  rating: number;
+  ratingCount: number;
+  installs: string;
+  containsAds: boolean;
+  /** Jumlah ulasan per bintang, indeks 0 = bintang 5. */
+  ratingBreakdown: [number, number, number, number, number];
+  reviews: ReviewItem[];
+  permissions: string[];
+  dataSafety: string[];
+  similar: string[];
+  moreFromDev: string[];
+  website?: string;
+  repoUrl?: string;
 };
 
 export const APPS: AppItem[] = [
@@ -28,7 +71,7 @@ export const APPS: AppItem[] = [
     title: "Northroom",
     tagline: "Pemutar lokal. Tanpa iklan, tanpa akun.",
     description:
-      "Pemutar musik lokal. Installer resmi hanya lewat gerbang dl.xyapps.my.id. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
+      "Pemutar musik offline untuk file lokal. Tanpa iklan, tanpa akun, tanpa telemetri. Installer resmi hanya lewat gerbang dl.xyapps.my.id — user tidak pernah menyentuh GitHub. Source XySANC-1.0: boleh dipakai dan dipelajari, dilarang dijual ulang.",
     platform: "Android",
     category: "Musik",
     stack: ["Kotlin"],
@@ -41,18 +84,110 @@ export const APPS: AppItem[] = [
     accent2: "#1E1B4B",
     age: "3+",
     updated: "12 Agu 2026",
+    sortDate: "2026-08-12",
+    released: "2 Mar 2026",
+    icon: "/gen/icons/northroom.webp",
+    screenshots: [
+      { src: "/gen/shots/northroom-1.jpg", label: "Library offline" },
+      { src: "/gen/shots/northroom-2.jpg", label: "Pemutar" },
+      { src: "/gen/shots/northroom-3.jpg", label: "Sleep timer" },
+      { src: "/gen/shots/northroom-4.jpg", label: "Equalizer" },
+    ],
     changelog: [
-      { version: "1.4.2", notes: "Perbaikan unduhan tiket dan mode gelap." },
-      { version: "1.4.0", notes: "Antrian lagu, sleep timer." },
+      {
+        version: "1.4.2",
+        date: "12 Agu 2026",
+        notes: [
+          "Perbaikan alur tiket unduh lewat gerbang resmi",
+          "Mode gelap menyeluruh, tanpa titik terang tersisa",
+          "Pemindaian library sekitar 30 persen lebih cepat",
+        ],
+      },
+      {
+        version: "1.4.0",
+        date: "2 Agu 2026",
+        notes: ["Antrian lagu", "Sleep timer", "Equalizer 8 pita"],
+      },
+      {
+        version: "1.3.1",
+        date: "21 Jul 2026",
+        notes: ["Perbaikan crash saat memindai folder besar"],
+      },
     ],
     features: ["Offline library", "Tidak ada iklan", "XySANC-1.0"],
+    rating: 4.8,
+    ratingCount: 1247,
+    installs: "100 rb+",
+    containsAds: false,
+    ratingBreakdown: [1012, 168, 34, 12, 21],
+    reviews: [
+      {
+        id: "nr-1",
+        user: "Raka S.",
+        hue: 262,
+        rating: 5,
+        date: "12 Agu 2026",
+        text: "Baru nyoba versi 1.4.2. Sleep timer-nya nolong banget buat dengerin musik sebelum tidur. Install lewat tiket agak beda dari toko lain, tapi sekali setup langsung kebiasa.",
+        helpful: 34,
+        reply: {
+          user: "XyStudio",
+          date: "13 Agu 2026",
+          text: "Makasih Raka. Tiket 10 menit itu gerbang distribusi resmi, bukan bug — file di-stream dari dl.xyapps.my.id supaya URL asal tidak bocor.",
+        },
+      },
+      {
+        id: "nr-2",
+        user: "Nadia",
+        hue: 320,
+        rating: 5,
+        date: "9 Agu 2026",
+        text: "Tanpa iklan beneran. Library offline-nya cepet, ga ada loading nyangkut pas ganti lagu.",
+        helpful: 21,
+      },
+      {
+        id: "nr-3",
+        user: "Fajar",
+        hue: 210,
+        rating: 4,
+        date: "4 Agu 2026",
+        text: "Mantap buat file lokal. Minta fitur queue seret-tarik dan lyric timer di rilis berikutnya.",
+        helpful: 12,
+        reply: {
+          user: "XyStudio",
+          date: "5 Agu 2026",
+          text: "Antrian seret-tarik sudah masuk roadmap 1.5. Lyric timer kami timbang, karena butuh format lrc yang rapi di folder lokal.",
+        },
+      },
+      {
+        id: "nr-4",
+        user: "Sinta",
+        hue: 24,
+        rating: 3,
+        date: "28 Jul 2026",
+        text: "Di HP lama saya animasi equalizer agak berat. Mode hemat performa tolong dibikin biar tetap mulus.",
+        helpful: 8,
+      },
+    ],
+    permissions: [
+      "Media audio — memutar file lokal",
+      "Penyimpanan — membaca folder musik",
+      "Tanpa akses jaringan — app ini offline",
+    ],
+    dataSafety: [
+      "Tidak ada data dikumpulkan",
+      "Semua pemrosesan di perangkat",
+      "Tidak ada iklan",
+      "Tidak ada akun",
+    ],
+    similar: ["field-notes", "kilometer"],
+    moreFromDev: ["field-notes", "kilometer", "lantern"],
   },
   {
     slug: "vaultline",
     title: "Vaultline",
-    tagline: "Source private. Tiket unduh 10 menit.",
+    tagline: "Brankas file terenkripsi. Belum dirilis.",
     description:
-      "Produk berbayar. Repo tidak public. Tombol beli belum hidup — sengaja, biar UX-nya terasa terkunci dengan jujur.",
+      "Produk berbayar XyStudio. Repo tidak public, installer belum dijual. Tombol beli sengaja mati — UX-nya harus jujur: halaman ini menampilkan app yang terkunci, bukan app yang pura-pura bisa diunduh.",
     platform: "Desktop",
     category: "Tools",
     stack: ["Rust", "Tauri"],
@@ -65,15 +200,43 @@ export const APPS: AppItem[] = [
     accent2: "#2E1065",
     age: "12+",
     updated: "2 Agu 2026",
-    changelog: [{ version: "0.9.1", notes: "Build internal. Belum dijual." }],
+    sortDate: "2026-08-02",
+    released: "Belum dirilis",
+    icon: "/gen/icons/vaultline.webp",
+    screenshots: [
+      { src: "/gen/shots/vaultline-1.svg", label: "Dashboard", landscape: true },
+      { src: "/gen/shots/vaultline-2.svg", label: "Brankas", landscape: true },
+      { src: "/gen/shots/vaultline-3.svg", label: "Terminal", landscape: true },
+    ],
+    changelog: [
+      {
+        version: "0.9.1",
+        date: "2 Agu 2026",
+        notes: ["Build internal", "Tiket unduh bertanda tangan, masa aktif 10 menit"],
+      },
+    ],
     features: ["Repo private", "Signed ticket", "Lisensi proprietary"],
+    rating: 0,
+    ratingCount: 0,
+    installs: "Belum dirilis",
+    containsAds: false,
+    ratingBreakdown: [0, 0, 0, 0, 0],
+    reviews: [],
+    permissions: ["Tidak dipublikasikan — app belum rilis"],
+    dataSafety: [
+      "Enkripsi AES-256 di sisi klien",
+      "Kunci tidak pernah dikirim ke server",
+      "Lisensi proprietary",
+    ],
+    similar: ["lantern", "northroom"],
+    moreFromDev: ["northroom", "field-notes", "kilometer"],
   },
   {
     slug: "kilometer",
     title: "Kilometer",
-    tagline: "Web tool. Satu tombol: buka demo.",
+    tagline: "Catat lari. Tanpa akun, langsung jalan.",
     description:
-      "Tidak ada file unduhan. Tidak ada source di listing ini. UX-nya harus terasa ringan.",
+      "Web tool pencatat lari. Tanpa akun, tanpa sinkron cloud — data tersimpan di browser. Tidak ada file unduhan dan tidak ada source di listing ini. UX-nya harus terasa ringan: buka, catat, tutup.",
     platform: "Web",
     category: "Tools",
     stack: ["TypeScript"],
@@ -86,15 +249,66 @@ export const APPS: AppItem[] = [
     accent2: "#042F2E",
     age: "3+",
     updated: "28 Jul 2026",
-    changelog: [{ version: "2.0.0", notes: "Tulis ulang UI." }],
-    features: ["Tanpa akun", "Langsung di browser"],
+    sortDate: "2026-07-28",
+    released: "14 Mei 2026",
+    icon: "/gen/icons/kilometer.webp",
+    screenshots: [
+      { src: "/gen/shots/kilometer-1.svg", label: "Peta lari" },
+      { src: "/gen/shots/kilometer-2.svg", label: "Statistik" },
+      { src: "/gen/shots/kilometer-3.svg", label: "Riwayat" },
+    ],
+    changelog: [
+      {
+        version: "2.0.0",
+        date: "28 Jul 2026",
+        notes: ["Tulis ulang UI", "Ringkasan mingguan", "Riwayat lari"],
+      },
+    ],
+    features: ["Tanpa akun", "Langsung di browser", "Data di perangkat"],
+    rating: 4.5,
+    ratingCount: 89,
+    installs: "10 rb+",
+    containsAds: false,
+    ratingBreakdown: [58, 22, 5, 2, 2],
+    reviews: [
+      {
+        id: "km-1",
+        user: "Aldi",
+        hue: 160,
+        rating: 5,
+        date: "11 Agu 2026",
+        text: "Ringan, langsung kebuka tanpa akun. Grafik mingguannya bersih dan gampang dibaca.",
+        helpful: 9,
+      },
+      {
+        id: "km-2",
+        user: "Tia",
+        hue: 200,
+        rating: 4,
+        date: "30 Jul 2026",
+        text: "Buat lari santai cukup. Export GPX masih ditunggu biar bisa dipindah ke app lain.",
+        helpful: 5,
+      },
+    ],
+    permissions: [
+      "Lokasi — hanya saat sesi lari aktif",
+      "Sensor langkah — opsional",
+    ],
+    dataSafety: [
+      "Data tersimpan di browser",
+      "Tidak ada server",
+      "Tidak ada iklan",
+    ],
+    similar: ["lantern", "field-notes"],
+    moreFromDev: ["northroom", "field-notes", "lantern"],
+    website: "kilometer.xystudio.my.id",
   },
   {
     slug: "field-notes",
     title: "Field Notes",
-    tagline: "Catatan cepat, sinkron belakangan.",
+    tagline: "Catatan markdown cepat. Sinkron menyusul.",
     description:
-      "Catatan markdown ringan. Source XySANC. Listing dummy untuk ngetes list dan filter.",
+      "Catatan markdown ringan untuk Android. Source XySANC-1.0. Listing ini dummy untuk menguji alur list, filter, rating, dan ulasan — semua field mock, tidak ada yang dipalsukan sebagai produksi.",
     platform: "Android",
     category: "Produktivitas",
     stack: ["Kotlin", "SQLDelight"],
@@ -107,15 +321,66 @@ export const APPS: AppItem[] = [
     accent2: "#1E1B4B",
     age: "3+",
     updated: "1 Agu 2026",
-    changelog: [{ version: "0.3.0", notes: "Mock data saja." }],
-    features: ["Markdown", "Export teks"],
+    sortDate: "2026-08-01",
+    released: "18 Jun 2026",
+    icon: "/gen/icons/field-notes.webp",
+    screenshots: [
+      { src: "/gen/shots/field-notes-1.jpg", label: "Daftar catatan" },
+      { src: "/gen/shots/field-notes-2.svg", label: "Editor markdown" },
+      { src: "/gen/shots/field-notes-3.svg", label: "Pencarian" },
+    ],
+    changelog: [
+      {
+        version: "0.3.0",
+        date: "1 Agu 2026",
+        notes: ["Editor markdown", "Pencarian teks penuh", "Export teks"],
+      },
+      {
+        version: "0.2.1",
+        date: "20 Jul 2026",
+        notes: ["Perbaikan hilang baris saat simpan cepat"],
+      },
+    ],
+    features: ["Markdown", "Export teks", "Pencarian penuh"],
+    rating: 4.2,
+    ratingCount: 51,
+    installs: "5 rb+",
+    containsAds: false,
+    ratingBreakdown: [27, 13, 6, 3, 2],
+    reviews: [
+      {
+        id: "fn-1",
+        user: "Bima",
+        hue: 240,
+        rating: 4,
+        date: "8 Agu 2026",
+        text: "Markdown-nya nyaman dipakai tiap hari. Sinkron antar perangkat belum ada, semoga masuk di 0.4.",
+        helpful: 6,
+      },
+      {
+        id: "fn-2",
+        user: "Yuni",
+        hue: 300,
+        rating: 5,
+        date: "25 Jul 2026",
+        text: "Simpel, ga ribet. Export teks langsung jalan tanpa langkah aneh.",
+        helpful: 4,
+      },
+    ],
+    permissions: [
+      "Penyimpanan — menyimpan catatan",
+      "Tanpa akses jaringan",
+    ],
+    dataSafety: ["Tidak ada data dikumpulkan", "Semua data di perangkat", "Tidak ada iklan"],
+    similar: ["northroom", "lantern"],
+    moreFromDev: ["northroom", "kilometer", "lantern"],
   },
   {
     slug: "lantern",
     title: "Lantern",
     tagline: "Dashboard status mesin. Demo only.",
     description:
-      "Preview status scan. Demo only, tanpa file unduhan.",
+      "Preview dashboard status layanan: API, scan queue, dan unduhan. Demo only, tanpa file unduhan. Kalau produksi nanti, data di sini yang dipakai XyConsole sebagai papan status internal.",
     platform: "Web",
     category: "Developer",
     stack: ["React"],
@@ -128,8 +393,51 @@ export const APPS: AppItem[] = [
     accent2: "#3B0764",
     age: "12+",
     updated: "20 Jul 2026",
-    changelog: [{ version: "0.1.0", notes: "Prototype." }],
+    sortDate: "2026-07-20",
+    released: "30 Jun 2026",
+    icon: "/gen/icons/lantern.webp",
+    screenshots: [
+      { src: "/gen/shots/lantern-1.svg", label: "Semua layanan" },
+      { src: "/gen/shots/lantern-2.svg", label: "Detail layanan" },
+    ],
+    changelog: [
+      {
+        version: "0.1.0",
+        date: "20 Jul 2026",
+        notes: ["Prototype awal", "Status chip per layanan"],
+      },
+    ],
     features: ["Status chip", "Tanpa login"],
+    rating: 3.9,
+    ratingCount: 23,
+    installs: "1 rb+",
+    containsAds: false,
+    ratingBreakdown: [9, 8, 4, 1, 1],
+    reviews: [
+      {
+        id: "ln-1",
+        user: "Dio",
+        hue: 280,
+        rating: 4,
+        date: "31 Jul 2026",
+        text: "Status chip jelas dilihat sekilas. Kadang masih harus refresh manual, auto-poll menyusul ya.",
+        helpful: 3,
+      },
+      {
+        id: "ln-2",
+        user: "Rani",
+        hue: 12,
+        rating: 3,
+        date: "18 Jul 2026",
+        text: "Masih demo, jangan dipakai buat produksi dulu. Struktur halamannya sudah oke.",
+        helpful: 2,
+      },
+    ],
+    permissions: ["Tidak ada — baca status lewat API publik"],
+    dataSafety: ["Data status publik", "Tidak ada akun"],
+    similar: ["kilometer", "vaultline"],
+    moreFromDev: ["northroom", "field-notes", "kilometer"],
+    website: "lantern.xystudio.my.id",
   },
 ];
 
@@ -138,8 +446,7 @@ export function getApp(slug: string) {
 }
 
 export function sourceLabel(kind: SourceKind) {
-  if (kind === "xysanc")
-    return { text: "XySANC", tone: "free" as const };
+  if (kind === "xysanc") return { text: "XySANC", tone: "free" as const };
   if (kind === "paid") return { text: "Berbayar", tone: "paid" as const };
   return { text: "Demo", tone: "mute" as const };
 }
@@ -150,45 +457,12 @@ export function ctaLabel(kind: SourceKind) {
   return "Buka";
 }
 
+export function fmtCount(n: number) {
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(".", ",")} rb`;
+  return String(n);
+}
+
+/** API publik toko: semua field mock, tidak ada yang disembunyikan. */
 export function toPublicApp(app: AppItem) {
-  const {
-    slug,
-    title,
-    tagline,
-    description,
-    platform,
-    category,
-    stack,
-    sourceKind,
-    version,
-    size,
-    developer,
-    initials,
-    accent,
-    accent2,
-    age,
-    updated,
-    changelog,
-    features,
-  } = app;
-  return {
-    slug,
-    title,
-    tagline,
-    description,
-    platform,
-    category,
-    stack,
-    sourceKind,
-    version,
-    size,
-    developer,
-    initials,
-    accent,
-    accent2,
-    age,
-    updated,
-    changelog,
-    features,
-  };
+  return { ...app };
 }

@@ -20,6 +20,9 @@ export default function HomePage() {
     );
   }
 
+  const topRated = [...APPS].sort((a, b) => b.ratingCount - a.ratingCount);
+  const newest = [...APPS].sort((a, b) => b.sortDate.localeCompare(a.sortDate));
+
   return (
     <div className="home">
       <div className="wrap">
@@ -42,7 +45,7 @@ export default function HomePage() {
           <Link href="/apps">Lihat semua</Link>
         </div>
         <div className="rail pad-left">
-          {APPS.slice(0, 3).map((app) => (
+          {topRated.slice(0, 3).map((app) => (
             <FeaturedCard key={app.slug} app={app} />
           ))}
         </div>
@@ -52,7 +55,7 @@ export default function HomePage() {
         <div className="rail-head">
           <h2>Teratas</h2>
         </div>
-        {APPS.map((app) => (
+        {topRated.map((app) => (
           <AppRow key={app.slug} app={app} />
         ))}
       </section>
@@ -62,11 +65,9 @@ export default function HomePage() {
           <h2>Baru di XyApps</h2>
         </div>
         <div className="rail pad-left">
-          {APPS.slice()
-            .reverse()
-            .map((app) => (
-              <FeaturedCard key={app.slug} app={app} />
-            ))}
+          {newest.map((app) => (
+            <FeaturedCard key={app.slug} app={app} />
+          ))}
         </div>
       </section>
     </div>
