@@ -46,20 +46,17 @@ export function UserProfileView({ id }: { id: string }) {
       </div>
 
       <div className="stats-grid profile-stats">
-        <div className="stat">
+        <div className="stat" title="Ulasan ditulis">
           <Sym name="star_rate" size={18} className="stat-ic" />
           <strong>{u.reviews}</strong>
-          <span>Ulasan ditulis</span>
         </div>
-        <div className="stat">
+        <div className="stat" title="Suara bermanfaat">
           <Sym name="thumb_up" size={18} className="stat-ic" />
           <strong>{u.helpful}</strong>
-          <span>Suara bermanfaat</span>
         </div>
-        <div className="stat">
+        <div className="stat" title="App diulas">
           <Sym name="apps" size={18} className="stat-ic" />
           <strong>{u.apps.length}</strong>
-          <span>App diulas</span>
         </div>
       </div>
 
@@ -164,20 +161,17 @@ export function DeveloperProfileView({ id }: { id: string }) {
 
       {/* STATS */}
       <div className="stats-grid dev-stats">
-        <div className="stat">
+        <div className="stat" title="Jumlah aplikasi">
           <Sym name="apps" size={20} className="stat-ic" />
           <strong>{devApps.length}</strong>
-          <em>Aplikasi</em>
         </div>
-        <div className="stat">
+        <div className="stat" title="Rating rata-rata">
           <Sym name="star" size={20} fill={avg > 0} className={avg > 0 ? "stat-ic amber" : "stat-ic"} />
           <strong>{avg > 0 ? avg.toFixed(1) : "—"}</strong>
-          <em>Rating rata-rata</em>
         </div>
-        <div className="stat">
+        <div className="stat" title="Total ulasan">
           <Sym name="reviews" size={20} className="stat-ic" />
           <strong>{totalReviews}</strong>
-          <em>Total ulasan</em>
         </div>
       </div>
 

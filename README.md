@@ -97,7 +97,7 @@ npm run start
 
 - Bottom nav 4 tab: Beranda, Aplikasi, Game, Library. Icon dua versi per tab (fill saat aktif, outline saat tidak). Label tab tersembunyi, muncul di bawah icon saat aktif dengan animasi
 - Pencarian cuma satu pintu: pill di topbar membuka halaman `/search` penuh dengan autofocus, kata kunci sedang dicari, dan riwayat
-- Detail app: stat dengan icon tanpa card (rating, ukuran, rating umur, unduhan) di atas tombol Install, ulasan setelah rating, "Tentang aplikasi ini" setelah ulasan, baris info bericon, ketentuan layanan + kebijakan privasi tampil HANYA kalau dev menerbitkannya, harga di tombol untuk produk berbayar + catatan pengiriman email, tombol unduh hilang otomatis kalau perangkat tidak kompatibel
+- Detail app: stat icon tanpa label di atas tombol (rating, ukuran, rating umur, unduhan), urutan: cuplikan -> Yang baru -> Tentang (deskripsi saja) -> Rating -> Ulasan -> Info aplikasi (baris detail) -> Keamanan data. Ketentuan layanan + kebijakan privasi hanya kalau dev menerbitkannya, tombol unduh hilang otomatis kalau perangkat tidak kompatibel
 - Viewer cuplikan fullscreen polos tanpa card: panah, swipe sentuh, keyboard, counter
 - Rating bintang + distribusi per bintang + ulasan (sort relevan/terbaru/membantu, filter per bintang) + balasan developer
 - Progres unduh melingkar di icon app dengan gaya ular: busur gradien ungu + ekor terang yang berputar + persen di tengah, tombol menampilkan status "Mengunduh… %"
@@ -114,10 +114,12 @@ npm run start
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
 - Banner "Lanjut ke aplikasi" muncul sekali per perangkat (dismiss tersimpan) — disiapkan untuk versi aplikasi native XyApps
-- Badge rating umur SVG ala Play Store: outline shield + angka di tengah + tanda plus ter-mask di pojok, monokrom
+- Badge rating umur: kotak outline + angka transparan (tembus) + tanda plus di pojok kotak, monokrom
 - Icon app tampil rata tanpa box/background (fallback gradien hanya untuk app tanpa gambar)
 - Profil developer: cover gradien berpola, badge terverifikasi, chip lokasi, kontak, stats, daftar app
 - Simulasi perangkat 32-bit tersedia di Pengaturan (uji alur tombol unduh hilang)
+- App belum rilis: tombol berubah jadi "Ingatkan saya" (pengingat tersimpan)
+- Install = unduhan nyata: fetch stream dengan progres asli (byte diterima / total), ring mengikuti transfer, lalu file masuk folder unduhan browser; tombol berubah jadi "Batal" (outline) selama mengunduh dan membatalkan stream (AbortController). Kontrak asli: ganti DEMO_URL dengan endpoint bertiket saat gerbang unduh hidup
 - Security headers dipasang (CSP, anti-clickjacking, nosniff, referrer-policy) — lihat docs/SECURITY.md
 
 ## Keamanan web

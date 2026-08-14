@@ -33,15 +33,20 @@ import {
 
 type InstallPhase =
   | "idle"
-  | "ticket"
-  | "ready"
   | "downloading"
   | "installing"
   | "done";
 
-/* Satu-satunya bottom sheet: gerbang unduh. Share pakai navigator.share
+/* Satu-satunya bottom sheet: buka demo web. Share pakai navigator.share
    (fallback modal), izin inline, laporan modal. */
-type SheetKind = "install" | "pay" | null;
+type SheetKind = "install" | null;
+
+/* Payload demo untuk streaming unduhan nyata.
+   Diganti file asli dari gerbang unduh saat backend hidup. */
+const DEMO_URL = "/gen/dl/demo-installer.bin";
+const DEMO_SIZE = 2000000;
+
+const REM_KEY = (slug: string) => `xyapps.remind.${slug}`;
 
 type ReviewSort = "rel" | "new" | "help";
 
@@ -92,6 +97,7 @@ export function DetailClient({ app }: { app: AppItem }) {
   const [showOldChangelog, setShowOldChangelog] = useState(false);
   const device32 = useDeviceIs32();
   const [sim32, setSim32] = useState(false);
+  const [reminded, setReminded] = useState(false);
   const [myReviews, setMyReviews] = useState<ReviewItem[]>([]);
   const [helpful, setHelpful] = useState<Set<string>>(new Set());
   const [shotIdx, setShotIdx] = useState(0);
@@ -104,14 +110,9 @@ export function DetailClient({ app }: { app: AppItem }) {
   const [reportReason, setReportReason] = useState<string | null>(null);
 
   const timer = useRef<number | null>(null);
-  const interval = useRef<number | null>(null);
+  const downloadCtrl = useRef<AbortController | null>(null);
   const railRef = useRef<HTMLDivElement | null>(null);
   const touchX = useRef<number | null>(null);
-
-  const ticket = useMemo(
-    () => `https://dl.xystudio.my.id/d/${app.slug}/e71ed747-demo-${app.version.replace(/\./g, "")}`,
-    [app.slug, app.version],
-  );
 
   const rated = app.ratingCount > 0;
   const allReviews = useMemo(
@@ -198,58 +199,100 @@ export function DetailClient({ app }: { app: AppItem }) {
       setMyReviews(loadMyReviews(app.slug));
       setHelpful(loadHelpful());
       setSim32(readSettings().sim32);
+      try {
+        setReminded(localStorage.getItem(REM_KEY(app.slug)) === "1");
+      } catch {
+        /* abaikan */
+      }
     }, 0);
     return () => {
       window.clearTimeout(id);
       if (timer.current) window.clearTimeout(timer.current);
-      if (interval.current) window.clearInterval(interval.current);
+      downloadCtrl.current?.abort();
     };
   }, [app.slug]);
 
-  function clearTimers() {
-    if (timer.current) window.clearTimeout(timer.current);
-    if (interval.current) window.clearInterval(interval.current);
-    timer.current = null;
-    interval.current = null;
-  }
-
-  function startDownload() {
+  /* KONTRAK PROGRES ASLI — sudah nyata sejak v0.1:
+     - fetch stream ReadableStream, pct = byte diterima / ukuran total.
+       Sumber angka cuma satu: transfer asli. Tidak ada interval mock.
+     - Batal = AbortController.abort() -> download sungguhan ikut batal,
+       karena file disimpan browser HANYA setelah stream selesai penuh.
+     - Gagal di tengah (network, 4xx/5xx) -> balik idle + toast error.
+     - Saat gerbang unduh asli hidup: ganti DEMO_URL dengan endpoint
+       bertiket, sisanya tidak berubah. */
+  function beginDownload() {
     setSheet(null);
     setPhase("downloading");
     setPct(0);
-    /* KONTRAK PROGRES ASLI (belum ada file sungguhan):
-       - Saat backend dl.xystudio.my.id hidup, interval mock di bawah DIGANTI
-         progres sungguhan dari stream:
-           fetch(ticket) -> ReadableStream reader loop, atau XHR
-           onprogress, lalu pct = diterima / Content-Length * 100.
-       - Sumber angka cuma satu: byte yang benar-benar diterima. Jangan
-         pernah menambah pct yang tidak berasal dari transfer asli.
-       - Unduhan gagal di tengah (network drop, 4xx/5xx dari gerbang)
-         wajib balik ke phase idle + toast error, tidak boleh stuck di
-         downloading. Semua pembersihan timer lewat clearTimers(). */
-    interval.current = window.setInterval(() => {
-      setPct((p) => {
-        const next = p + Math.ceil(Math.random() * 5) + 1;
-        if (next >= 100) {
-          if (interval.current) window.clearInterval(interval.current);
-          setPhase("installing");
-          timer.current = window.setTimeout(() => {
-            addToLibrary(app.slug);
-            setOwned(true);
-            setPhase("done");
-            show(`${app.title} terpasang di perangkat ini`);
-            timer.current = window.setTimeout(() => setPhase("idle"), 900);
-          }, 1300);
-          return 100;
+    const ctrl = new AbortController();
+    downloadCtrl.current = ctrl;
+    fetch(DEMO_URL, { signal: ctrl.signal })
+      .then(async (res) => {
+        if (!res.ok || !res.body) throw new Error("bad-response");
+        const total = Number(res.headers.get("Content-Length")) || DEMO_SIZE;
+        const reader = res.body.getReader();
+        const chunks: BlobPart[] = [];
+        let received = 0;
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          if (value) {
+            chunks.push(value);
+            received += value.length;
+            setPct(Math.min(99, Math.round((received / total) * 100)));
+          }
         }
-        return next;
+        setPct(100);
+        finishDownload(new Blob(chunks, { type: "application/octet-stream" }));
+      })
+      .catch((e: unknown) => {
+        if ((e as Error)?.name === "AbortError") {
+          show("Unduhan dibatalkan");
+        } else {
+          show("Unduhan gagal. Coba lagi.");
+        }
+        setPct(0);
+        setPhase("idle");
       });
-    }, 90);
+  }
+
+  function finishDownload(blob: Blob) {
+    setPhase("installing");
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${app.slug}-v${app.version}-demo.apk`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    timer.current = window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    timer.current = window.setTimeout(() => {
+      addToLibrary(app.slug);
+      setOwned(true);
+      setPhase("done");
+      show(`${app.title} terunduh — cek folder unduhanmu`);
+      timer.current = window.setTimeout(() => setPhase("idle"), 1600);
+    }, 900);
+  }
+
+  function cancelDownload() {
+    downloadCtrl.current?.abort();
   }
 
   function startAction() {
     if (app.sourceKind === "paid") {
-      setSheet("pay");
+      const next = !reminded;
+      setReminded(next);
+      try {
+        localStorage.setItem(REM_KEY(app.slug), next ? "1" : "0");
+      } catch {
+        /* abaikan */
+      }
+      show(
+        next
+          ? `Kami akan memberi tahu saat ${app.title} tersedia`
+          : "Pengingat dibatalkan",
+      );
       return;
     }
     if (owned && app.sourceKind === "xysanc") {
@@ -260,10 +303,7 @@ export function DetailClient({ app }: { app: AppItem }) {
       setSheet("install");
       return;
     }
-    // xysanc: buka gerbang unduh, tanda tangani tiket dulu
-    setSheet("install");
-    setPhase("ticket");
-    timer.current = window.setTimeout(() => setPhase("ready"), 1100);
+    beginDownload();
   }
 
   function onWishlist() {
@@ -332,12 +372,13 @@ export function DetailClient({ app }: { app: AppItem }) {
     if (app.sourceKind === "paid")
       return (
         <>
-          <Sym name="lock" size={15} /> {app.price ?? "Terkunci"}
+          <Sym name={reminded ? "check_circle" : "notifications"} size={16} />
+          {reminded ? "Diingatkan" : "Ingatkan saya"}
         </>
       );
     if (app.sourceKind === "none") return "Buka";
-    if (owned && phase !== "downloading" && phase !== "installing") return "Buka";
-    if (phase === "downloading") return `Mengunduh… ${pct}%`;
+    if (owned && !busy) return "Buka";
+    if (phase === "downloading") return "Batal";
     if (phase === "installing") return "Memasang…";
     return "Install";
   }
@@ -413,9 +454,9 @@ export function DetailClient({ app }: { app: AppItem }) {
         </div>
       </div>
 
-      {/* STAT DENGAN ICON — tanpa card, tepat di atas tombol Install */}
+      {/* STAT DENGAN ICON — tanpa card, tanpa label, tepat di atas tombol */}
       <div className="wrap stats-grid">
-        <div className="stat">
+        <div className="stat" title="Rating">
           <Sym
             name="star"
             size={20}
@@ -423,21 +464,17 @@ export function DetailClient({ app }: { app: AppItem }) {
             className={rated ? "stat-ic amber" : "stat-ic"}
           />
           <strong>{rated ? app.rating.toFixed(1) : "—"}</strong>
-          <em>Rating</em>
         </div>
-        <div className="stat">
+        <div className="stat" title="Ukuran">
           <Sym name="storage" size={20} className="stat-ic" />
           <strong>{app.size}</strong>
-          <em>Ukuran</em>
         </div>
-        <div className="stat">
+        <div className="stat" title={`Rating umur ${app.age}`}>
           <AgeBadge age={app.age} size="lg" />
-          <em>Rating umur</em>
         </div>
-        <div className="stat">
+        <div className="stat" title="Total unduhan">
           <Sym name="download" size={20} className="stat-ic" />
           <strong>{app.installs}</strong>
-          <em>Unduhan</em>
         </div>
       </div>
 
@@ -453,10 +490,18 @@ export function DetailClient({ app }: { app: AppItem }) {
         <div className="wrap action-row">
           <LoadingButton
             block
-            className="cta-main"
-            onClick={startAction}
-            disabled={owned && phase === "done"}
-            loading={busy}
+            className={`cta-main ${
+              phase === "downloading" || (app.sourceKind === "paid" && reminded)
+                ? "cta-outline"
+                : ""
+            }`}
+            onClick={
+              phase === "downloading" && app.sourceKind !== "paid"
+                ? cancelDownload
+                : startAction
+            }
+            disabled={phase === "installing" || (owned && phase === "done")}
+            loading={phase === "installing"}
           >
             {ctaContent()}
           </LoadingButton>
@@ -465,7 +510,10 @@ export function DetailClient({ app }: { app: AppItem }) {
       {app.priceNote && !incompatible && (
         <div className="wrap">
           <p className="buy-note">
-            <Sym name="mail" size={14} /> {app.priceNote}
+            <Sym name="mail" size={14} />
+            <span>
+              <strong>{app.price ?? ""}</strong> {app.priceNote}
+            </span>
           </p>
         </div>
       )}
@@ -497,6 +545,68 @@ export function DetailClient({ app }: { app: AppItem }) {
           />
         ))}
       </div>
+
+            {app.changelog.length > 0 && (
+        <section className="wrap detail-sec">
+        <h2>Yang baru</h2>
+        <div className="panel">
+          <p className="chg-head">
+            <strong>{latest.version}</strong>
+            <span>{latest.date}</span>
+          </p>
+          <ul className="chg-list">
+            {latest.notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+          {older.length > 0 && (
+            <>
+              <button
+                type="button"
+                className="text-btn"
+                onClick={() => setShowOldChangelog((v) => !v)}
+              >
+                {showOldChangelog ? "Sembunyikan" : "Versi sebelumnya"}
+                <Sym name={showOldChangelog ? "expand_less" : "expand_more"} size={16} />
+              </button>
+              {showOldChangelog &&
+                older.map((c) => (
+                  <div key={c.version} className="chg-old">
+                    <p className="chg-head">
+                      <strong>{c.version}</strong>
+                      <span>{c.date}</span>
+                    </p>
+                    <ul className="chg-list">
+                      {c.notes.map((n) => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+            </>
+          )}
+        </div>
+      </section>
+      )}
+
+      
+
+      {/* TENTANG — deskripsi saja, naik ke atas */}
+      <section className="wrap detail-sec">
+        <h2>Tentang aplikasi ini</h2>
+        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
+        {app.description.length > 140 && (
+          <button
+            type="button"
+            className="text-btn"
+            onClick={() => setAboutOpen((v) => !v)}
+            aria-expanded={aboutOpen}
+          >
+            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
+            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
+          </button>
+        )}
+      </section>
 
       {/* RATING */}
       <section className="wrap detail-sec">
@@ -618,22 +728,11 @@ export function DetailClient({ app }: { app: AppItem }) {
         )}
       </section>
 
-      {/* TENTANG */}
+      
+      {/* INFO APLIKASI — baris detail tetap di bawah ulasan */}
       <section className="wrap detail-sec">
-        <h2>Tentang aplikasi ini</h2>
-        <p className={`body ${aboutOpen ? "" : "clamp3"}`}>{app.description}</p>
-        {app.description.length > 140 && (
-          <button
-            type="button"
-            className="text-btn"
-            onClick={() => setAboutOpen((v) => !v)}
-            aria-expanded={aboutOpen}
-          >
-            {aboutOpen ? "Lebih sedikit" : "Lebih banyak"}
-            <Sym name={aboutOpen ? "expand_less" : "expand_more"} size={16} />
-          </button>
-        )}
-        <div className="about-rows">
+        <h2>Info aplikasi</h2>
+<div className="about-rows">
           <Row k="Versi" v={app.version} icon="info" />
           <Row k="Diperbarui" v={app.updated} icon="schedule" />
           <Row k="Ukuran" v={app.size} icon="storage" />
@@ -740,49 +839,8 @@ export function DetailClient({ app }: { app: AppItem }) {
       </section>
 
       
-      {/* YANG BARU */}
-      <section className="wrap detail-sec">
-        <h2>Yang baru</h2>
-        <div className="panel">
-          <p className="chg-head">
-            <strong>{latest.version}</strong>
-            <span>{latest.date}</span>
-          </p>
-          <ul className="chg-list">
-            {latest.notes.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
-          {older.length > 0 && (
-            <>
-              <button
-                type="button"
-                className="text-btn"
-                onClick={() => setShowOldChangelog((v) => !v)}
-              >
-                {showOldChangelog ? "Sembunyikan" : "Versi sebelumnya"}
-                <Sym name={showOldChangelog ? "expand_less" : "expand_more"} size={16} />
-              </button>
-              {showOldChangelog &&
-                older.map((c) => (
-                  <div key={c.version} className="chg-old">
-                    <p className="chg-head">
-                      <strong>{c.version}</strong>
-                      <span>{c.date}</span>
-                    </p>
-                    <ul className="chg-list">
-                      {c.notes.map((n) => (
-                        <li key={n}>{n}</li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* KEAMANAN DATA */}
+      
+{/* KEAMANAN DATA */}
       <section className="wrap detail-sec">
         <h2>Keamanan data</h2>
         <div className="safety-list">
@@ -801,84 +859,21 @@ export function DetailClient({ app }: { app: AppItem }) {
       />
       <RailSection title="Mirip dengan ini" slugs={app.similar} />
 
-      {/* SHEET: PEMBAYARAN */}
+      {/* SHEET: BUKA DEMO WEB */}
       <BottomSheet
-        open={sheet === "pay"}
-        title="Beli aplikasi"
+        open={sheet === "install"}
+        title="Buka di browser"
         onClose={() => setSheet(null)}
       >
         <div className="stack-12">
-          <p className="pay-price">{app.price ?? "Harga menyusul"}</p>
           <p>
-            {app.priceNote ??
-              "Lisensi proprietary — sekali beli, milik selamanya."}
+            Aplikasi web dibuka langsung di tab baru — tidak ada file yang
+            diunduh ke perangkatmu.
           </p>
-          <LoadingButton
-            block
-            onClick={() => {
-              setSheet(null);
-              show("Pembayaran segera dibuka");
-            }}
-          >
-            Lanjut ke pembayaran
+          <LoadingButton block onClick={() => setSheet(null)}>
+            Mengerti
           </LoadingButton>
-          <p className="note">
-            Setelah bayar: APK + Source Code dikirim ke email akun kamu.
-          </p>
         </div>
-      </BottomSheet>
-
-      {/* SHEET: GERBANG UNDUH */}
-      <BottomSheet
-        open={sheet === "install"}
-        title={app.sourceKind === "none" ? "Buka demo" : "Gerbang unduh resmi"}
-        onClose={() => {
-          setSheet(null);
-          clearTimers();
-          if (phase === "ticket" || phase === "ready") setPhase("idle");
-        }}
-      >
-        {app.sourceKind === "none" ? (
-          <div className="stack-12">
-            <p>
-              Aplikasi web dibuka langsung di tab baru — tidak ada file yang
-              diunduh ke perangkatmu.
-            </p>
-            <LoadingButton block onClick={() => setSheet(null)}>
-              Mengerti
-            </LoadingButton>
-          </div>
-        ) : phase === "ticket" ? (
-          <div className="stack-12">
-            <p>Menandatangani tiket unduh…</p>
-            <div className="bar">
-              <i style={{ width: "58%" }} />
-            </div>
-          </div>
-        ) : (
-          <div className="stack-12">
-            <p>
-              Unduhan berjalan lewat gerbang aman XyApps — tautan asal tidak
-              pernah muncul di perangkatmu.
-            </p>
-            <div className="ticket-status">
-              <Sym name="check_circle" size={18} fill />
-              <span>
-                <strong>Tiket siap</strong>
-                <em>Aktif selama 10 menit</em>
-              </span>
-            </div>
-            <LoadingButton
-              block
-              onClick={() => onCopy(ticket, "Tiket disalin")}
-            >
-              Salin tiket
-            </LoadingButton>
-            <LoadingButton block variant="soft" onClick={startDownload}>
-              Mulai unduh
-            </LoadingButton>
-          </div>
-        )}
       </BottomSheet>
 
       {/* MODAL: LAPORKAN */}

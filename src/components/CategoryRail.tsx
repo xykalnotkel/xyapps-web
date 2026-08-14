@@ -8,8 +8,6 @@ const CATS: { name: string; icon: SymName; href: string }[] = [
   { name: "Game", icon: "videogame_asset", href: "/games" },
   { name: "Musik", icon: "music_note", href: "/apps?f=Musik" },
   { name: "Tools", icon: "tune", href: "/apps?f=Tools" },
-  { name: "Produktivitas", icon: "edit_note", href: "/apps?f=Produktivitas" },
-  { name: "Developer", icon: "terminal", href: "/apps?f=Developer" },
 ];
 
 export function CategoryRail() {
