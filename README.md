@@ -54,7 +54,8 @@ Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 | Migrasi | `npm run db:migrate` |
 | Seed dari mock | `npm run db:seed` (idempoten, ON CONFLICT) |
 | Konfigurasi | Salin `.env.example` ke `.env`, isi `DATABASE_URL` (pooler, `sslmode=require`; tanpa `channel_binding` — driver tidak mendukung). `.env` TIDAK pernah di-commit |
-| Produksi | Tambahkan `DATABASE_URL` di Environment Variables Vercel |
+| Produksi | `DATABASE_URL` sudah terpasang di environment Vercel (production/preview/development, encrypted) |
+| Media | Cloudinary (`NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`, preset unsigned) untuk icon/screenshot — bukan untuk APK |
 
 API v1 (data asli dari Postgres):
 

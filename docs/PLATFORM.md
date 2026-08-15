@@ -157,6 +157,17 @@ Semua perubahan lewat API ingest (token per developer), bukan langsung ke databa
 
 ---
 
+## 8. Cloudinary — media hosting
+
+Akun Cloudinary XySpace (cloud `hbhjusso`, preset unsigned
+`dykal_unsigned`) dipakai untuk **media publik**: icon app, screenshot,
+banner, dan logo. Upload bisa langsung dari browser tanpa secret server
+(karena preset unsigned).
+
+Yang TIDAK ditaruh di Cloudinary: file installer AAB/APK. Cloudinary
+berorientasi gambar/video; distribusi installer tetap lewat penyimpanan
+khusus (VPS/MinIO atau draft release GitHub) sesuai seksi 4.
+
 ## 7. Program developer resmi
 
 - Developer resmi mendapat **lisensi dari XySpace** (badge terverifikasi di
