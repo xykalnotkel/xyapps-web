@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { AppRow } from "@/components/AppRow";
+import { AdSlot } from "@/components/AdSlot";
 import { CategoryRail } from "@/components/CategoryRail";
 import { FeaturedCard } from "@/components/FeaturedCard";
 import { HomeSkeleton } from "@/components/ui/Skeleton";
@@ -45,6 +46,10 @@ export default function HomePage() {
           <h2>Kategori</h2>
         </div>
         <CategoryRail />
+      </section>
+
+      <section className="wrap ad-sec">
+        <AdSlot label="XyApps untuk semua perangkat" text="Kelola unduhanmu dari satu akun" />
       </section>
 
       <section>

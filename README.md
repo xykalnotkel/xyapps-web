@@ -70,7 +70,8 @@ npm run start
 | `/notifications` | Notifikasi mock + tandai semua dibaca |
 | `/legal` | XySANC-1.0 |
 | `/trust` | Kebijakan data |
-| `/login` | Masuk: branding, tombol Google mock, validasi form bericon, error state |
+| `/login` | Masuk multi-metode: Email (lanjut ke OTP), Google (segera), XySpace ID |
+| `/verify` | Verifikasi OTP 6 digit: auto-advance, paste, hitung mundur kirim ulang |
 | `/me` | Profil lengkap: stats, Pengaturan (toggle notifikasi/update otomatis), Preferensi tema, link trust/legal/bantuan, keluar |
 | `/help` | Bantuan: FAQ bisa dibuka-tutup |
 | `/developer` | Program developer XySpace: lisensi resmi, XyScan otomatis, tim XySpace, bagi hasil |
@@ -113,6 +114,13 @@ npm run start
 - Simulasi perangkat 32-bit tersedia di Pengaturan (uji alur tombol unduh hilang)
 - Badge rating umur: SEMUA level (3+, 7+, 13+, 16+, 18+) memakai artwork asli XySpace yang di-trace jadi SVG inline
 - Rebrand: company XyStudio -> XySpace di seluruh repo (produk XyApps tetap, URL/email xystudio.my.id tidak berubah)
+- Icon kategori (Aplikasi, Game, Musik, Tools) hasil generate AI, di-key-out jadi putih transparan, adaptif dua tema
+- Logo XyApps: WebP animasi HD 2x (30fps, chroma-key + despeckle, tanpa sisa background)
+- Bottom nav 4 kotak; tab Aplikasi memakai icon grid 4 kotak
+- Badge rating umur ikut warna lilac (konsisten dengan stat icon)
+- Slot iklan berlabel di beranda, katalog, dan pencarian (siap diganti jaringan iklan)
+- Syarat developer ketat di /developer: identitas resmi, hak cipta, verifikasi 2 tahap, masa percobaan, sanksi
+- SEO: robots.txt, sitemap.xml (20 URL), manifest, theme-color, keywords
 - App belum rilis: tombol berubah jadi "Ingatkan saya" (pengingat tersimpan)
 - Install = unduhan nyata: fetch stream dengan progres asli (byte diterima / total), ring mengikuti transfer, lalu file masuk folder unduhan browser; tombol berubah jadi "Batal" (outline) selama mengunduh dan membatalkan stream (AbortController). Kontrak asli: ganti DEMO_URL dengan endpoint bertiket saat gerbang unduh hidup
 - Security headers dipasang (CSP, anti-clickjacking, nosniff, referrer-policy) — lihat docs/SECURITY.md

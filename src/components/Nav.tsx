@@ -21,7 +21,7 @@ const tabs: Tab[] = [
   {
     href: "/apps",
     label: "Aplikasi",
-    icon: "apps",
+    icon: "grid_view",
     match: (p) => p.startsWith("/apps"),
   },
   {

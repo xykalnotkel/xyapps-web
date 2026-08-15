@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AppRow } from "@/components/AppRow";
+import { AdSlot } from "@/components/AdSlot";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 import { useMockLoad } from "@/hooks/useMockLoad";
 import { Sym } from "@/components/Icon";
@@ -180,6 +181,15 @@ export function CatalogClient({ mode }: { mode: Mode }) {
           {list.map((app) => (
             <AppRow key={app.slug} app={app} />
           ))}
+        </div>
+      )}
+      {ready && list.length > 0 && (
+        <div className="ad-sec">
+          <AdSlot
+            label="Pilih app untuk tim XySpace"
+            text="Ruang iklan developer — hubungi console"
+            variant="card"
+          />
         </div>
       )}
     </>

@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { APPS } from "@/lib/data";
-import { Sym } from "./Icon";
-import type { SymName } from "@/lib/symbols";
 
-const CATS: { name: string; icon: SymName; href: string }[] = [
-  { name: "Aplikasi", icon: "apps", href: "/apps" },
-  { name: "Game", icon: "videogame_asset", href: "/games" },
-  { name: "Musik", icon: "music_note", href: "/apps?f=Musik" },
-  { name: "Tools", icon: "tune", href: "/apps?f=Tools" },
+const CATS: { name: string; img: string; href: string }[] = [
+  { name: "Aplikasi", img: "/gen/icons/cat-apps.png", href: "/apps" },
+  { name: "Game", img: "/gen/icons/cat-game.png", href: "/games" },
+  { name: "Musik", img: "/gen/icons/cat-music.png", href: "/apps?f=Musik" },
+  { name: "Tools", img: "/gen/icons/cat-tools.png", href: "/apps?f=Tools" },
 ];
 
+/** Rail kategori — icon AI generasi XySpace (PNG putih, filter tema). */
 export function CategoryRail() {
   return (
     <div className="rail pad-left cat-rail">
@@ -23,7 +22,8 @@ export function CategoryRail() {
         return (
           <Link key={c.name} href={c.href} className="cat-card">
             <span className="cat-icon">
-              <Sym name={c.icon} size={20} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={c.img} alt="" className="cat-img" draggable={false} />
             </span>
             <strong>{c.name}</strong>
             <em>{n} item</em>

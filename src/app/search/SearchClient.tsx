@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AppRow } from "@/components/AppRow";
+import { AdSlot } from "@/components/AdSlot";
 import { ListSkeleton } from "@/components/ui/Skeleton";
 
 import { Sym } from "@/components/Icon";
@@ -101,6 +102,13 @@ export function SearchClient() {
               {results.map((app) => (
                 <AppRow key={app.slug} app={app} />
               ))}
+            </div>
+            <div className="ad-sec">
+              <AdSlot
+                label="Cari cepat di aplikasi XyApps"
+                text="Unduh versi lengkap dengan pencarian instan"
+                variant="card"
+              />
             </div>
           </>
         )

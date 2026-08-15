@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
 import { BottomNav, TopBar } from "@/components/Nav";
 import { AppBanner } from "@/components/AppBanner";
@@ -25,6 +25,14 @@ export const metadata: Metadata = {
   description:
     "Toko aplikasi resmi XySpace. Unduh dengan aman lewat gerbang resmi, temukan aplikasi dan game pilihan.",
   metadataBase: new URL("https://xyapps.xystudio.my.id"),
+  applicationName: "XyApps",
+  keywords: ["aplikasi", "game", "android", "toko aplikasi", "XySpace", "XyApps"],
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050506",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

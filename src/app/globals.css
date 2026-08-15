@@ -32,7 +32,7 @@
   --paid-line: #3b2066;
   --violet-strong: #5b21b6;
   --violet-2: #6d28d9;
-  --age-fg: #d7d7de;
+  --age-fg: #a78bfa;
   --notif-ok-bg: #123227;
   --notif-lilac-bg: #241539;
   --notif-indigo-bg: #1c2140;
@@ -82,7 +82,7 @@
   --paid-line: #dccbfb;
   --violet-strong: #7c3aed;
   --violet-2: #8b5cf6;
-  --age-fg: #494954;
+  --age-fg: #6d28d9;
   --notif-ok-bg: #d3f5e6;
   --notif-lilac-bg: #ece7fe;
   --notif-indigo-bg: #e3e8ff;
@@ -1783,9 +1783,9 @@ button {
   align-items: center;
   justify-content: center;
   gap: 2px;
-  padding: 6px 16px;
+  padding: 6px 8px;
   min-width: 56px;
-  border-radius: 999px;
+  border-radius: 16px;
   transition: background 0.2s ease;
 }
 
@@ -1807,9 +1807,7 @@ button {
     linear-gradient(180deg, rgba(255, 255, 255, 0.09), transparent 46%),
     var(--pill-on);
   color: var(--lilac);
-  box-shadow:
-    inset 0 1px 0 var(--metal-hi),
-    0 4px 14px rgba(124, 58, 237, 0.22);
+  box-shadow: inset 0 1px 0 var(--metal-hi);
 }
 
 .bottom a.active .nav-label {
@@ -1850,8 +1848,20 @@ button {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 48%),
     linear-gradient(160deg, #2c1a52, #131318 90%);
-  color: var(--lilac);
   box-shadow: inset 0 1px 0 var(--metal-hi);
+  overflow: hidden;
+}
+
+.cat-img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
+}
+
+[data-theme="light"] .cat-img {
+  filter: invert(0.55) drop-shadow(0 1px 1px rgba(23, 23, 29, 0.1));
 }
 
 .cat-card strong {
@@ -3449,4 +3459,167 @@ button:active {
   color: var(--mute);
   font-size: 12px;
   margin-top: 2px;
+}
+
+/* ============================================================
+   XYAPPS v11 — slot iklan, kategori AI
+   ============================================================ */
+
+/* SLOT IKLAN — berlabel, gaya penempatan standar */
+.ad-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 48%),
+    linear-gradient(120deg, #1e1b4b, #7c3aed 130%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.ad-sec {
+  margin-top: 24px;
+}
+
+.ad-tag {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ad-art {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  flex: 0 0 auto;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.ad-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ad-copy strong {
+  font-size: 13.5px;
+  color: #fff;
+  margin-top: 8px;
+}
+
+.ad-copy em {
+  font-style: normal;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   XYAPPS v12 — OTP & multi login
+   ============================================================ */
+
+.verify-mark {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent 46%),
+    linear-gradient(160deg, #8b5cf6, #231457 82%);
+  color: #fff;
+  box-shadow:
+    inset 0 1px 0 var(--metal-hi),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 10px 26px rgba(124, 58, 237, 0.35);
+}
+
+.otp-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.otp-box {
+  width: 48px;
+  height: 56px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--metal);
+  color: var(--text);
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.otp-box:focus {
+  border-color: var(--violet-2);
+  box-shadow: inset 0 0 0 1px var(--violet-2);
+}
+
+.otp-box.bad {
+  border-color: var(--danger);
+}
+
+.otp-note {
+  text-align: center;
+}
+
+.otp-note .text-btn {
+  display: inline;
+  margin: 0;
+}
+
+/* SYARAT DEVELOPER */
+.req-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.req-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.req-list .msym {
+  color: var(--lilac);
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.req-list strong {
+  display: block;
+  font-size: 13.5px;
+}
+
+.req-list em {
+  display: block;
+  font-style: normal;
+  color: var(--mute);
+  font-size: 12.5px;
+  margin-top: 2px;
+  line-height: 1.5;
 }

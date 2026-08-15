@@ -120,6 +120,38 @@ export default function DeveloperPage() {
         </div>
       </section>
 
+      <section>
+        <div className="rail-head">
+          <h2>Syarat menjadi developer</h2>
+        </div>
+        <div className="panel stack-12">
+          <p className="sub">
+            Pendaftaran developer sengaja ketat. Kami menjaga kualitas toko
+            lebih dari jumlah listing.
+          </p>
+          <ul className="req-list">
+            {[
+              ["Identitas resmi", "KTP/paspor sah + foto selfie verifikasi. Tidak ada akun anonim."],
+              ["Email & nomor aktif", "Email resmi yang bisa dihubungi + nomor HP untuk OTP."],
+              ["Pernyataan hak cipta", "Deklarasi tertulis bahwa kamu pemilik/pemegang hak karya. Karya orang lain = ditolak permanen."],
+              ["Portofolio", "Minimal satu karya yang bisa diperiksa (aplikasi, game, atau repo)."],
+              ["Lolos verifikasi 2 tahap", "Tahap dokumen + wawancara singkat dengan tim XySpace."],
+              ["Masa percobaan", "3 rilis pertama diawasi ketat. Satu pelanggaran = selesai."],
+              ["Persetujuan lisensi", "Tanda tangan XySANC / lisensi proprietary + ToS developer."],
+              ["Sanksi tegas", "Rating umur bohong, karya curian, atau malware = akun ditutup + daftar hitam."],
+            ].map(([t, d]) => (
+              <li key={t}>
+                <Sym name="check_circle" size={16} fill />
+                <span>
+                  <strong>{t}</strong>
+                  <em>{d}</em>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <div className="panel stack-10">
         <h3>
           <Sym name="shield" size={17} /> Tentang XyScan
