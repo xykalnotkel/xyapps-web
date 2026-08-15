@@ -168,6 +168,19 @@ a {
   color: inherit;
 }
 
+/* PROTEKSI ASET — gambar tidak bisa diseret/diseleksi,
+   klik kanan pada icon app tidak memunculkan menu simpan gambar */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.glyph-pic,
+.smart-img-pic {
+  pointer-events: none;
+}
+
+
 button,
 input {
   font: inherit;
@@ -3041,21 +3054,15 @@ button:active {
   font-size: 11px;
 }
 
-/* ARTWORK ASLI (18+) — gambar putih, dibalik jadi abu-gelap di terang */
-.age-img {
+/* ARTWORK ASLI (18+) — SVG inline, warna ngikut currentColor */
+.age-svg.art {
   width: 26px;
   height: 26px;
-  object-fit: contain;
-  display: block;
 }
 
-.age-badge.lg .age-img {
+.age-badge.lg .age-svg.art {
   width: 38px;
   height: 38px;
-}
-
-[data-theme="light"] .age-img {
-  filter: invert(0.8) contrast(1.05);
 }
 
 /* PERINGATAN KOMPATIBILITAS */
