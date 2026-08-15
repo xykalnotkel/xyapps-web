@@ -27,7 +27,9 @@ Situs toko: [xyapps.xystudio.my.id](https://xyapps.xystudio.my.id) (setelah DNS 
 
 ## Status
 
-UI mock + API JSON palsu. Belum ada database, Auth.js, atau unduhan sungguhan.
+UI mock di frontend + **database Postgres (Neon) aktif**: 7 tabel
+ter-migrasi, 8 app + 1 developer ter-seed, API v1 hidup. Auth asli,
+tiket unduh, dan XyScan masih dalam pengerjaan.
 
 Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 
@@ -42,6 +44,28 @@ Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 | Font UI | Outfit (Google Fonts, OFL) |
 | Gambar | WebP/JPG hasil generate + SVG mockup di `public/gen/` |
 | Lisensi app gratis | XySANC-1.0 |
+
+## Database (Neon Postgres)
+
+| Item | Keterangan |
+| --- | --- |
+| Driver | `@neondatabase/serverless` (aman untuk Vercel serverless) |
+| Skema | `db/schema.sql` — users, developers, apps, releases, reviews, tickets, ingest_tokens |
+| Migrasi | `npm run db:migrate` |
+| Seed dari mock | `npm run db:seed` (idempoten, ON CONFLICT) |
+| Konfigurasi | Salin `.env.example` ke `.env`, isi `DATABASE_URL` (pooler, `sslmode=require`; tanpa `channel_binding` — driver tidak mendukung). `.env` TIDAK pernah di-commit |
+| Produksi | Tambahkan `DATABASE_URL` di Environment Variables Vercel |
+
+API v1 (data asli dari Postgres):
+
+| Endpoint | Isi |
+| --- | --- |
+| `/api/v1/health` | Healthcheck: jumlah baris per tabel |
+| `/api/v1/apps` | Katalog app + developer |
+| `/api/v1/apps/[slug]` | Detail satu app (404 kalau tidak ada) |
+
+UI masih membaca mock `src/lib/data.ts`; peralihan penuh ke API v1
+dilakukan setelah tabel ulasan dan rilis diisi alur aslinya.
 
 ## Jalanin lokal
 
