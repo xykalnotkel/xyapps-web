@@ -11,7 +11,7 @@ const META: Record<
   "403": {
     icon: "lock",
     title: "Akses ditolak",
-    desc: "Kamu tidak punya izin untuk membuka halaman ini. Kalau ini salah, hubungi XyStudio.",
+    desc: "Kamu tidak punya izin untuk membuka halaman ini. Kalau ini salah, hubungi XySpace.",
     tone: "danger",
   },
   "404": {
@@ -23,7 +23,7 @@ const META: Record<
   "500": {
     icon: "error",
     title: "Ada yang tidak beres",
-    desc: "Server menabrak kesalahan internal. Coba muat ulang — kalau tetap muncul, laporkan ke XyStudio.",
+    desc: "Server menabrak kesalahan internal. Coba muat ulang — kalau tetap muncul, laporkan ke XySpace.",
     tone: "danger",
   },
   "503": {

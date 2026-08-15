@@ -19,11 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "XyApps — XyStudio",
+    default: "XyApps — XySpace",
     template: "%s · XyApps",
   },
   description:
-    "Toko aplikasi resmi XyStudio. Unduh dengan aman lewat gerbang resmi, temukan aplikasi dan game pilihan.",
+    "Toko aplikasi resmi XySpace. Unduh dengan aman lewat gerbang resmi, temukan aplikasi dan game pilihan.",
   metadataBase: new URL("https://xyapps.xystudio.my.id"),
 };
 

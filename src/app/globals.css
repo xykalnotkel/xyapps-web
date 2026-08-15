@@ -281,7 +281,7 @@ button {
   border: 2px solid var(--bg);
 }
 
-/* LOGO — wordmark animasi (WebP transparan hasil trace GIF XyStudio).
+/* LOGO — wordmark animasi (WebP transparan hasil trace GIF XySpace).
    Tidak ada font berlisensi; warna ungu logam bawaan artwork. */
 .logo {
   display: inline-flex;
@@ -3390,4 +3390,63 @@ button:active {
 /* harga tebal di catatan pembelian */
 .buy-note strong {
   color: var(--text);
+}
+
+/* ============================================================
+   XYAPPS v10 — halaman program developer
+   ============================================================ */
+
+.dev-hero {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.dev-hero .msym {
+  color: var(--lilac);
+}
+
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-top-color: var(--hairline-hi);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.flow-num {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--chip-on);
+  color: var(--chip-on-text);
+  font-size: 13px;
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+
+.flow-ic {
+  color: var(--lilac);
+  flex: 0 0 auto;
+}
+
+.flow-row strong {
+  display: block;
+  font-size: 14px;
+}
+
+.flow-row em {
+  display: block;
+  font-style: normal;
+  color: var(--mute);
+  font-size: 12px;
+  margin-top: 2px;
 }

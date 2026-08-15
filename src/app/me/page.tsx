@@ -201,6 +201,13 @@ export default function MePage() {
           <span className="grow">Lisensi XySANC-1.0</span>
           <Sym name="chevron_right" size={17} />
         </Link>
+        <Link className="me-link" href="/developer">
+          <span className="me-ic ok">
+            <Sym name="verified" size={18} />
+          </span>
+          <span className="grow">Program developer</span>
+          <Sym name="chevron_right" size={17} />
+        </Link>
         <Link className="me-link" href="/help" >
           <span className="me-ic indigo">
             <Sym name="support_agent" size={18} />
@@ -211,7 +218,7 @@ export default function MePage() {
       </div>
 
       <p className="meta-line">
-        XyApps v0.1.0 · XyStudio
+        XyApps v0.1.0 · XySpace
       </p>
 
       <LoadingButton variant="ghost" onClick={logout}>

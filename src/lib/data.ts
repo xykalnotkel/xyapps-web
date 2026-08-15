@@ -94,7 +94,7 @@ export const APPS: AppItem[] = [
     sourceKind: "xysanc",
     version: "1.4.2",
     size: "28 MB",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "N7",
     compat: ["arm64-v8a", "armeabi-v7a", "x86_64"],
     accent: "#7C3AED",
@@ -148,7 +148,7 @@ export const APPS: AppItem[] = [
         text: "Baru nyoba versi 1.4.2. Sleep timer-nya nolong banget buat dengerin musik sebelum tidur. Install lewat tiket agak beda dari toko lain, tapi sekali setup langsung kebiasa.",
         helpful: 34,
         reply: {
-          user: "XyStudio",
+          user: "XySpace",
           date: "13 Agu 2026",
           text: "Makasih Raka. Tiket 10 menit itu gerbang distribusi resmi, bukan bug — unduhan selalu lewat jalur aman XyApps.",
         },
@@ -173,7 +173,7 @@ export const APPS: AppItem[] = [
         text: "Mantap buat file lokal. Minta fitur queue seret-tarik dan lyric timer di rilis berikutnya.",
         helpful: 12,
         reply: {
-          user: "XyStudio",
+          user: "XySpace",
           date: "5 Agu 2026",
           text: "Antrian seret-tarik sudah masuk roadmap 1.5. Lyric timer kami timbang, karena butuh format lrc yang rapi di folder lokal.",
         },
@@ -212,14 +212,14 @@ export const APPS: AppItem[] = [
     title: "Vaultline",
     tagline: "Brankas file terenkripsi. Belum dirilis.",
     description:
-      "Produk berbayar XyStudio. Penjualan segera dibuka — sekali beli, dapat APK + Source Code langsung dikirim ke email.",
+      "Produk berbayar XySpace. Penjualan segera dibuka — sekali beli, dapat APK + Source Code langsung dikirim ke email.",
     platform: "Desktop",
     category: "Tools",
     stack: ["Rust", "Tauri"],
     sourceKind: "paid",
     version: "0.9.1",
     size: "14 MB",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "VL",
     compat: ["Windows x64", "Linux x64", "macOS ARM64"],
     accent: "#A78BFA",
@@ -273,7 +273,7 @@ export const APPS: AppItem[] = [
     sourceKind: "none",
     version: "2.0.0",
     size: "Web",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "KM",
     compat: ["Browser modern"],
     accent: "#6EE7B7",
@@ -350,7 +350,7 @@ export const APPS: AppItem[] = [
     sourceKind: "xysanc",
     version: "0.3.0",
     size: "9 MB",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "FN",
     compat: ["arm64-v8a", "armeabi-v7a"],
     accent: "#818CF8",
@@ -427,7 +427,7 @@ export const APPS: AppItem[] = [
     sourceKind: "none",
     version: "0.1.0",
     size: "Web",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "LN",
     compat: ["Browser modern"],
     accent: "#C084FC",
@@ -496,7 +496,7 @@ export const APPS: AppItem[] = [
     sourceKind: "xysanc",
     version: "0.9.0",
     size: "31 MB",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "PP",
     compat: ["arm64-v8a", "armeabi-v7a"],
     accent: "#C084FC",
@@ -549,7 +549,7 @@ export const APPS: AppItem[] = [
         text: "Seru. Minta skin portal lebih banyak dan leaderboard lokal.",
         helpful: 7,
         reply: {
-          user: "XyStudio",
+          user: "XySpace",
           date: "2 Agu 2026",
           text: "Leaderboard lokal masuk roadmap 1.0. Skin baru ikut rilis berikutnya.",
         },
@@ -582,7 +582,7 @@ export const APPS: AppItem[] = [
     sourceKind: "none",
     version: "0.4.1",
     size: "Web",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "OD",
     compat: ["Browser modern"],
     accent: "#6EE7B7",
@@ -651,7 +651,7 @@ export const APPS: AppItem[] = [
     sourceKind: "xysanc",
     version: "0.6.3",
     size: "26 MB",
-    developer: "XyStudio",
+    developer: "XySpace",
     initials: "NR",
     compat: ["arm64-v8a"],
     accent: "#818CF8",
@@ -699,7 +699,7 @@ export const APPS: AppItem[] = [
         text: "Sirkuitnya masih dikit. Update berikutnya nambah berapa trek?",
         helpful: 5,
         reply: {
-          user: "XyStudio",
+          user: "XySpace",
           date: "27 Jul 2026",
           text: "Dua trek baru di 0.7, termasuk sirkuit hujan.",
         },
@@ -765,7 +765,7 @@ export type Developer = {
 export const DEVELOPERS: Developer[] = [
   {
     id: "dev_9ad3fc16fba58be186971be4018f20afc4752132e69dc42d92a861609aceaebb",
-    name: "XyStudio",
+    name: "XySpace",
     tagline: "Studio kecil, hitam doff, ungu logam.",
     bio: "Pengembang semua app di XyApps. Prinsip: tanpa iklan yang bisa dihindari, tanpa akun yang bisa dihindari, dan installer resmi cuma lewat gerbang unduh resmi.",
     website: "xystudio.my.id",
@@ -782,7 +782,7 @@ export function getDeveloper(id: string) {
 
 export function getDeveloperOfApp(_app: AppItem) {
   void _app;
-  // Semua app saat ini milik XyStudio. Kalau nanti ada developer lain,
+  // Semua app saat ini milik XySpace. Kalau nanti ada developer lain,
   // pemetaan dipindah ke field devId per app.
   return DEVELOPERS[0];
 }

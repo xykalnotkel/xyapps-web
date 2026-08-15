@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Sym } from "@/components/Icon";
 
 export const metadata: Metadata = { title: "XyConsole" };
@@ -26,8 +27,13 @@ export default function ConsolePage() {
           dibuka. Semua pengaturan aplikasi dikelola dari sana.
         </p>
       </div>
+      <Link className="lbtn solid" href="/developer">
+        Pelajari program developer
+        <Sym name="chevron_right" size={16} />
+      </Link>
       <p className="meta-line">
-        Belum jadi developer? Pengajuan akun menyusul saat console rilis.
+        Developer resmi mendapat lisensi dari XySpace dan otomatis masuk tim
+        XySpace.
       </p>
     </div>
   );

@@ -33,7 +33,7 @@ export default function LegalPage() {
           <ul>
             <li>Menjual source atau binary</li>
             <li>Paywall atau white-label</li>
-            <li>Distribusi di toko pihak ketiga tanpa kontrak XyStudio</li>
+            <li>Distribusi di toko pihak ketiga tanpa kontrak XySpace</li>
           </ul>
         </div>
 
@@ -43,7 +43,7 @@ export default function LegalPage() {
           </span>
           <h3>Merek</h3>
           <ul>
-            <li>Nama XyStudio dan XyApps tidak ikut terlisensi</li>
+            <li>Nama XySpace dan XyApps tidak ikut terlisensi</li>
             <li>Logo tidak boleh dipakai tanpa izin tertulis</li>
           </ul>
         </div>

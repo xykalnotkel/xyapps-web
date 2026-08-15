@@ -1,6 +1,6 @@
 # XySANC-1.0
-**XyStudio Source-Available · Non-Commercial Resale License**  
-Versi 1.0 · 2026 · © XyStudio
+**XySpace Source-Available · Non-Commercial Resale License**  
+Versi 1.0 · 2026 · © XySpace
 
 Dokumen ini adalah lisensi perangkat lunak, bukan ringkasan marketing.  
 Bukan lisensi OSI (MIT, GPL, Apache). Source boleh dilihat. **Dijual, tidak.**
@@ -20,7 +20,7 @@ Terjemahan Inggris (jika ada) hanya bantuan.
 
 **“Perangkat Lunak”** — kode sumber, binary, aset, dokumentasi, dan hasil build yang dibagikan bersama lisensi ini.
 
-**“Pemberi Lisensi”** — XyStudio dan/atau pemegang hak yang namanya tercantum di pemberitahuan hak cipta file tersebut.
+**“Pemberi Lisensi”** — XySpace dan/atau pemegang hak yang namanya tercantum di pemberitahuan hak cipta file tersebut.
 
 **“Kamu” / “Penerima”** — orang atau badan hukum yang memakai Perangkat Lunak.
 
@@ -58,7 +58,7 @@ Izin ini **bukan** pengalihan hak cipta. Hak cipta tetap pada Pemberi Lisensi.
 1. Jangan hapus atau samarkan pemberitahuan hak cipta, lisensi, dan kredit.
 2. Setiap distribusi (termasuk fork publik) harus menyertakan XySANC-1.0 utuh.
 3. Kamu wajib menyatakan, secara wajar, bahwa karya berasal dari Perangkat Lunak Pemberi Lisensi (nama produk + tautan ke XyApps jika ada).
-4. Kamu **tidak** boleh menyatakan bahwa XyStudio mensponsori, mengaudit, atau menjamin Turunanmu — kecuali ada izin tertulis.
+4. Kamu **tidak** boleh menyatakan bahwa XySpace mensponsori, mengaudit, atau menjamin Turunanmu — kecuali ada izin tertulis.
 
 ---
 
@@ -70,7 +70,7 @@ Dilarang:
 2. menaruhnya di marketplace, store, atau katalog berbayar sebagai barang daganganmu;
 3. mengenakan biaya “akses source”, donasi wajib, atau unlock yang menghalangi salinan gratis;
 4. memberi sublicensi komersial kepada pihak ketiga;
-5. memakai nama, logo, atau cap **XyStudio / XyApps / XyScan / XyConsole** sebagai merek dagang pada produkmu (lisensi ini **tidak** memberi hak merek);
+5. memakai nama, logo, atau cap **XySpace / XyApps / XyScan / XyConsole** sebagai merek dagang pada produkmu (lisensi ini **tidak** memberi hak merek);
 6. menghapus proteksi, tiket unduhan, atau tanda resmi distribusi XyApps lalu menawarkannya sebagai “rilis resmi”.
 
 **Yang tetap boleh tanpa surat:**
@@ -84,8 +84,8 @@ Kalau ragu suatu kegiatan termasuk “Menjual”, anggap terlarang sampai ada li
 
 ## 5. Lisensi komersial
 
-Mau Menjual, white-label, atau memakai merek XyStudio:  
-beli **lisensi proprietary terpisah** lewat XyApps / XyStudio.
+Mau Menjual, white-label, atau memakai merek XySpace:  
+beli **lisensi proprietary terpisah** lewat XyApps / XySpace.
 
 Lisensi komersial mengalahkan XySANC hanya untuk ruang lingkup yang tertulis di kontrak itu.  
 Di luar itu, XySANC tetap berlaku.
@@ -132,7 +132,7 @@ Tanggung jawab total, jika ada, dibatasi sebesar jumlah yang kamu bayar kepada P
 
 Hukum Republik Indonesia, termasuk **UU No. 28 Tahun 2014 tentang Hak Cipta**.
 
-Sengketa: musyawarah dulu 30 hari. Jika gagal, yurisdiksi pengadilan di wilayah kedudukan XyStudio (kecuali dilarang aturan yang memaksa).
+Sengketa: musyawarah dulu 30 hari. Jika gagal, yurisdiksi pengadilan di wilayah kedudukan XySpace (kecuali dilarang aturan yang memaksa).
 
 Pidana hanya relevan jika unsur undang-undang terpenuhi (umumnya pembajakan / penggunaan komersial tanpa hak yang nyata). Melanggar XySANC saja sudah cukup untuk tuntutan **perdata** (penghentian + ganti rugi).
 
@@ -163,11 +163,11 @@ Di akar source:
 
 ```
 LICENSE          ← file ini
-NOTICE           ← “Copyright (c) 2026 XyStudio. Licensed under XySANC-1.0.”
+NOTICE           ← “Copyright (c) 2026 XySpace. Licensed under XySANC-1.0.”
 ```
 
 Di setiap app XyApps: field `license = XySANC-1.0` + tautan ke `/legal/xysanc`.
 
 ---
 
-XyStudio · xyapps.xystudio.my.id · xystudio.my.id
+XySpace · xyapps.xystudio.my.id · xystudio.my.id

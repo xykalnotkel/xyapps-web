@@ -123,7 +123,7 @@ VPS Indonesia (Rumahweb / IDCloudHost / Contabo, bayar transfer bank)
 Yang disimpan: AAB asli (arsip/audit) + hasil split APK (yang
 didistribusikan). Estimasi awal: 50 GB cukup untuk ratusan app.
 
-**Alternatif V1 tanpa VPS:** GitHub draft release repo internal XyStudio +
+**Alternatif V1 tanpa VPS:** GitHub draft release repo internal XySpace +
 stream lewat GitHub API pakai token server. Trade-off: lebih murah, tapi
 terikat limit GitHub dan mesti pindah nanti.
 
@@ -156,6 +156,17 @@ Semua perubahan lewat API ingest (token per developer), bukan langsung ke databa
 - Mock sekarang; klasifikasi resmi IARC bisa diintegrasi belakangan
 
 ---
+
+## 7. Program developer resmi
+
+- Developer resmi mendapat **lisensi dari XySpace** (badge terverifikasi di
+  listing) dan otomatis terdaftar sebagai **tim XySpace**
+- Bagi hasil app berbayar: 85% developer / 15% platform (final menyusul
+  kontrak)
+- XyScan wajib untuk semua rilis; bersih = auto-publish, mencurigakan =
+  needs_review, malware = rejected
+- Console developer: upload (AAB/APK), harga, kebijakan, rating usia,
+  arsitektur, statistik unduhan/rating, status scan
 
 ## Urutan bangun
 
