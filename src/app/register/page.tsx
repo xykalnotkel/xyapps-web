@@ -3,24 +3,27 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/components/Session";
 import { LoadingButton } from "@/components/ui/LoadingButton";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { Sym } from "@/components/Icon";
 
-export default function LoginPage() {
-  const { login } = useSession();
+export default function RegisterPage() {
   const router = useRouter();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [xyId, setXyId] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  function onEmail(e: FormEvent) {
+  function onSubmit(e: FormEvent) {
     e.preventDefault();
     setErr(null);
+    if (name.trim().length < 2) {
+      setErr("Nama minimal 2 karakter.");
+      return;
+    }
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
       setErr("Email tidak valid. Contoh: kamu@xystudio.my.id");
       return;
@@ -29,29 +32,20 @@ export default function LoginPage() {
       setErr("Kata sandi minimal 6 karakter.");
       return;
     }
+    if (password !== confirm) {
+      setErr("Konfirmasi kata sandi tidak cocok.");
+      return;
+    }
     if (!agree) {
-      setErr("Kamu harus menyetujui Syarat & Ketentuan untuk melanjutkan.");
+      setErr("Kamu harus menyetujui Syarat & Ketentuan untuk mendaftar.");
       return;
     }
     setLoading(true);
     window.setTimeout(() => {
-      login(email.trim().split("@")[0], email.trim());
-      router.push("/me");
-    }, 700);
-  }
-
-  function onXyId(e: FormEvent) {
-    e.preventDefault();
-    setErr(null);
-    if (xyId.trim().length < 4) {
-      setErr("ID XySpace minimal 4 karakter.");
-      return;
-    }
-    setLoading(true);
-    window.setTimeout(() => {
-      login(xyId.trim(), `${xyId.trim().toLowerCase()}@xyspace.id`);
-      router.push("/me");
-    }, 700);
+      router.push(
+        `/verify?name=${encodeURIComponent(name.trim())}&email=${encodeURIComponent(email.trim())}&reg=1`,
+      );
+    }, 600);
   }
 
   return (
@@ -61,17 +55,16 @@ export default function LoginPage() {
           <span className="login-mark">
             <b>Xy</b>
           </span>
-          <h1 className="page-title">Masuk ke XyApps</h1>
+          <h1 className="page-title">Buat akun XyApps</h1>
           <p className="sub">
-            Simpan library, wishlist, dan ulasan di semua perangkatmu.
+            Satu akun untuk library, wishlist, dan ulasan di semua perangkat.
           </p>
         </div>
 
-        {/* GOOGLE — selalu paling atas */}
         <button
           type="button"
           className="google-btn"
-          onClick={() => setErr("Masuk dengan Google segera hadir.")}
+          onClick={() => setErr("Daftar dengan Google segera hadir.")}
         >
           <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
             <path
@@ -91,15 +84,27 @@ export default function LoginPage() {
               d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C41.4 34.9 44 29.9 44 24c0-1.3-.1-2.6-.4-3.9z"
             />
           </svg>
-          Lanjutkan dengan Google
+          Daftar dengan Google
         </button>
 
         <div className="divider">
-          <span>atau masuk dengan email</span>
+          <span>atau daftar dengan email</span>
         </div>
 
-        {/* FORM EMAIL */}
-        <form className="login-form" onSubmit={onEmail}>
+        <form className="login-form" onSubmit={onSubmit}>
+          <label className="field">
+            <span className="field-label">
+              <Sym name="person" size={15} /> Nama tampilan
+            </span>
+            <div className={`field-input ${err && name.trim().length < 2 ? "bad" : ""}`}>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="cth: Kall"
+                autoComplete="name"
+              />
+            </div>
+          </label>
           <label className="field">
             <span className="field-label">
               <Sym name="mail" size={15} /> Email
@@ -123,6 +128,21 @@ export default function LoginPage() {
                 value={password}
                 onChange={setPassword}
                 placeholder="Minimal 6 karakter"
+                autoComplete="new-password"
+              />
+            </div>
+          </label>
+          <label className="field">
+            <span className="field-label">
+              <Sym name="lock" size={15} /> Ulangi kata sandi
+            </span>
+            <div className={err && password !== confirm ? "bad" : ""}>
+              <PasswordInput
+                value={confirm}
+                onChange={setConfirm}
+                placeholder="Sama seperti di atas"
+                autoComplete="new-password"
+                ariaLabel="Ulangi kata sandi"
               />
             </div>
           </label>
@@ -148,47 +168,16 @@ export default function LoginPage() {
           )}
 
           <LoadingButton type="submit" loading={loading} block>
-            <Sym name="vpn_key" size={16} /> Masuk
+            <Sym name="person_add" size={16} /> Buat akun
           </LoadingButton>
 
           <p className="note">
-            Belum punya akun?{" "}
-            <Link className="text-btn" href="/register">
-              Daftar sekarang
+            Sudah punya akun?{" "}
+            <Link className="text-btn" href="/login">
+              Masuk
             </Link>
           </p>
         </form>
-
-        {/* XYSPACE ID — di bawah form */}
-        <div className="divider">
-          <span>atau pakai ID XySpace</span>
-        </div>
-        <form className="login-form" onSubmit={onXyId}>
-          <label className="field">
-            <span className="field-label">
-              <Sym name="badge" size={15} /> ID XySpace
-            </span>
-            <div className={`field-input ${err && xyId.trim().length < 4 ? "bad" : ""}`}>
-              <input
-                value={xyId}
-                onChange={(e) => setXyId(e.target.value)}
-                placeholder="ID resmi dari tim XySpace"
-                autoComplete="username"
-              />
-            </div>
-          </label>
-          <LoadingButton type="submit" loading={loading} block variant="soft">
-            <Sym name="badge" size={16} /> Masuk dengan XySpace ID
-          </LoadingButton>
-        </form>
-
-        <p className="note">
-          Ingin jadi developer? Baca syarat dan keuntungannya di{" "}
-          <Link className="text-btn" href="/developer">
-            program developer
-          </Link>
-          .
-        </p>
       </div>
     </div>
   );

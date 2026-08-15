@@ -1853,15 +1853,15 @@ button {
 }
 
 .cat-img {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 0 6px rgba(167, 139, 250, 0.35));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 
 [data-theme="light"] .cat-img {
-  filter: invert(0.55) drop-shadow(0 1px 1px rgba(23, 23, 29, 0.1));
+  filter: drop-shadow(0 2px 5px rgba(23, 23, 29, 0.2));
 }
 
 .cat-card strong {
@@ -3622,4 +3622,84 @@ button:active {
   font-size: 12.5px;
   margin-top: 2px;
   line-height: 1.5;
+}
+
+/* ============================================================
+   XYAPPS v13 — password show/hide + checkbox persetujuan
+   ============================================================ */
+
+.pw-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--metal);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.pw-wrap:focus-within {
+  border-color: var(--violet-2);
+}
+
+.pw-wrap input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  padding: 12px 14px;
+  outline: none;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.pw-toggle {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--mute);
+  flex: 0 0 auto;
+}
+
+.pw-toggle:hover {
+  color: var(--text);
+}
+
+.bad > .pw-wrap {
+  border-color: var(--danger);
+}
+
+/* CHECKBOX PERSETUJUAN */
+.agree {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--mute);
+  cursor: pointer;
+  user-select: none;
+}
+
+.agree input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.agree .msym {
+  color: var(--lilac);
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.agree a {
+  color: var(--lilac);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.agree a:hover {
+  text-decoration: underline;
 }
