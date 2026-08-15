@@ -60,7 +60,9 @@ export function TopBar() {
     <header className="topbar">
       <div className="wrap topbar-inner">
         <Link href="/" className="logo" aria-label="XyApps beranda">
-          <b>Xy</b>Apps
+          {/* Logo animasi XyStudio (trace dari GIF wordmark) */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/gen/logo-xyapps.webp" alt="XyApps" className="logo-img" />
         </Link>
         {!hidePill && (
           <Link href="/search" className="search-pill" aria-label="Buka pencarian">

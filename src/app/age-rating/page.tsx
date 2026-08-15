@@ -18,9 +18,9 @@ const LEVELS = [
     items: ["Kekerasan kartun", "Humor kasar ringan"],
   },
   {
-    age: "12+" as const,
-    name: "Remaja awal",
-    desc: "Boleh memuat kekerasan lebih nyata terhadap karakter khayalan, bahasa kasar ringan.",
+    age: "13+" as const,
+    name: "Remaja",
+    desc: "Boleh memuat kekerasan terhadap karakter khayalan dan bahasa kasar ringan.",
     items: ["Kekerasan fantasi", "Bahasa kasar ringan"],
   },
   {

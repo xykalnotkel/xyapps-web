@@ -432,7 +432,7 @@ export const APPS: AppItem[] = [
     compat: ["Browser modern"],
     accent: "#C084FC",
     accent2: "#3B0764",
-    age: "12+",
+    age: "13+",
     updated: "20 Jul 2026",
     sortDate: "2026-07-20",
     released: "30 Jun 2026",

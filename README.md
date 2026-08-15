@@ -7,16 +7,7 @@
 [![License](https://img.shields.io/badge/App%20source-XySANC--1.0-7C3AED?style=flat-square)](./XYSANC-1.0.md)
 [![Status](https://img.shields.io/badge/status-UI%20mock-8B8B98?style=flat-square)](#status)
 
-Toko resmi **## Catatan font logo
-
-Logo memakai **Asrog Genos** (Productype). Versi yang dipasang adalah
-trial **personal-use only** — di-subset ke 8 glyph (XyApps) dan hanya
-dipakai di wordmark. Sebelum toko produksi, wajib salah satu:
-
-1. Beli lisensi komersial: productype.com/asrog-genos/
-2. Ganti font display OFL yang mirip: Orbitron, Michroma, Audiowide
-
-XyStudio**. Hitam doff, ungu logam.
+Toko resmi **XyStudio**. Hitam doff, ungu logam.
 
 Source gratis boleh dipakai. Dilarang dijual. Installer resmi lewat gerbang, bukan tautan GitHub mentah.
 
@@ -48,7 +39,6 @@ Kerangka sudah Next.js App Router, jadi backend numpang di sini, bukan rebuild.
 | Hosting | Vercel |
 | Data sekarang | `src/lib/data.ts` (mock) |
 | Icon | Material Symbols Rounded (self-host, subset, sumbu FILL) |
-| Font judul | Asrog Genos (trial personal-only — wajib lisensi komersial sebelum produksi, lihat catatan) |
 | Font UI | Outfit (Google Fonts, OFL) |
 | Gambar | WebP/JPG hasil generate + SVG mockup di `public/gen/` |
 | Lisensi app gratis | XySANC-1.0 |
@@ -114,7 +104,8 @@ npm run start
 - Empty state jujur: vaultline belum dirilis, rating tidak dipalsukan, ulasan butuh app terpasang
 - Gerbang unduh: tiket `dl.xystudio.my.id`, URL origin tidak pernah dikirim ke browser
 - Banner "Lanjut ke aplikasi" muncul sekali per perangkat (dismiss tersimpan) — disiapkan untuk versi aplikasi native XyApps
-- Badge rating umur: netral abu-putih agar cocok di tema gelap dan terang (var --age-fg). Level 18+ memakai artwork asli XyStudio dari desain Alight Motion yang di-trace jadi path SVG INLINE — tidak ada file gambar yang bisa disimpan; level lain SVG dengan gaya yang sama
+- Badge rating umur: netral abu-putih agar cocok di tema gelap dan terang (var --age-fg). Level 7+, 13+, 18+ memakai artwork asli XyStudio (desain Alight Motion) yang di-trace jadi path SVG INLINE — tidak ada file gambar yang bisa disimpan; 3+ dan 16+ SVG dengan gaya yang sama (artwork menyusul). Tangga umur: 3+, 7+, 13+, 16+, 18+
+- Logo XyApps: wordmark animasi (WebP transparan, trace dari GIF desain XyStudio) — font berlisensi tidak dipakai lagi
 - Proteksi aset: gambar tidak bisa di-drag/diseleksi, klik kanan pada icon app dan cuplikan tidak memunculkan menu simpan gambar (pointer-events none + user-drag none). Batas jujur: apa pun yang tampil di layar tetap bisa di-screenshot — proteksi nyata adalah lisensi
 - Icon app tampil rata tanpa box/background (fallback gradien hanya untuk app tanpa gambar)
 - Profil developer: cover gradien berpola, badge terverifikasi, chip lokasi, kontak, stats, daftar app
