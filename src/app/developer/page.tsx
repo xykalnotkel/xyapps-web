@@ -49,7 +49,7 @@ const BENEFITS = [
 
 const FLOW = [
   { icon: "person_add" as const, title: "Daftar", text: "Ajukan akun developer dari console." },
-  { icon: "verified" as const, title: "Verifikasi", text: "Identitas dan hak karya dicek tim XySpace." },
+  { icon: "verified" as const, title: "Verifikasi", text: "Email dikonfirmasi lewat OTP, akun diamankan dengan 2FA." },
   { icon: "license" as const, title: "Lisensi", text: "Terima lisensi resmi + masuk tim XySpace." },
   { icon: "upload" as const, title: "Upload", text: "Kirim AAB/APK via console atau CI (webhook)." },
   { icon: "shield" as const, title: "XyScan", text: "Scan otomatis: bersih = langsung tayang." },
@@ -126,19 +126,19 @@ export default function DeveloperPage() {
         </div>
         <div className="panel stack-12">
           <p className="sub">
-            Pendaftaran developer sengaja ketat. Kami menjaga kualitas toko
-            lebih dari jumlah listing.
+            Syarat mengikuti standar industri — sama seperti toko aplikasi
+            besar, tanpa dokumen berlebihan.
           </p>
           <ul className="req-list">
             {[
-              ["Identitas resmi", "KTP/paspor sah + foto selfie verifikasi. Tidak ada akun anonim."],
-              ["Email & nomor aktif", "Email resmi yang bisa dihubungi + nomor HP untuk OTP."],
-              ["Pernyataan hak cipta", "Deklarasi tertulis bahwa kamu pemilik/pemegang hak karya. Karya orang lain = ditolak permanen."],
-              ["Portofolio", "Minimal satu karya yang bisa diperiksa (aplikasi, game, atau repo)."],
-              ["Lolos verifikasi 2 tahap", "Tahap dokumen + wawancara singkat dengan tim XySpace."],
+              ["Akun developer", "Daftar dengan email aktif yang bisa diverifikasi lewat kode OTP."],
+              ["Nomor HP untuk 2FA", "Kode masuk kedua lewat SMS/OTP — keamanan akun, bukan identitas fisik."],
+              ["Biaya pendaftaran satu kali", "Sekali bayar saat mendaftar (seperti Play Store). Bukan langganan."],
+              ["Profil developer lengkap", "Nama, organisasi, situs, dan kontak publik yang tampil di listing."],
+              ["Pernyataan hak cipta", "Centang + tanda tangan digital: kamu pemegang hak karya. Karya curian = ditolak permanen."],
+              ["Persetujuan ToS & kebijakan konten", "Termasuk rating usia yang diisi jujur."],
               ["Masa percobaan", "3 rilis pertama diawasi ketat. Satu pelanggaran = selesai."],
-              ["Persetujuan lisensi", "Tanda tangan XySANC / lisensi proprietary + ToS developer."],
-              ["Sanksi tegas", "Rating umur bohong, karya curian, atau malware = akun ditutup + daftar hitam."],
+              ["Sanksi tegas", "Rating bohong, karya curian, atau malware = akun ditutup + daftar hitam."],
             ].map(([t, d]) => (
               <li key={t}>
                 <Sym name="check_circle" size={16} fill />
